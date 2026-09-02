@@ -660,6 +660,55 @@ img {
     transform: translateY(0) scale(1);
 }
 
+.like-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: rgba(20,20,20,.75);
+    color: #888;
+
+    font-size: 16px;
+
+    opacity: 0;
+    transform: scale(.85);
+
+    box-shadow:
+        3px 3px 8px #080808,
+        -2px -2px 6px rgba(255,255,255,.04);
+
+    transition:
+        opacity .2s ease,
+        transform .2s var(--ease),
+        color .2s ease,
+        background .2s ease;
+}
+
+.song-card:hover .like-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.like-btn.liked {
+    opacity: 1;
+    color: var(--orange);
+    background: rgba(255,101,0,.15);
+    transform: scale(1);
+}
+
+.like-btn:hover {
+    color: var(--orange);
+    transform: scale(1.08);
+}
+
 .song-title {
     margin-bottom: 5px;
 
@@ -1066,7 +1115,7 @@ img {
     cursor: pointer;
 }
 
-/* -------------------- FULL PLAYER -------------------- */
+/* -------------------- FULL PLAYER (FOCUS MODE) -------------------- */
 
 .full-player {
     position: fixed;
@@ -1198,6 +1247,16 @@ img {
     width: min(430px, 75vh, 42vw);
 
     margin-top: 25px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.full-info-text {
+    min-width: 0;
+    flex: 1;
 }
 
 .full-title {
@@ -1215,6 +1274,43 @@ img {
 .full-artist {
     color: #888;
     font-size: 14px;
+}
+
+.full-like {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: var(--surface);
+    color: #888;
+
+    font-size: 20px;
+
+    box-shadow:
+        5px 5px 10px #090909,
+        -4px -4px 8px rgba(255,255,255,.035);
+
+    transition:
+        color .2s ease,
+        background .2s ease,
+        transform .2s var(--ease),
+        box-shadow .2s ease;
+}
+
+.full-like.liked {
+    color: var(--orange);
+    background: rgba(255,101,0,.12);
+}
+
+.full-like:hover {
+    color: var(--orange);
+    transform: translateY(-2px);
 }
 
 .full-progress {
@@ -1307,51 +1403,6 @@ img {
         0 0 28px rgba(255,101,0,.18);
 }
 
-.lyrics-toggle {
-    margin-top: 17px;
-
-    padding: 10px 16px;
-
-    border-radius: 11px;
-
-    background: var(--surface);
-    color: #aaa;
-
-    font-size: 11px;
-    font-weight: 600;
-
-    box-shadow:
-        5px 5px 10px #090909,
-        -4px -4px 8px rgba(255,255,255,.035);
-
-    transition:
-        transform .2s var(--ease),
-        color .2s ease,
-        box-shadow .2s ease;
-}
-
-.lyrics-toggle:hover {
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.lyrics-toggle:active {
-    transform: translateY(0);
-
-    box-shadow:
-        inset 4px 4px 8px #0b0b0b,
-        inset -4px -4px 8px #252525;
-}
-
-.lyrics-toggle.active {
-    color: var(--orange);
-
-    box-shadow:
-        inset 4px 4px 8px #0b0b0b,
-        inset -4px -4px 8px #252525,
-        0 0 14px rgba(255,101,0,.06);
-}
-
 /* -------------------- LYRICS -------------------- */
 
 .lyrics-panel {
@@ -1364,10 +1415,6 @@ img {
     overflow: hidden;
 
     animation: fadeUp .5s var(--ease) both;
-}
-
-.lyrics-panel.hidden-panel {
-    display: none;
 }
 
 .lyrics-heading {
@@ -1394,9 +1441,9 @@ img {
     overflow-x: hidden;
 
     padding:
-        32vh
+        12px
         35px
-        32vh
+        40vh
         0;
 
     scrollbar-width: thin;
@@ -1457,7 +1504,7 @@ img {
 }
 
 .no-lyrics {
-    padding-top: 100px;
+    padding-top: 40px;
 
     color: #666;
     font-size: 18px;
@@ -1590,6 +1637,11 @@ img {
         gap: 12px;
     }
 
+    .like-btn {
+        opacity: 1;
+        transform: scale(1);
+    }
+
     .bottom-player {
         left: 0;
 
@@ -1692,9 +1744,9 @@ img {
 
     #lyricsContainer {
         padding:
-            20vh
             12px
-            20vh
+            12px
+            30vh
             0;
     }
 
@@ -1991,7 +2043,7 @@ img {
 </div>
 
 <!-- =========================================================
-     FULL SCREEN PLAYER
+     FULL SCREEN PLAYER (FOCUS MODE)
      ========================================================= -->
 
 <div class="full-player" id="fullPlayer">
@@ -2017,13 +2069,19 @@ img {
 
             <div class="full-info">
 
-                <div class="full-title" id="fullTitle">
-                    Here (Lucian Remix)
+                <div class="full-info-text">
+                    <div class="full-title" id="fullTitle">
+                        Here (Lucian Remix)
+                    </div>
+
+                    <div class="full-artist" id="fullArtist">
+                        Alessia Cara
+                    </div>
                 </div>
 
-                <div class="full-artist" id="fullArtist">
-                    Alessia Cara
-                </div>
+                <button class="full-like" id="fullLike" title="Like">
+                    ♥
+                </button>
 
             </div>
 
@@ -2104,13 +2162,6 @@ img {
                 </button>
 
             </div>
-
-            <button
-                class="lyrics-toggle active"
-                id="lyricsToggle"
-            >
-                Hide Lyrics
-            </button>
 
         </div>
 
@@ -2223,9 +2274,6 @@ const lyricsPanel =
 const lyricsContainer =
     document.getElementById("lyricsContainer");
 
-const lyricsToggle =
-    document.getElementById("lyricsToggle");
-
 /* =========================================================
    TIME
    ========================================================= */
@@ -2281,6 +2329,13 @@ function setLiked(id, liked) {
     );
 }
 
+function toggleLike(id) {
+    const liked = !isLiked(id);
+    setLiked(id, liked);
+    renderAll();
+    updateFullLikeButton();
+}
+
 /* =========================================================
    SONG CARD
    ========================================================= */
@@ -2290,10 +2345,15 @@ function createSongCard(song, index) {
 
     card.className = "song-card";
 
+    const liked = isLiked(song.id);
+
     card.innerHTML = `
         <div class="song-cover">
             <img src="${escapeHTML(song.cover)}" alt="">
             <div class="play-overlay">▶</div>
+            <button class="like-btn ${liked ? "liked" : ""}" title="Like" data-id="${escapeHTML(song.id)}">
+                ♥
+            </button>
         </div>
 
         <div class="song-title">
@@ -2308,6 +2368,13 @@ function createSongCard(song, index) {
     card.addEventListener("click", () => {
         playSong(index);
         openFullPlayer();
+    });
+
+    const likeBtn = card.querySelector(".like-btn");
+
+    likeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleLike(song.id);
     });
 
     return card;
@@ -2546,6 +2613,17 @@ function updateSongUI() {
 
     document.getElementById("fullArtist").textContent =
         song.artist;
+
+    updateFullLikeButton();
+}
+
+function updateFullLikeButton() {
+    if (!songs.length) return;
+
+    const song = songs[currentIndex];
+    const btn = document.getElementById("fullLike");
+
+    btn.classList.toggle("liked", isLiked(song.id));
 }
 
 function updatePlayButtons() {
@@ -2947,27 +3025,6 @@ function closeFullPlayer() {
 }
 
 /* =========================================================
-   LYRICS BUTTON
-   ========================================================= */
-
-lyricsToggle.addEventListener("click", () => {
-    const hidden =
-        lyricsPanel.classList.toggle(
-            "hidden-panel"
-        );
-
-    lyricsToggle.classList.toggle(
-        "active",
-        !hidden
-    );
-
-    lyricsToggle.textContent =
-        hidden
-            ? "Show Lyrics"
-            : "Hide Lyrics";
-});
-
-/* =========================================================
    CONTROLS
    ========================================================= */
 
@@ -3033,6 +3090,12 @@ document.getElementById("progressBar")
 document.getElementById("fullProgressBar")
     .addEventListener("input", event => {
         setProgress(event.target.value);
+    });
+
+document.getElementById("fullLike")
+    .addEventListener("click", () => {
+        if (!songs.length) return;
+        toggleLike(songs[currentIndex].id);
     });
 
 /* =========================================================
