@@ -17,16 +17,17 @@
    ========================================================= */
 
 :root {
+    /* Dark grayish black UI */
     --bg: #121212;
     --bg-deep: #0d0d0d;
     --surface: #191919;
     --surface-2: #202020;
     --surface-3: #242424;
 
-    --orange: #ff6500;
-    --orange-bright: #ff7620;
-    --orange-soft: rgba(255, 101, 0, 0.14);
-    --orange-glow: rgba(255, 101, 0, 0.28);
+    --accent: #7b8cff;
+    --accent-bright: #95a3ff;
+    --accent-soft: rgba(123, 140, 255, 0.15);
+    --accent-glow: rgba(123, 140, 255, 0.35);
 
     --text: #f5f5f5;
     --text-soft: #c8c8c8;
@@ -34,16 +35,38 @@
     --muted-2: #5d5d5d;
 
     --shadow-dark: #090909;
-    --shadow-light: rgba(255,255,255,0.045);
+    --shadow-light: rgba(255,255,255,0.05);
 
-    --radius-small: 10px;
-    --radius: 16px;
-    --radius-large: 24px;
+    --radius-small: 12px;
+    --radius: 18px;
+    --radius-large: 28px;
 
     --sidebar-width: 240px;
-    --player-height: 88px;
+    --player-height: 92px;
 
     --ease: cubic-bezier(.2,.8,.2,1);
+}
+
+html {
+    transition:
+        background-color .45s var(--ease),
+        color .45s var(--ease);
+}
+
+html * {
+    transition-property: background-color, color, border-color, box-shadow, fill, stroke, text-shadow;
+    transition-duration: .4s;
+    transition-timing-function: var(--ease);
+}
+
+/* Don't slow down interactive motion */
+html button,
+html .song-card,
+html .control,
+html .full-control,
+html .nav-button,
+html input[type="range"] {
+    transition-property: background-color, color, border-color, box-shadow, transform, opacity;
 }
 
 /* -------------------- RESET -------------------- */
@@ -65,8 +88,8 @@ body {
     width: 100%;
     min-height: 100vh;
     background:
-        radial-gradient(circle at 10% 0%, rgba(255,101,0,.055), transparent 28%),
-        radial-gradient(circle at 90% 100%, rgba(255,101,0,.025), transparent 30%),
+        radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 40%),
+        radial-gradient(circle at 85% 90%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 35%),
         var(--bg);
     color: var(--text);
     font-family: "Inter", Arial, sans-serif;
@@ -147,26 +170,26 @@ img {
 @keyframes softPulse {
     0%, 100% {
         box-shadow:
-            0 0 0 0 rgba(255,101,0,0),
-            10px 10px 22px #090909,
-            -7px -7px 18px rgba(255,255,255,.045);
+            0 0 0 0 rgba(123,140,255,0),
+            10px 10px 22px var(--shadow-dark),
+            -7px -7px 18px var(--shadow-light);
     }
 
     50% {
         box-shadow:
-            0 0 28px rgba(255,101,0,.08),
-            10px 10px 22px #090909,
-            -7px -7px 18px rgba(255,255,255,.045);
+            0 0 28px rgba(123,140,255,.12),
+            10px 10px 22px var(--shadow-dark),
+            -7px -7px 18px var(--shadow-light);
     }
 }
 
-@keyframes orangeGlow {
+@keyframes accentGlow {
     0%, 100% {
-        text-shadow: 0 0 8px rgba(255,101,0,.15);
+        text-shadow: 0 0 8px rgba(123,140,255,.2);
     }
 
     50% {
-        text-shadow: 0 0 22px rgba(255,101,0,.45);
+        text-shadow: 0 0 20px rgba(123,140,255,.45);
     }
 }
 
@@ -206,7 +229,7 @@ img {
     padding: 28px 17px;
 
     background: #151515;
-    border-right: 1px solid rgba(255,255,255,.025);
+    border-right: 1px solid rgba(255,255,255,.04);
 
     box-shadow:
         10px 0 30px rgba(0,0,0,.5);
@@ -225,15 +248,15 @@ img {
 }
 
 .logo span {
-    color: var(--orange);
-    animation: orangeGlow 3s ease-in-out infinite;
+    color: var(--accent);
+    animation: accentGlow 3s ease-in-out infinite;
 }
 
 .nav-title {
     padding: 0 14px;
     margin-bottom: 10px;
 
-    color: #5e5e5e;
+    color: var(--accent);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.6px;
@@ -250,10 +273,10 @@ img {
     padding: 13px 15px;
     margin-bottom: 7px;
 
-    border-radius: 13px;
+    border-radius: 14px;
     background: transparent;
 
-    color: #969696;
+    color: var(--accent);
     text-align: left;
     font-size: 14px;
     font-weight: 600;
@@ -273,30 +296,30 @@ img {
     width: 3px;
     height: 0;
     border-radius: 99px;
-    background: var(--orange);
+    background: var(--accent);
     transform: translateY(-50%);
     opacity: 0;
     transition: .22s var(--ease);
 }
 
 .nav-button:hover {
-    color: #eeeeee;
-    background: #191919;
+    color: var(--accent);
+    background: var(--surface-2);
 
     box-shadow:
-        inset 4px 4px 8px #0b0b0b,
-        inset -4px -4px 8px #242424;
+        6px 6px 12px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
 
     transform: translateX(2px);
 }
 
 .nav-button.active {
-    color: var(--orange);
-    background: #191919;
+    color: var(--accent);
+    background: var(--surface-2);
 
     box-shadow:
-        inset 5px 5px 10px #0b0b0b,
-        inset -5px -5px 10px #252525;
+        6px 6px 14px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
 }
 
 .nav-button.active::before {
@@ -308,7 +331,7 @@ img {
     margin-top: auto;
     padding: 14px;
 
-    color: #4f4f4f;
+    color: var(--accent);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: .2px;
@@ -356,14 +379,14 @@ img {
     border-radius: 14px;
 
     background: var(--surface);
-    color: #fff;
+    color: var(--accent);
 
     font-size: 13px;
 
     box-shadow:
-        inset 6px 6px 12px #0a0a0a,
-        inset -5px -5px 11px #252525,
-        0 4px 12px rgba(0,0,0,.25);
+        inset 6px 6px 12px var(--shadow-dark),
+        inset -5px -5px 11px var(--shadow-light),
+        0 4px 12px rgba(180,190,220,.25);
 
     transition:
         box-shadow .25s ease,
@@ -371,17 +394,17 @@ img {
 }
 
 .search-box input::placeholder {
-    color: #666;
+    color: var(--accent);
 }
 
 .search-box input:focus {
     transform: translateY(-1px);
 
     box-shadow:
-        inset 6px 6px 12px #0a0a0a,
-        inset -5px -5px 11px #252525,
-        0 0 0 1px rgba(255,101,0,.35),
-        0 0 20px rgba(255,101,0,.08);
+        inset 6px 6px 12px var(--shadow-dark),
+        inset -5px -5px 11px var(--shadow-light),
+        0 0 0 1px rgba(123,140,255,.35),
+        0 0 20px rgba(123,140,255,.08);
 }
 
 /* -------------------- SECTIONS -------------------- */
@@ -408,7 +431,7 @@ img {
 }
 
 .section-heading h2 {
-    color: #eee;
+    color: var(--accent);
     font-size: 19px;
     font-weight: 700;
 }
@@ -431,13 +454,13 @@ img {
     border-radius: 23px;
 
     background:
-        linear-gradient(120deg, rgba(255,101,0,.12), transparent 57%),
+        linear-gradient(120deg, rgba(123,140,255,.12), transparent 57%),
         var(--surface);
 
     cursor: pointer;
 
     box-shadow:
-        12px 12px 26px #080808,
+        12px 12px 26px var(--shadow-dark),
         -8px -8px 20px rgba(255,255,255,.04);
 
     transition:
@@ -457,11 +480,11 @@ img {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(255,101,0,.07);
+    border: 1px solid rgba(123,140,255,.07);
 
     box-shadow:
-        0 0 60px rgba(255,101,0,.04),
-        inset 0 0 40px rgba(255,101,0,.025);
+        0 0 60px rgba(123,140,255,.04),
+        inset 0 0 40px rgba(123,140,255,.025);
 
     pointer-events: none;
 }
@@ -470,17 +493,17 @@ img {
     transform: translateY(-4px);
 
     box-shadow:
-        17px 17px 34px #080808,
+        17px 17px 34px var(--shadow-dark),
         -10px -10px 23px rgba(255,255,255,.045),
-        0 0 30px rgba(255,101,0,.035);
+        0 0 30px rgba(123,140,255,.035);
 }
 
 .featured:active {
     transform: translateY(0);
 
     box-shadow:
-        inset 8px 8px 16px #090909,
-        inset -7px -7px 15px #252525;
+        inset 8px 8px 16px var(--shadow-dark),
+        inset -7px -7px 15px var(--shadow-light);
 }
 
 .featured img {
@@ -494,7 +517,7 @@ img {
     border-radius: 17px;
 
     box-shadow:
-        10px 10px 20px #090909,
+        10px 10px 20px var(--shadow-dark),
         -5px -5px 12px rgba(255,255,255,.025);
 
     transition:
@@ -506,9 +529,9 @@ img {
     transform: scale(1.025) rotate(-.4deg);
 
     box-shadow:
-        13px 13px 25px #070707,
+        13px 13px 25px var(--shadow-dark),
         -6px -6px 13px rgba(255,255,255,.035),
-        0 0 25px rgba(255,101,0,.07);
+        0 0 25px rgba(123,140,255,.07);
 }
 
 .featured-info {
@@ -521,7 +544,7 @@ img {
 .featured-label {
     margin-bottom: 10px;
 
-    color: var(--orange);
+    color: var(--accent);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.4px;
@@ -531,7 +554,7 @@ img {
 .featured-title {
     margin-bottom: 9px;
 
-    color: #fff;
+    color: var(--accent);
     font-size: clamp(28px, 4vw, 46px);
     font-weight: 700;
     line-height: 1.08;
@@ -539,7 +562,7 @@ img {
 }
 
 .featured-artist {
-    color: #999;
+    color: var(--accent);
     font-size: 15px;
 }
 
@@ -565,8 +588,8 @@ img {
     cursor: pointer;
 
     box-shadow:
-        9px 9px 18px #090909,
-        -6px -6px 15px rgba(255,255,255,.035);
+        9px 9px 18px var(--shadow-dark),
+        -6px -6px 15px var(--shadow-light);
 
     transition:
         transform .3s var(--ease),
@@ -581,16 +604,16 @@ img {
 
     box-shadow:
         13px 13px 25px #080808,
-        -8px -8px 17px rgba(255,255,255,.045),
-        0 0 22px rgba(255,101,0,.025);
+        -8px -8px 17px var(--shadow-light),
+        0 0 22px var(--accent-soft);
 }
 
 .song-card:active {
     transform: translateY(-1px);
 
     box-shadow:
-        inset 6px 6px 12px #090909,
-        inset -6px -6px 12px #252525;
+        inset 6px 6px 12px var(--shadow-dark),
+        inset -6px -6px 12px var(--shadow-light);
 }
 
 .song-cover {
@@ -612,7 +635,7 @@ img {
 
     border-radius: 13px;
 
-    box-shadow: 6px 6px 12px #090909;
+    box-shadow: 6px 6px 12px var(--shadow-dark);
 
     transition:
         transform .35s var(--ease),
@@ -637,8 +660,8 @@ img {
 
     border-radius: 50%;
 
-    background: var(--orange);
-    color: #fff;
+    background: var(--accent);
+    color: var(--shadow-light);
 
     font-size: 14px;
 
@@ -646,9 +669,9 @@ img {
     transform: translateY(8px) scale(.9);
 
     box-shadow:
-        5px 5px 11px #080808,
+        5px 5px 11px var(--shadow-dark),
         -3px -3px 7px rgba(255,255,255,.08),
-        0 0 18px rgba(255,101,0,.18);
+        0 0 18px rgba(123,140,255,.18);
 
     transition:
         opacity .25s ease,
@@ -674,7 +697,7 @@ img {
     border-radius: 50%;
 
     background: rgba(20,20,20,.75);
-    color: #888;
+    color: var(--accent);
 
     font-size: 16px;
 
@@ -682,7 +705,7 @@ img {
     transform: scale(.85);
 
     box-shadow:
-        3px 3px 8px #080808,
+        3px 3px 8px var(--shadow-dark),
         -2px -2px 6px rgba(255,255,255,.04);
 
     transition:
@@ -699,13 +722,13 @@ img {
 
 .like-btn.liked {
     opacity: 1;
-    color: var(--orange);
-    background: rgba(255,101,0,.15);
+    color: var(--accent);
+    background: rgba(123,140,255,.15);
     transform: scale(1);
 }
 
 .like-btn:hover {
-    color: var(--orange);
+    color: var(--accent);
     transform: scale(1.08);
 }
 
@@ -714,7 +737,7 @@ img {
 
     overflow: hidden;
 
-    color: #f1f1f1;
+    color: var(--accent);
     font-size: 14px;
     font-weight: 600;
 
@@ -735,7 +758,7 @@ img {
 .empty {
     padding: 35px 0;
 
-    color: #6c6c6c;
+    color: var(--accent);
     font-size: 13px;
 }
 
@@ -755,11 +778,11 @@ img {
     border-radius: 24px;
 
     background:
-        radial-gradient(circle at 90% 15%, rgba(255,101,0,.08), transparent 28%),
+        radial-gradient(circle at 90% 15%, rgba(123,140,255,.08), transparent 28%),
         var(--surface);
 
     box-shadow:
-        13px 13px 28px #090909,
+        13px 13px 28px var(--shadow-dark),
         -8px -8px 20px rgba(255,255,255,.04);
 
     animation: popIn .5s var(--ease) both;
@@ -777,7 +800,7 @@ img {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(255,101,0,.05);
+    border: 1px solid rgba(123,140,255,.05);
 }
 
 .credits-card h2 {
@@ -789,7 +812,7 @@ img {
 }
 
 .credits-card h2 span {
-    color: var(--orange);
+    color: var(--accent);
 }
 
 .credits-card p {
@@ -797,7 +820,7 @@ img {
 
     margin-bottom: 23px;
 
-    color: #999;
+    color: var(--accent);
     font-size: 14px;
     line-height: 1.8;
 }
@@ -809,15 +832,15 @@ img {
 
     border-radius: 11px;
 
-    background: #191919;
-    color: var(--orange);
+    background: var(--surface-2);
+    color: var(--accent);
 
     font-size: 11px;
     font-weight: 700;
 
     box-shadow:
-        inset 4px 4px 8px #0b0b0b,
-        inset -4px -4px 8px #252525;
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
 }
 
 /* -------------------- BOTTOM PLAYER -------------------- */
@@ -839,9 +862,9 @@ img {
 
     padding: 12px 24px;
 
-    background: rgba(20,20,20,.97);
+    background: rgba(20, 20, 20, 0.97);
 
-    border-top: 1px solid rgba(255,255,255,.025);
+    border-top: 1px solid rgba(255,255,255,.04);
 
     box-shadow:
         0 -12px 30px rgba(0,0,0,.55);
@@ -874,7 +897,7 @@ img {
     border-radius: 11px;
 
     box-shadow:
-        6px 6px 12px #090909,
+        6px 6px 12px var(--shadow-dark),
         -3px -3px 7px rgba(255,255,255,.03);
 
     transition: transform .25s var(--ease);
@@ -899,13 +922,13 @@ img {
 .mini-title {
     margin-bottom: 4px;
 
-    color: #eee;
+    color: var(--accent);
     font-size: 13px;
     font-weight: 600;
 }
 
 .mini-artist {
-    color: #777;
+    color: var(--accent);
     font-size: 11px;
 }
 
@@ -922,8 +945,8 @@ img {
 .control {
     position: relative;
 
-    width: 39px;
-    height: 39px;
+    width: 42px;
+    height: 42px;
 
     display: grid;
     place-items: center;
@@ -931,19 +954,29 @@ img {
     border-radius: 50%;
 
     background: var(--surface);
-    color: #aaa;
+    color: var(--accent);
 
     font-size: 15px;
 
     box-shadow:
-        5px 5px 10px #090909,
-        -4px -4px 9px rgba(255,255,255,.035);
+        5px 5px 10px var(--shadow-dark),
+        -4px -4px 9px var(--shadow-light);
 
     transition:
         color .2s ease,
         background .2s ease,
         transform .2s var(--ease),
         box-shadow .2s ease;
+}
+
+.control svg,
+.full-control svg,
+.full-back svg,
+.full-like svg,
+.play-overlay svg,
+.like-btn svg {
+    display: block;
+    pointer-events: none;
 }
 
 .control:hover {
@@ -955,38 +988,38 @@ img {
     transform: translateY(0);
 
     box-shadow:
-        inset 4px 4px 8px #090909,
-        inset -4px -4px 8px #252525;
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
 }
 
 .control.main-play {
-    width: 47px;
-    height: 47px;
+    width: 54px;
+    height: 54px;
 
-    background: var(--orange);
+    background: var(--accent);
     color: #fff;
 
     box-shadow:
-        6px 6px 12px #080808,
-        -3px -3px 7px rgba(255,255,255,.05),
-        0 0 18px rgba(255,101,0,.09);
+        6px 6px 14px #080808,
+        -3px -3px 8px var(--shadow-light),
+        0 0 22px var(--accent-glow);
 }
 
 .control.main-play:hover {
-    background: var(--orange-bright);
+    background: var(--accent-bright);
     box-shadow:
-        7px 7px 14px #070707,
-        -4px -4px 8px rgba(255,255,255,.05),
-        0 0 25px rgba(255,101,0,.18);
+        7px 7px 16px #070707,
+        -4px -4px 9px var(--shadow-light),
+        0 0 28px var(--accent-glow);
 }
 
 .repeat.active {
-    color: var(--orange);
+    color: var(--accent);
 
     box-shadow:
-        inset 4px 4px 8px #090909,
-        inset -4px -4px 8px #252525,
-        0 0 16px rgba(255,101,0,.1);
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light),
+        0 0 16px var(--accent-soft);
 }
 
 .repeat.active::after {
@@ -1002,10 +1035,10 @@ img {
 
     border-radius: 50%;
 
-    background: var(--orange);
+    background: var(--accent);
 
     box-shadow:
-        0 0 8px rgba(255,101,0,.9);
+        0 0 8px rgba(123,140,255,.9);
 }
 
 .repeat-label {
@@ -1019,8 +1052,8 @@ img {
 
     border-radius: 9px;
 
-    background: #1d1d1d;
-    color: var(--orange);
+    background: var(--surface-2);
+    color: var(--accent);
 
     font-size: 10px;
     font-weight: 700;
@@ -1031,7 +1064,7 @@ img {
     transform: translateY(7px) scale(.96);
 
     box-shadow:
-        6px 6px 12px #090909,
+        6px 6px 12px var(--shadow-dark),
         -4px -4px 9px rgba(255,255,255,.035);
 
     transition:
@@ -1056,7 +1089,7 @@ img {
 .time {
     width: 38px;
 
-    color: #777;
+    color: var(--accent);
     font-size: 10px;
     text-align: center;
 }
@@ -1073,8 +1106,8 @@ img {
     background: #111;
 
     box-shadow:
-        inset 3px 3px 6px #090909,
-        inset -2px -2px 5px #242424;
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -2px -2px 5px #eef1f8;
 }
 
 .progress {
@@ -1093,13 +1126,13 @@ img {
     border: 0;
     border-radius: 50%;
 
-    background: var(--orange);
+    background: var(--accent);
 
     cursor: pointer;
 
     box-shadow:
-        2px 2px 5px #080808,
-        0 0 8px rgba(255,101,0,.15);
+        2px 2px 5px var(--shadow-dark),
+        0 0 8px rgba(123,140,255,.15);
 }
 
 .progress::-moz-range-thumb,
@@ -1110,7 +1143,7 @@ img {
     border: 0;
     border-radius: 50%;
 
-    background: var(--orange);
+    background: var(--accent);
 
     cursor: pointer;
 }
@@ -1129,9 +1162,9 @@ img {
     opacity: 0;
 
     background:
-        radial-gradient(circle at 16% 45%, rgba(255,101,0,.13), transparent 33%),
-        radial-gradient(circle at 86% 8%, rgba(255,101,0,.055), transparent 27%),
-        #121212;
+        radial-gradient(circle at 16% 45%, var(--accent-glow), transparent 33%),
+        radial-gradient(circle at 86% 8%, var(--accent-soft), transparent 27%),
+        var(--bg);
 
     transform: scale(1.018);
 
@@ -1164,12 +1197,12 @@ img {
     border-radius: 50%;
 
     background: var(--surface);
-    color: #eee;
+    color: var(--accent);
 
     font-size: 21px;
 
     box-shadow:
-        6px 6px 13px #080808,
+        6px 6px 13px var(--shadow-dark),
         -4px -4px 9px rgba(255,255,255,.04);
 
     transition:
@@ -1179,14 +1212,14 @@ img {
 }
 
 .full-back:hover {
-    color: var(--orange);
+    color: var(--accent);
     transform: translateX(-2px);
 }
 
 .full-back:active {
     box-shadow:
-        inset 4px 4px 8px #090909,
-        inset -4px -4px 8px #252525;
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
 }
 
 .full-content {
@@ -1226,7 +1259,7 @@ img {
     border-radius: 21px;
 
     box-shadow:
-        18px 18px 38px #080808,
+        18px 18px 38px var(--shadow-dark),
         -10px -10px 25px rgba(255,255,255,.035);
 
     animation: coverFloat 5s ease-in-out infinite;
@@ -1238,9 +1271,9 @@ img {
 
 .full-cover:hover {
     box-shadow:
-        22px 22px 45px #070707,
+        22px 22px 45px var(--shadow-dark),
         -11px -11px 26px rgba(255,255,255,.04),
-        0 0 35px rgba(255,101,0,.06);
+        0 0 35px rgba(123,140,255,.06);
 }
 
 .full-info {
@@ -1262,7 +1295,7 @@ img {
 .full-title {
     margin-bottom: 7px;
 
-    color: #fff;
+    color: var(--accent);
 
     font-size: clamp(24px, 3vw, 38px);
     font-weight: 700;
@@ -1272,7 +1305,7 @@ img {
 }
 
 .full-artist {
-    color: #888;
+    color: var(--accent);
     font-size: 14px;
 }
 
@@ -1288,12 +1321,12 @@ img {
     border-radius: 50%;
 
     background: var(--surface);
-    color: #888;
+    color: var(--accent);
 
     font-size: 20px;
 
     box-shadow:
-        5px 5px 10px #090909,
+        5px 5px 10px var(--shadow-dark),
         -4px -4px 8px rgba(255,255,255,.035);
 
     transition:
@@ -1304,12 +1337,12 @@ img {
 }
 
 .full-like.liked {
-    color: var(--orange);
-    background: rgba(255,101,0,.12);
+    color: var(--accent);
+    background: rgba(123,140,255,.12);
 }
 
 .full-like:hover {
-    color: var(--orange);
+    color: var(--accent);
     transform: translateY(-2px);
 }
 
@@ -1330,7 +1363,7 @@ img {
 
     margin-top: 8px;
 
-    color: #777;
+    color: var(--accent);
     font-size: 11px;
 }
 
@@ -1354,12 +1387,12 @@ img {
     border-radius: 50%;
 
     background: var(--surface);
-    color: #ddd;
+    color: var(--accent);
 
     font-size: 16px;
 
     box-shadow:
-        6px 6px 12px #090909,
+        6px 6px 12px var(--shadow-dark),
         -4px -4px 9px rgba(255,255,255,.035);
 
     transition:
@@ -1370,7 +1403,7 @@ img {
 }
 
 .full-control:hover {
-    color: #fff;
+    color: var(--accent);
     transform: translateY(-2px);
 }
 
@@ -1378,29 +1411,29 @@ img {
     transform: translateY(0);
 
     box-shadow:
-        inset 4px 4px 8px #090909,
-        inset -4px -4px 8px #252525;
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
 }
 
 .full-control.big {
-    width: 59px;
-    height: 59px;
+    width: 62px;
+    height: 62px;
 
-    background: var(--orange);
-    color: #fff;
+    background: var(--surface);
+    color: var(--accent);
 
     box-shadow:
-        7px 7px 14px #080808,
-        -4px -4px 8px rgba(255,255,255,.05),
-        0 0 20px rgba(255,101,0,.09);
+        8px 8px 18px var(--shadow-dark),
+        -4px -4px 12px var(--shadow-light),
+        0 0 24px rgba(123,140,255,.3);
 }
 
 .full-control.big:hover {
-    background: var(--orange-bright);
+    background: var(--surface-2);
     box-shadow:
-        8px 8px 16px #070707,
-        -4px -4px 9px rgba(255,255,255,.05),
-        0 0 28px rgba(255,101,0,.18);
+        10px 10px 22px var(--shadow-dark),
+        -5px -5px 14px var(--shadow-light),
+        0 0 32px rgba(123,140,255,.4);
 }
 
 /* -------------------- LYRICS -------------------- */
@@ -1422,7 +1455,7 @@ img {
 
     margin-bottom: 15px;
 
-    color: #626262;
+    color: var(--accent);
 
     font-size: 11px;
     font-weight: 700;
@@ -1471,9 +1504,9 @@ img {
     margin: 17px 0;
     padding-right: 25px;
 
-    color: #f5f5f5;
+    color: var(--text-soft);
 
-    opacity: .68;
+    opacity: .7;
 
     font-size: clamp(19px, 2.1vw, 32px);
     font-weight: 500;
@@ -1483,25 +1516,25 @@ img {
     word-break: break-word;
 
     transition:
-        color .3s ease,
-        opacity .3s ease,
-        text-shadow .3s ease,
+        color .35s var(--ease),
+        opacity .35s var(--ease),
+        text-shadow .35s var(--ease),
         transform .3s var(--ease);
 }
 
 .lyric-line.active {
-    color: var(--orange);
+    color: var(--accent);
     opacity: 1;
 
     transform: translateX(2px);
 
     text-shadow:
-        0 0 18px rgba(255,101,0,.35);
+        0 0 20px var(--accent-glow);
 }
 
 .lyric-line.past {
-    color: #707070;
-    opacity: .48;
+    color: var(--muted);
+    opacity: .5;
 }
 
 .lyric-line.pause {
@@ -1512,7 +1545,7 @@ img {
 .no-lyrics {
     padding-top: 40px;
 
-    color: #666;
+    color: var(--muted);
     font-size: 18px;
 }
 
@@ -1766,6 +1799,148 @@ img {
     }
 }
 
+/* -------------------- SETTINGS -------------------- */
+
+.settings-card h2 {
+    margin-bottom: 28px;
+}
+
+.settings-group {
+    margin-bottom: 28px;
+}
+
+.settings-label {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.theme-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-btn {
+    flex: 1;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow:
+        6px 6px 14px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+    transition: .22s var(--ease);
+}
+
+.theme-btn:hover {
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+.theme-btn.active {
+    color: #fff;
+    background: var(--accent);
+    box-shadow:
+        6px 6px 14px var(--shadow-dark),
+        0 0 18px var(--accent-glow);
+}
+
+.accent-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.accent-swatch {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    box-shadow:
+        5px 5px 12px var(--shadow-dark),
+        -3px -3px 8px var(--shadow-light);
+    transition: .2s var(--ease);
+    cursor: pointer;
+}
+
+.accent-swatch:hover {
+    transform: scale(1.08);
+}
+
+.accent-swatch.active {
+    border-color: var(--text);
+    box-shadow:
+        0 0 0 3px var(--surface-2),
+        0 0 0 5px var(--text),
+        5px 5px 12px var(--shadow-dark);
+}
+
+/* -------------------- DARK THEME -------------------- */
+
+html[data-theme="light"] {
+    --bg: #eef1f8;
+    --bg-deep: #e4e8f2;
+    --surface: #f7f9fc;
+    --surface-2: #ffffff;
+    --surface-3: #eef1f8;
+
+    --text: var(--accent);
+    --text-soft: var(--accent);
+    --muted: var(--accent);
+    --muted-2: var(--accent);
+
+    --shadow-dark: #c8cedd;
+    --shadow-light: #ffffff;
+}
+
+html[data-theme="light"] body {
+    background:
+        radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 40%),
+        radial-gradient(circle at 85% 90%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 35%),
+        var(--bg);
+}
+
+html[data-theme="light"] .sidebar {
+    background: var(--surface);
+    border-right-color: rgba(180,190,220,.25);
+    box-shadow: 8px 0 24px rgba(180,190,220,.3);
+}
+
+html[data-theme="light"] .bottom-player {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    border-top-color: rgba(180,190,220,.3);
+}
+
+html[data-theme="light"] .song-card,
+html[data-theme="light"] .control,
+html[data-theme="light"] .theme-btn,
+html[data-theme="light"] .credits-card {
+    background: var(--surface-2);
+}
+
+html[data-theme="light"] .nav-button:hover,
+html[data-theme="light"] .nav-button.active {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+html[data-theme="light"] .control.main-play,
+html[data-theme="light"] .full-control.big,
+html[data-theme="light"] .theme-btn.active,
+html[data-theme="light"] .play-overlay {
+    color: var(--shadow-light);
+}
+
+html[data-theme="light"] .search-box input {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
 /* -------------------- REDUCED MOTION -------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1810,6 +1985,10 @@ img {
     <div class="nav-title" style="margin-top:22px;">
         OTHER
     </div>
+
+    <button class="nav-button" data-page="settings">
+        Settings
+    </button>
 
     <button class="nav-button" data-page="credits">
         Credits
@@ -1903,6 +2082,34 @@ img {
 
     </section>
 
+    <!-- SETTINGS -->
+
+    <section id="settingsPage" class="hidden credits-page">
+
+        <div class="credits-card settings-card">
+
+            <h2>Settings</h2>
+
+            <div class="settings-group">
+                <div class="settings-label">Accent Color</div>
+                <div class="accent-row" id="accentRow">
+                    <button class="accent-swatch active" data-accent="#7b8cff" style="background:#7b8cff" title="Blue"></button>
+                    <button class="accent-swatch" data-accent="#86E3CE" style="background:#86E3CE" title="Mint"></button>
+                    <button class="accent-swatch" data-accent="#D0E6A5" style="background:#D0E6A5" title="Lime"></button>
+                    <button class="accent-swatch" data-accent="#FFDD94" style="background:#FFDD94" title="Butter"></button>
+                    <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral"></button>
+                    <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac"></button>
+                </div>
+            </div>
+
+            <p style="margin-top:28px; margin-bottom:0; font-size:13px; color:var(--muted);">
+                Accent color is saved automatically.
+            </p>
+
+        </div>
+
+    </section>
+
     <!-- CREDITS -->
 
     <section id="creditsPage" class="hidden credits-page">
@@ -1960,52 +2167,29 @@ img {
 
     <div class="player-controls">
 
-        <button
-            class="control"
-            id="previousButton"
-            title="Previous"
-        >
-            ⏮
+        <button class="control" id="previousButton" title="Previous">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
         </button>
 
-        <button
-            class="control"
-            id="backButton"
-            title="Back 10 seconds"
-        >
-            ↶
+        <button class="control" id="backButton" title="Back 10 seconds">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
         </button>
 
-        <button
-            class="control main-play"
-            id="playButton"
-            title="Play"
-        >
-            ▶
+        <button class="control main-play" id="playButton" title="Play">
+            <svg class="icon-play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause hidden" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
 
-        <button
-            class="control"
-            id="forwardButton"
-            title="Forward 10 seconds"
-        >
-            ↷
+        <button class="control" id="forwardButton" title="Forward 10 seconds">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
         </button>
 
-        <button
-            class="control"
-            id="nextButton"
-            title="Next"
-        >
-            ⏭
+        <button class="control" id="nextButton" title="Next">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
         </button>
 
-        <button
-            class="control repeat"
-            id="repeatButton"
-            title="Repeat"
-        >
-            ↻
+        <button class="control repeat" id="repeatButton" title="Repeat">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
         </button>
 
     </div>
@@ -2044,12 +2228,8 @@ img {
 
 <div class="full-player" id="fullPlayer">
 
-    <button
-        class="full-back"
-        id="fullBack"
-        title="Back"
-    >
-        ←
+    <button class="full-back" id="fullBack" title="Back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </button>
 
     <div class="full-content">
@@ -2076,7 +2256,7 @@ img {
                 </div>
 
                 <button class="full-like" id="fullLike" title="Like">
-                    ♥
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
 
             </div>
@@ -2109,52 +2289,29 @@ img {
 
             <div class="full-controls">
 
-                <button
-                    class="full-control"
-                    id="fullPrevious"
-                    title="Previous"
-                >
-                    ⏮
+                <button class="full-control" id="fullPrevious" title="Previous">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
                 </button>
 
-                <button
-                    class="full-control"
-                    id="fullBack10"
-                    title="Back 10 seconds"
-                >
-                    ↶
+                <button class="full-control" id="fullBack10" title="Back 10 seconds">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                 </button>
 
-                <button
-                    class="full-control big"
-                    id="fullPlay"
-                    title="Play"
-                >
-                    ▶
+                <button class="full-control big" id="fullPlay" title="Play">
+                    <svg class="icon-play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="icon-pause hidden" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
 
-                <button
-                    class="full-control"
-                    id="fullForward10"
-                    title="Forward 10 seconds"
-                >
-                    ↷
+                <button class="full-control" id="fullForward10" title="Forward 10 seconds">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
                 </button>
 
-                <button
-                    class="full-control"
-                    id="fullNext"
-                    title="Next"
-                >
-                    ⏭
+                <button class="full-control" id="fullNext" title="Next">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                 </button>
 
-                <button
-                    class="full-control repeat"
-                    id="fullRepeat"
-                    title="Repeat"
-                >
-                    ↻
+                <button class="full-control repeat" id="fullRepeat" title="Repeat">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                 </button>
 
             </div>
@@ -2485,9 +2642,11 @@ function createSongCard(song, index) {
     card.innerHTML = `
         <div class="song-cover">
             <img src="${escapeHTML(song.cover)}" alt="">
-            <div class="play-overlay">▶</div>
+            <div class="play-overlay">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </div>
             <button class="like-btn ${liked ? "liked" : ""}" title="Like" data-id="${escapeHTML(song.id)}">
-                ♥
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </button>
         </div>
 
@@ -2663,6 +2822,7 @@ function showPage(page) {
         "home",
         "songs",
         "liked",
+        "settings",
         "credits"
     ];
 
@@ -2762,11 +2922,14 @@ function updateFullLikeButton() {
 function updatePlayButtons() {
     const playing = !audio.paused;
 
-    document.getElementById("playButton").textContent =
-        playing ? "Ⅱ" : "▶";
-
-    document.getElementById("fullPlay").textContent =
-        playing ? "Ⅱ" : "▶";
+    ["playButton", "fullPlay"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        const playIcon = btn.querySelector(".icon-play");
+        const pauseIcon = btn.querySelector(".icon-pause");
+        if (playIcon) playIcon.classList.toggle("hidden", playing);
+        if (pauseIcon) pauseIcon.classList.toggle("hidden", !playing);
+    });
 }
 
 /* =========================================================
@@ -3314,10 +3477,66 @@ document.addEventListener("keydown", event => {
 });
 
 /* =========================================================
+   ACCENT COLOR SETTINGS
+   ========================================================= */
+
+function hexToRgb(hex) {
+    const h = hex.replace("#", "");
+    const full = h.length === 3
+        ? h.split("").map(c => c + c).join("")
+        : h;
+    const n = parseInt(full, 16);
+    return {
+        r: (n >> 16) & 255,
+        g: (n >> 8) & 255,
+        b: n & 255
+    };
+}
+
+function lightenHex(hex, amount) {
+    const { r, g, b } = hexToRgb(hex);
+    const lr = Math.min(255, Math.round(r + (255 - r) * amount));
+    const lg = Math.min(255, Math.round(g + (255 - g) * amount));
+    const lb = Math.min(255, Math.round(b + (255 - b) * amount));
+    return "#" + [lr, lg, lb].map(v => v.toString(16).padStart(2, "0")).join("");
+}
+
+function applyAccent(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const root = document.documentElement;
+    root.style.setProperty("--accent", hex);
+    root.style.setProperty("--accent-bright", lightenHex(hex, 0.18));
+    root.style.setProperty("--accent-soft", `rgba(${r}, ${g}, ${b}, 0.15)`);
+    root.style.setProperty("--accent-glow", `rgba(${r}, ${g}, ${b}, 0.35)`);
+
+    document.querySelectorAll(".accent-swatch").forEach(btn => {
+        btn.classList.toggle(
+            "active",
+            btn.dataset.accent.toLowerCase() === hex.toLowerCase()
+        );
+    });
+
+    localStorage.setItem("akkoflac-accent", hex);
+}
+
+function loadSettings() {
+    const savedAccent = localStorage.getItem("akkoflac-accent") || "#7b8cff";
+    applyAccent(savedAccent);
+}
+
+document.getElementById("accentRow")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".accent-swatch");
+    if (!btn) return;
+    applyAccent(btn.dataset.accent);
+});
+
+/* =========================================================
    INITIALIZE
    ========================================================= */
 
 function initialize() {
+    loadSettings();
+
     renderFeatured();
     renderAll();
 
