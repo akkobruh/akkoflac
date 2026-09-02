@@ -1,0 +1,2819 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Akko Music</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #161616;
+    --bg-deep: #111111;
+
+    --surface: #1b1b1b;
+    --surface-2: #1f1f1f;
+    --surface-3: #232323;
+
+    --orange: #ff6500;
+    --orange-light: #ff8330;
+    --orange-dark: #c84e00;
+
+    --white: #f5f5f5;
+    --text: #dddddd;
+    --muted: #888888;
+    --muted-dark: #5c5c5c;
+
+    --shadow-dark: #0c0c0c;
+    --shadow-light: #272727;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(255,101,0,.045),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(255,101,0,.025),
+            transparent 35%
+        ),
+        var(--bg);
+
+    color: var(--text);
+
+    font-family: "Pixelify Sans", sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.sidebar {
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 245px;
+    height: 100vh;
+
+    padding: 25px 18px;
+
+    background: var(--surface);
+
+    box-shadow:
+        10px 10px 25px var(--shadow-dark),
+        -8px -8px 20px var(--shadow-light);
+
+    z-index: 100;
+
+    transition: .35s ease;
+}
+
+.logo {
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 35px;
+
+    border-radius: 19px;
+
+    color: var(--orange);
+
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: 2px;
+
+    background: var(--surface);
+
+    box-shadow:
+        inset 5px 5px 10px var(--shadow-dark),
+        inset -5px -5px 10px var(--shadow-light);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.nav button {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    padding: 16px 18px;
+
+    border-radius: 16px;
+
+    background: var(--surface);
+
+    color: var(--muted);
+
+    font-family: inherit;
+    font-size: 16px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: .25s ease;
+}
+
+.nav button:hover {
+    color: var(--white);
+
+    transform: translateX(5px);
+
+    box-shadow:
+        6px 6px 12px var(--shadow-dark),
+        -5px -5px 10px var(--shadow-light);
+}
+
+.nav button.active {
+    color: var(--orange);
+
+    box-shadow:
+        inset 5px 5px 10px var(--shadow-dark),
+        inset -5px -5px 10px var(--shadow-light);
+}
+
+
+/* ========================================
+   MAIN
+======================================== */
+
+.main {
+    margin-left: 245px;
+
+    padding: 35px;
+
+    padding-bottom: 150px;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.main.hidden {
+    opacity: 0;
+
+    transform: scale(.97);
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    color: var(--white);
+
+    font-size: 32px;
+}
+
+.search {
+    width: 310px;
+
+    border: none;
+    outline: none;
+
+    padding: 14px 18px;
+
+    border-radius: 16px;
+
+    background: var(--surface);
+
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 15px;
+
+    box-shadow:
+        inset 5px 5px 10px var(--shadow-dark),
+        inset -5px -5px 10px var(--shadow-light);
+}
+
+.search::placeholder {
+    color: var(--muted-dark);
+}
+
+
+/* ========================================
+   PAGES
+======================================== */
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+
+    animation: pageIn .4s ease;
+}
+
+@keyframes pageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* ========================================
+   HOME FEATURED
+======================================== */
+
+.featured {
+    position: relative;
+
+    min-height: 370px;
+
+    display: flex;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    padding: 45px;
+
+    margin-bottom: 45px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #1b1b1b 0%,
+            #191919 55%,
+            #151515 100%
+        );
+
+    box-shadow:
+        12px 12px 28px var(--shadow-dark),
+        -9px -9px 22px var(--shadow-light);
+}
+
+.featured::before {
+    content: "";
+
+    position: absolute;
+
+    width: 450px;
+    height: 450px;
+
+    right: -100px;
+    top: -130px;
+
+    border-radius: 50%;
+
+    background: rgba(255,101,0,.045);
+
+    filter: blur(5px);
+}
+
+.featured-info {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 55%;
+}
+
+.featured-label {
+    color: var(--orange);
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 13px;
+}
+
+.featured h2 {
+    color: var(--white);
+
+    font-size: clamp(34px, 4vw, 55px);
+
+    line-height: 1.05;
+
+    margin-bottom: 12px;
+}
+
+.featured-artist {
+    color: var(--muted);
+
+    font-size: 18px;
+
+    margin-bottom: 28px;
+}
+
+.featured-play {
+    border: none;
+
+    padding: 14px 26px;
+
+    border-radius: 15px;
+
+    background: var(--orange);
+
+    color: #111;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    box-shadow:
+        6px 6px 13px #0a0a0a,
+        -5px -5px 10px #252525;
+
+    transition: .25s ease;
+}
+
+.featured-play:hover {
+    background: var(--orange-light);
+
+    transform: translateY(-3px);
+}
+
+.featured-cover {
+    position: absolute;
+
+    right: 7%;
+
+    width: 280px;
+    height: 280px;
+
+    object-fit: cover;
+
+    border-radius: 25px;
+
+    box-shadow:
+        20px 20px 35px #080808,
+        -12px -12px 28px #272727;
+
+    transform: rotate(3deg);
+
+    transition: .4s ease;
+}
+
+.featured:hover .featured-cover {
+    transform:
+        rotate(0deg)
+        scale(1.025);
+}
+
+
+/* ========================================
+   HOME SECTION
+======================================== */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    color: var(--white);
+
+    font-size: 24px;
+}
+
+.section-header span {
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   SONG GRID
+======================================== */
+
+.song-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(190px, 1fr)
+        );
+
+    gap: 24px;
+
+    margin-bottom: 45px;
+}
+
+.song-card {
+    position: relative;
+
+    padding: 15px;
+
+    border-radius: 20px;
+
+    background: var(--surface);
+
+    cursor: pointer;
+
+    box-shadow:
+        9px 9px 18px var(--shadow-dark),
+        -7px -7px 15px var(--shadow-light);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.song-card:hover {
+    transform: translateY(-7px);
+
+    box-shadow:
+        13px 13px 24px var(--shadow-dark),
+        -9px -9px 19px var(--shadow-light);
+}
+
+.song-card:active {
+    transform: scale(.97);
+}
+
+.song-cover {
+    width: 100%;
+
+    aspect-ratio: 1;
+
+    object-fit: cover;
+
+    display: block;
+
+    border-radius: 15px;
+
+    margin-bottom: 15px;
+}
+
+.song-title {
+    color: var(--white);
+
+    font-size: 17px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    padding-right: 30px;
+}
+
+.song-artist {
+    color: var(--muted);
+
+    font-size: 14px;
+
+    margin-top: 5px;
+}
+
+.like-button {
+    position: absolute;
+
+    right: 15px;
+    bottom: 18px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: var(--surface);
+
+    color: var(--muted);
+
+    cursor: pointer;
+
+    box-shadow:
+        4px 4px 8px var(--shadow-dark),
+        -3px -3px 7px var(--shadow-light);
+
+    transition: .2s ease;
+}
+
+.like-button:hover {
+    color: var(--orange);
+
+    transform: scale(1.1);
+}
+
+.like-button.liked {
+    color: var(--orange);
+}
+
+
+/* ========================================
+   BOTTOM PLAYER
+======================================== */
+
+.bottom-player {
+    position: fixed;
+
+    left: 264px;
+    right: 18px;
+    bottom: 18px;
+
+    height: 90px;
+
+    border-radius: 22px;
+
+    background: var(--surface);
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 14px 20px;
+
+    box-shadow:
+        10px 10px 25px var(--shadow-dark),
+        -8px -8px 20px var(--shadow-light);
+
+    z-index: 90;
+
+    transition: .35s ease;
+}
+
+.bottom-player.hidden {
+    opacity: 0;
+
+    transform: translateY(110px);
+
+    pointer-events: none;
+}
+
+.mini-cover {
+    width: 60px;
+    height: 60px;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+
+    margin-right: 15px;
+}
+
+.mini-info {
+    min-width: 160px;
+}
+
+.mini-title {
+    color: var(--white);
+
+    font-size: 16px;
+}
+
+.mini-artist {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    margin-top: 4px;
+}
+
+.player-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-left: auto;
+}
+
+.control {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    box-shadow:
+        5px 5px 10px var(--shadow-dark),
+        -4px -4px 8px var(--shadow-light);
+
+    transition: .2s ease;
+}
+
+.control:hover {
+    color: var(--orange);
+
+    transform: scale(1.06);
+}
+
+.play-button {
+    width: 50px;
+    height: 50px;
+
+    background: var(--orange);
+
+    color: #111;
+
+    font-size: 18px;
+}
+
+.play-button:hover {
+    color: #111;
+
+    background: var(--orange-light);
+}
+
+.progress-area {
+    position: absolute;
+
+    left: 20px;
+    right: 20px;
+
+    bottom: 5px;
+}
+
+.progress,
+.now-progress {
+    width: 100%;
+
+    height: 4px;
+
+    appearance: none;
+
+    border-radius: 20px;
+
+    background: #0c0c0c;
+
+    cursor: pointer;
+}
+
+.progress::-webkit-slider-thumb,
+.now-progress::-webkit-slider-thumb {
+    appearance: none;
+
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background: var(--orange);
+}
+
+
+/* ========================================
+   NOW PLAYING
+======================================== */
+
+.now-playing {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    background:
+        radial-gradient(
+            circle at 25% 50%,
+            rgba(255,101,0,.07),
+            transparent 35%
+        ),
+        var(--bg-deep);
+
+    z-index: 500;
+}
+
+.now-playing.open {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    animation: nowOpen .45s ease;
+}
+
+@keyframes nowOpen {
+
+    from {
+        opacity: 0;
+        transform: scale(1.025);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+
+/* ========================================
+   NOW PLAYING LEFT
+======================================== */
+
+.now-left {
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 50px;
+
+    border-right: 1px solid rgba(255,255,255,.025);
+}
+
+.back-button {
+    position: absolute;
+
+    left: 30px;
+    top: 30px;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    box-shadow:
+        6px 6px 12px var(--shadow-dark),
+        -5px -5px 10px var(--shadow-light);
+
+    transition: .2s ease;
+}
+
+.back-button:hover {
+    color: var(--orange);
+
+    transform: translateX(-3px);
+}
+
+.now-cover {
+    width: min(430px, 38vw);
+
+    height: min(430px, 38vw);
+
+    object-fit: cover;
+
+    border-radius: 28px;
+
+    box-shadow:
+        20px 20px 40px #080808,
+        -15px -15px 35px #252525;
+
+    animation: floatCover 4s ease-in-out infinite;
+}
+
+@keyframes floatCover {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+}
+
+.now-title {
+    color: var(--white);
+
+    font-size: 35px;
+
+    text-align: center;
+
+    margin-top: 35px;
+}
+
+.now-artist {
+    color: var(--orange);
+
+    font-size: 18px;
+
+    margin-top: 8px;
+}
+
+.now-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 28px;
+}
+
+.now-control {
+    width: 52px;
+    height: 52px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    box-shadow:
+        7px 7px 14px var(--shadow-dark),
+        -6px -6px 12px var(--shadow-light);
+
+    transition: .2s ease;
+}
+
+.now-control:hover {
+    color: var(--orange);
+
+    transform: scale(1.07);
+}
+
+.now-play {
+    width: 68px;
+    height: 68px;
+
+    background: var(--orange);
+
+    color: #111;
+
+    font-size: 23px;
+}
+
+.now-play:hover {
+    color: #111;
+
+    background: var(--orange-light);
+}
+
+.now-progress-area {
+    width: min(500px, 70%);
+
+    margin-top: 28px;
+}
+
+.time-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-top: 8px;
+}
+
+
+/* ========================================
+   LYRICS
+======================================== */
+
+.now-right {
+    position: relative;
+
+    height: 100vh;
+
+    padding: 60px 7%;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.lyrics-heading {
+    position: absolute;
+
+    top: 35px;
+    left: 7%;
+
+    color: var(--orange);
+
+    font-size: 19px;
+
+    letter-spacing: 2px;
+}
+
+.lyrics-scroll {
+    width: 100%;
+
+    height: 72vh;
+
+    overflow-y: auto;
+
+    padding-right: 25px;
+
+    scroll-behavior: smooth;
+
+    mask-image:
+        linear-gradient(
+            transparent,
+            black 15%,
+            black 85%,
+            transparent
+        );
+}
+
+.lyrics-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lyrics-scroll::-webkit-scrollbar-thumb {
+    background: #303030;
+
+    border-radius: 20px;
+}
+
+.lyric-line {
+    color: #505050;
+
+    font-size: clamp(20px, 2vw, 31px);
+
+    line-height: 1.35;
+
+    padding: 14px 0;
+
+    opacity: .55;
+
+    transition:
+        color .35s ease,
+        transform .35s ease,
+        opacity .35s ease;
+}
+
+.lyric-line.active {
+    color: var(--orange);
+
+    opacity: 1;
+
+    transform: scale(1.025);
+
+    text-shadow:
+        0 0 20px rgba(255,101,0,.16);
+}
+
+.lyric-line.past {
+    color: #707070;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 950px) {
+
+    .sidebar {
+        width: 75px;
+
+        padding: 20px 10px;
+    }
+
+    .logo {
+        font-size: 0;
+    }
+
+    .logo::after {
+        content: "A";
+
+        font-size: 25px;
+    }
+
+    .nav button {
+        font-size: 0;
+
+        text-align: center;
+    }
+
+    .nav button::first-letter {
+        font-size: 22px;
+    }
+
+    .main {
+        margin-left: 75px;
+    }
+
+    .bottom-player {
+        left: 90px;
+    }
+
+    .featured-cover {
+        width: 230px;
+        height: 230px;
+    }
+
+}
+
+@media (max-width: 750px) {
+
+    .now-playing.open {
+        grid-template-columns: 1fr;
+
+        overflow-y: auto;
+    }
+
+    .now-left {
+        min-height: 100vh;
+
+        border-right: none;
+
+        padding-top: 90px;
+    }
+
+    .now-right {
+        min-height: 70vh;
+
+        height: auto;
+
+        padding: 40px 25px;
+    }
+
+    .now-cover {
+        width: min(330px, 70vw);
+
+        height: min(330px, 70vw);
+    }
+
+    .now-title {
+        font-size: 28px;
+    }
+
+    .lyrics-heading {
+        left: 25px;
+    }
+
+    .lyrics-scroll {
+        height: 60vh;
+    }
+
+    .bottom-player {
+        display: none;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .main {
+        padding: 22px;
+    }
+
+    .header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .featured {
+        padding: 30px;
+
+        min-height: 500px;
+
+        align-items: flex-start;
+    }
+
+    .featured-info {
+        max-width: 100%;
+    }
+
+    .featured-cover {
+        width: 190px;
+        height: 190px;
+
+        right: 30px;
+        bottom: 25px;
+    }
+
+    .featured h2 {
+        font-size: 35px;
+    }
+
+    .song-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 15px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ========================================
+     SIDEBAR
+======================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        AKKO
+    </div>
+
+    <nav class="nav">
+
+        <button
+            class="active"
+            data-page="home"
+            onclick="showPage('home', this)"
+        >
+            Home
+        </button>
+
+        <button
+            data-page="songs"
+            onclick="showPage('songs', this)"
+        >
+            Songs
+        </button>
+
+        <button
+            data-page="liked"
+            onclick="showPage('liked', this)"
+        >
+            Liked
+        </button>
+
+    </nav>
+
+</aside>
+
+
+<!-- ========================================
+     MAIN
+======================================== -->
+
+<main class="main" id="main">
+
+    <header class="header">
+
+        <h1 id="pageTitle">
+            Home
+        </h1>
+
+        <input
+            class="search"
+            id="search"
+            type="text"
+            placeholder="Search music..."
+        >
+
+    </header>
+
+
+    <!-- ====================================
+         HOME
+    ==================================== -->
+
+    <section
+        class="page active"
+        id="home"
+    >
+
+        <div
+            class="featured"
+            id="featured"
+        >
+
+            <div class="featured-info">
+
+                <div class="featured-label">
+                    FEATURED
+                </div>
+
+                <h2 id="featuredTitle">
+                    Here (Lucian Remix)
+                </h2>
+
+                <div
+                    class="featured-artist"
+                    id="featuredArtist"
+                >
+                    Alessia Cara
+                </div>
+
+                <button
+                    class="featured-play"
+                    onclick="playFeatured()"
+                >
+                    Play Now
+                </button>
+
+            </div>
+
+            <img
+                class="featured-cover"
+                id="featuredCover"
+                src="covers/here.jpg"
+                alt=""
+            >
+
+        </div>
+
+
+        <div class="section-header">
+
+            <h2>
+                Recently Added
+            </h2>
+
+            <span>
+                Your music
+            </span>
+
+        </div>
+
+        <div
+            class="song-grid"
+            id="recentGrid"
+        ></div>
+
+
+        <div class="section-header">
+
+            <h2>
+                All Music
+            </h2>
+
+            <span>
+                Library
+            </span>
+
+        </div>
+
+        <div
+            class="song-grid"
+            id="homeGrid"
+        ></div>
+
+    </section>
+
+
+    <!-- ====================================
+         SONGS
+    ==================================== -->
+
+    <section
+        class="page"
+        id="songs"
+    >
+
+        <div class="section-header">
+
+            <h2>
+                All Songs
+            </h2>
+
+            <span>
+                Your library
+            </span>
+
+        </div>
+
+        <div
+            class="song-grid"
+            id="songsGrid"
+        ></div>
+
+    </section>
+
+
+    <!-- ====================================
+         LIKED
+    ==================================== -->
+
+    <section
+        class="page"
+        id="liked"
+    >
+
+        <div class="section-header">
+
+            <h2>
+                Liked Songs
+            </h2>
+
+            <span>
+                Favorites
+            </span>
+
+        </div>
+
+        <div
+            class="song-grid"
+            id="likedGrid"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<!-- ========================================
+     MINI PLAYER
+======================================== -->
+
+<div
+    class="bottom-player hidden"
+    id="bottomPlayer"
+>
+
+    <img
+        class="mini-cover"
+        id="miniCover"
+        src=""
+        alt=""
+    >
+
+    <div class="mini-info">
+
+        <div
+            class="mini-title"
+            id="miniTitle"
+        >
+            Nothing playing
+        </div>
+
+        <div
+            class="mini-artist"
+            id="miniArtist"
+        >
+            —
+        </div>
+
+    </div>
+
+
+    <div class="player-controls">
+
+        <button
+            class="control"
+            onclick="previousSong()"
+        >
+            ⏮
+        </button>
+
+        <button
+            class="control"
+            onclick="seekBack()"
+        >
+            ↶
+        </button>
+
+        <button
+            class="control play-button"
+            id="miniPlay"
+            onclick="togglePlay()"
+        >
+            ▶
+        </button>
+
+        <button
+            class="control"
+            onclick="seekForward()"
+        >
+            ↷
+        </button>
+
+        <button
+            class="control"
+            onclick="nextSong()"
+        >
+            ⏭
+        </button>
+
+        <button
+            class="control"
+            onclick="toggleRepeat()"
+        >
+            ↻
+        </button>
+
+    </div>
+
+
+    <div class="progress-area">
+
+        <input
+            class="progress"
+            id="progress"
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- ========================================
+     FULL SCREEN NOW PLAYING
+======================================== -->
+
+<section
+    class="now-playing"
+    id="nowPlaying"
+>
+
+    <!-- LEFT -->
+
+    <div class="now-left">
+
+        <button
+            class="back-button"
+            onclick="closeNowPlaying()"
+        >
+            ←
+        </button>
+
+        <img
+            class="now-cover"
+            id="nowCover"
+            src=""
+            alt=""
+        >
+
+        <h2
+            class="now-title"
+            id="nowTitle"
+        ></h2>
+
+        <div
+            class="now-artist"
+            id="nowArtist"
+        ></div>
+
+
+        <div class="now-controls">
+
+            <button
+                class="now-control"
+                onclick="previousSong()"
+            >
+                ⏮
+            </button>
+
+            <button
+                class="now-control"
+                onclick="seekBack()"
+            >
+                ↶
+            </button>
+
+            <button
+                class="now-control now-play"
+                id="nowPlay"
+                onclick="togglePlay()"
+            >
+                ▶
+            </button>
+
+            <button
+                class="now-control"
+                onclick="seekForward()"
+            >
+                ↷
+            </button>
+
+            <button
+                class="now-control"
+                onclick="nextSong()"
+            >
+                ⏭
+            </button>
+
+            <button
+                class="now-control"
+                onclick="toggleRepeat()"
+            >
+                ↻
+            </button>
+
+        </div>
+
+
+        <div class="now-progress-area">
+
+            <input
+                class="now-progress"
+                id="nowProgress"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+            >
+
+            <div class="time-row">
+
+                <span id="currentTime">
+                    0:00
+                </span>
+
+                <span id="duration">
+                    0:00
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <div class="now-right">
+
+        <div class="lyrics-heading">
+            LYRICS
+        </div>
+
+        <div
+            class="lyrics-scroll"
+            id="lyricsScroll"
+        >
+
+            <div id="lyricsContainer"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<audio id="audio"></audio>
+
+
+<script>
+
+
+/* ========================================
+   YOUR MUSIC LIBRARY
+======================================== */
+
+const songs = [
+
+    {
+        id: "here",
+
+        title: "Here (Lucian Remix)",
+
+        artist: "Alessia Cara",
+
+        album: "Here",
+
+        audio: "music/here.flac",
+
+        cover: "covers/here.jpg",
+
+        lyrics: "lyrics/here.lrc"
+    }
+
+    /*
+       ADD MORE SONGS HERE:
+
+       ,
+       {
+           id: "song2",
+           title: "Song Name",
+           artist: "Artist",
+           album: "Album",
+           audio: "music/song2.flac",
+           cover: "covers/song2.jpg",
+           lyrics: "lyrics/song2.lrc"
+       }
+
+    */
+
+];
+
+
+/* ========================================
+   VARIABLES
+======================================== */
+
+const audio =
+    document.getElementById("audio");
+
+const main =
+    document.getElementById("main");
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const bottomPlayer =
+    document.getElementById("bottomPlayer");
+
+const nowPlaying =
+    document.getElementById("nowPlaying");
+
+const miniCover =
+    document.getElementById("miniCover");
+
+const miniTitle =
+    document.getElementById("miniTitle");
+
+const miniArtist =
+    document.getElementById("miniArtist");
+
+const nowCover =
+    document.getElementById("nowCover");
+
+const nowTitle =
+    document.getElementById("nowTitle");
+
+const nowArtist =
+    document.getElementById("nowArtist");
+
+const miniPlay =
+    document.getElementById("miniPlay");
+
+const nowPlay =
+    document.getElementById("nowPlay");
+
+const progress =
+    document.getElementById("progress");
+
+const nowProgress =
+    document.getElementById("nowProgress");
+
+const currentTime =
+    document.getElementById("currentTime");
+
+const duration =
+    document.getElementById("duration");
+
+const lyricsContainer =
+    document.getElementById("lyricsContainer");
+
+const lyricsScroll =
+    document.getElementById("lyricsScroll");
+
+const search =
+    document.getElementById("search");
+
+
+let currentIndex = 0;
+
+let currentLyrics = [];
+
+let repeat = false;
+
+let likedSongs =
+    JSON.parse(
+        localStorage.getItem("likedSongs") || "[]"
+    );
+
+
+/* ========================================
+   FEATURED
+======================================== */
+
+function renderFeatured() {
+
+    if (!songs.length) return;
+
+    const song = songs[0];
+
+    document.getElementById(
+        "featuredTitle"
+    ).textContent = song.title;
+
+    document.getElementById(
+        "featuredArtist"
+    ).textContent = song.artist;
+
+    document.getElementById(
+        "featuredCover"
+    ).src = song.cover;
+
+}
+
+
+/* ========================================
+   CREATE SONG CARD
+======================================== */
+
+function createSongCard(song, index) {
+
+    const liked =
+        likedSongs.includes(song.id);
+
+    const card =
+        document.createElement("div");
+
+    card.className = "song-card";
+
+    card.innerHTML = `
+
+        <img
+            class="song-cover"
+            src="${song.cover}"
+            alt=""
+        >
+
+        <div class="song-title">
+            ${song.title}
+        </div>
+
+        <div class="song-artist">
+            ${song.artist}
+        </div>
+
+        <button
+            class="like-button ${liked ? "liked" : ""}"
+            data-like="${song.id}"
+        >
+            ${liked ? "♥" : "♡"}
+        </button>
+
+    `;
+
+
+    /*
+       IMPORTANT:
+       The click listener is attached
+       DIRECTLY to every card.
+
+       This fixes Home playback.
+    */
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            playSong(index);
+
+        }
+    );
+
+
+    const likeButton =
+        card.querySelector(".like-button");
+
+    likeButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            toggleLike(song.id);
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* ========================================
+   RENDER ALL MUSIC
+======================================== */
+
+function renderSongs() {
+
+    const homeGrid =
+        document.getElementById("homeGrid");
+
+    const recentGrid =
+        document.getElementById("recentGrid");
+
+    const songsGrid =
+        document.getElementById("songsGrid");
+
+    const likedGrid =
+        document.getElementById("likedGrid");
+
+
+    homeGrid.innerHTML = "";
+
+    recentGrid.innerHTML = "";
+
+    songsGrid.innerHTML = "";
+
+    likedGrid.innerHTML = "";
+
+
+    /*
+       ALL MUSIC ON HOME
+    */
+
+    songs.forEach(
+        (song, index) => {
+
+            homeGrid.appendChild(
+                createSongCard(song, index)
+            );
+
+        }
+    );
+
+
+    /*
+       RECENTLY ADDED
+       Newest songs appear first.
+    */
+
+    songs
+        .slice()
+        .reverse()
+        .forEach(
+            song => {
+
+                const index =
+                    songs.indexOf(song);
+
+                recentGrid.appendChild(
+                    createSongCard(song, index)
+                );
+
+            }
+        );
+
+
+    /*
+       SONGS PAGE
+    */
+
+    songs.forEach(
+        (song, index) => {
+
+            songsGrid.appendChild(
+                createSongCard(song, index)
+            );
+
+        }
+    );
+
+
+    /*
+       LIKED PAGE
+    */
+
+    songs.forEach(
+        (song, index) => {
+
+            if (
+                likedSongs.includes(song.id)
+            ) {
+
+                likedGrid.appendChild(
+                    createSongCard(song, index)
+                );
+
+            }
+
+        }
+    );
+
+
+    if (!likedSongs.length) {
+
+        likedGrid.innerHTML = `
+            <div style="
+                color:#666;
+                padding:30px 0;
+                font-size:16px;
+            ">
+                You haven't liked any songs yet.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ========================================
+   FEATURED PLAY
+======================================== */
+
+function playFeatured() {
+
+    if (!songs.length) return;
+
+    playSong(0);
+
+}
+
+
+/* ========================================
+   SHOW PAGE
+======================================== */
+
+function showPage(page, button) {
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            p => p.classList.remove("active")
+        );
+
+
+    document
+        .getElementById(page)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(
+            b => b.classList.remove("active")
+        );
+
+
+    button.classList.add("active");
+
+
+    const titles = {
+
+        home: "Home",
+
+        songs: "Songs",
+
+        liked: "Liked Songs"
+
+    };
+
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent = titles[page];
+
+}
+
+
+/* ========================================
+   PLAY SONG
+======================================== */
+
+function playSong(index) {
+
+    if (!songs[index]) return;
+
+    currentIndex = index;
+
+    const song = songs[index];
+
+
+    audio.src = song.audio;
+
+
+    /*
+       MINI PLAYER
+    */
+
+    miniCover.src = song.cover;
+
+    miniTitle.textContent =
+        song.title;
+
+    miniArtist.textContent =
+        song.artist;
+
+
+    /*
+       FULL PLAYER
+    */
+
+    nowCover.src = song.cover;
+
+    nowTitle.textContent =
+        song.title;
+
+    nowArtist.textContent =
+        song.artist;
+
+
+    /*
+       HIDE EVERYTHING ELSE
+    */
+
+    main.classList.add("hidden");
+
+    sidebar.style.opacity = "0";
+
+    sidebar.style.pointerEvents =
+        "none";
+
+    bottomPlayer.classList.add("hidden");
+
+
+    /*
+       OPEN FULL SCREEN
+    */
+
+    nowPlaying.classList.add("open");
+
+
+    /*
+       LOAD LYRICS
+    */
+
+    loadLyrics(song.lyrics);
+
+
+    /*
+       START MUSIC
+    */
+
+    audio.currentTime = 0;
+
+    audio.play()
+        .then(() => {
+
+            updatePlayButtons();
+
+        })
+        .catch(() => {
+
+            updatePlayButtons();
+
+        });
+
+}
+
+
+/* ========================================
+   CLOSE NOW PLAYING
+======================================== */
+
+function closeNowPlaying() {
+
+    nowPlaying.classList.remove("open");
+
+    main.classList.remove("hidden");
+
+    sidebar.style.opacity = "";
+
+    sidebar.style.pointerEvents = "";
+
+    /*
+       Keep music playing when returning
+       to the normal UI.
+    */
+
+    if (!audio.paused) {
+
+        bottomPlayer.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* ========================================
+   PLAY / PAUSE
+======================================== */
+
+function togglePlay() {
+
+    if (!audio.src) return;
+
+
+    if (audio.paused) {
+
+        audio.play();
+
+    } else {
+
+        audio.pause();
+
+    }
+
+}
+
+
+audio.addEventListener(
+    "play",
+    updatePlayButtons
+);
+
+
+audio.addEventListener(
+    "pause",
+    updatePlayButtons
+);
+
+
+function updatePlayButtons() {
+
+    const symbol =
+        audio.paused
+            ? "▶"
+            : "Ⅱ";
+
+
+    miniPlay.textContent =
+        symbol;
+
+    nowPlay.textContent =
+        symbol;
+
+}
+
+
+/* ========================================
+   NEXT
+======================================== */
+
+function nextSong() {
+
+    if (!songs.length) return;
+
+    currentIndex++;
+
+    if (
+        currentIndex >= songs.length
+    ) {
+
+        currentIndex = 0;
+
+    }
+
+    playSong(currentIndex);
+
+}
+
+
+/* ========================================
+   PREVIOUS
+======================================== */
+
+function previousSong() {
+
+    if (
+        audio.currentTime > 3
+    ) {
+
+        audio.currentTime = 0;
+
+        return;
+
+    }
+
+
+    currentIndex--;
+
+
+    if (currentIndex < 0) {
+
+        currentIndex =
+            songs.length - 1;
+
+    }
+
+
+    playSong(currentIndex);
+
+}
+
+
+/* ========================================
+   SEEK
+======================================== */
+
+function seekBack() {
+
+    audio.currentTime =
+        Math.max(
+            0,
+            audio.currentTime - 10
+        );
+
+}
+
+
+function seekForward() {
+
+    audio.currentTime =
+        Math.min(
+            audio.duration || 0,
+            audio.currentTime + 10
+        );
+
+}
+
+
+/* ========================================
+   REPEAT
+======================================== */
+
+function toggleRepeat() {
+
+    repeat = !repeat;
+
+}
+
+
+audio.addEventListener(
+    "ended",
+    () => {
+
+        if (repeat) {
+
+            audio.currentTime = 0;
+
+            audio.play();
+
+        } else {
+
+            nextSong();
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   PROGRESS
+======================================== */
+
+audio.addEventListener(
+    "timeupdate",
+    () => {
+
+        if (!audio.duration) return;
+
+
+        const value =
+            (
+                audio.currentTime /
+                audio.duration
+            ) * 100;
+
+
+        progress.value =
+            value;
+
+        nowProgress.value =
+            value;
+
+
+        currentTime.textContent =
+            formatTime(
+                audio.currentTime
+            );
+
+
+        duration.textContent =
+            formatTime(
+                audio.duration
+            );
+
+
+        updateLyrics(
+            audio.currentTime
+        );
+
+    }
+);
+
+
+progress.addEventListener(
+    "input",
+    () => {
+
+        if (!audio.duration) return;
+
+        audio.currentTime =
+            (
+                progress.value /
+                100
+            ) * audio.duration;
+
+    }
+);
+
+
+nowProgress.addEventListener(
+    "input",
+    () => {
+
+        if (!audio.duration) return;
+
+        audio.currentTime =
+            (
+                nowProgress.value /
+                100
+            ) * audio.duration;
+
+    }
+);
+
+
+/* ========================================
+   TIME FORMAT
+======================================== */
+
+function formatTime(seconds) {
+
+    if (
+        !seconds ||
+        isNaN(seconds)
+    ) {
+
+        return "0:00";
+
+    }
+
+
+    const mins =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    const secs =
+        Math.floor(
+            seconds % 60
+        )
+        .toString()
+        .padStart(2, "0");
+
+
+    return `${mins}:${secs}`;
+
+}
+
+
+/* ========================================
+   LRC
+======================================== */
+
+async function loadLyrics(url) {
+
+    lyricsContainer.innerHTML = "";
+
+    currentLyrics = [];
+
+
+    try {
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Lyrics unavailable"
+            );
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        currentLyrics =
+            parseLRC(text);
+
+
+        if (!currentLyrics.length) {
+
+            lyricsContainer.innerHTML =
+                `
+                <div class="lyric-line">
+                    No lyrics found.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        currentLyrics.forEach(
+            (line, index) => {
+
+                const element =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                element.className =
+                    "lyric-line";
+
+
+                element.dataset.index =
+                    index;
+
+
+                element.textContent =
+                    line.text;
+
+
+                lyricsContainer.appendChild(
+                    element
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        lyricsContainer.innerHTML =
+            `
+            <div class="lyric-line">
+                Lyrics could not be loaded.
+            </div>
+            `;
+
+    }
+
+}
+
+
+/* ========================================
+   PARSE LRC
+======================================== */
+
+function parseLRC(text) {
+
+    const lines = [];
+
+
+    text
+        .split(/\r?\n/)
+        .forEach(line => {
+
+            const matches =
+                [
+                    ...line.matchAll(
+                        /\[(\d+):(\d+(?:\.\d+)?)\]/g
+                    )
+                ];
+
+
+            const lyric =
+                line
+                    .replace(
+                        /\[\d+:\d+(?:\.\d+)?\]/g,
+                        ""
+                    )
+                    .trim();
+
+
+            matches.forEach(match => {
+
+                const minutes =
+                    parseInt(match[1]);
+
+
+                const seconds =
+                    parseFloat(match[2]);
+
+
+                lines.push({
+
+                    time:
+                        minutes * 60 +
+                        seconds,
+
+                    text:
+                        lyric || "♪"
+
+                });
+
+            });
+
+        });
+
+
+    lines.sort(
+        (a, b) =>
+            a.time - b.time
+    );
+
+
+    return lines;
+
+}
+
+
+/* ========================================
+   SYNC LYRICS
+======================================== */
+
+function updateLyrics(time) {
+
+    if (!currentLyrics.length)
+        return;
+
+
+    let activeIndex = -1;
+
+
+    for (
+        let i = 0;
+        i < currentLyrics.length;
+        i++
+    ) {
+
+        if (
+            time >=
+            currentLyrics[i].time
+        ) {
+
+            activeIndex = i;
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+
+    const elements =
+        document.querySelectorAll(
+            ".lyric-line"
+        );
+
+
+    elements.forEach(
+        (element, index) => {
+
+            element.classList.remove(
+                "active",
+                "past"
+            );
+
+
+            if (
+                index < activeIndex
+            ) {
+
+                element.classList.add(
+                    "past"
+                );
+
+            }
+
+
+            if (
+                index === activeIndex
+            ) {
+
+                element.classList.add(
+                    "active"
+                );
+
+
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   LIKES
+======================================== */
+
+function toggleLike(id) {
+
+    if (
+        likedSongs.includes(id)
+    ) {
+
+        likedSongs =
+            likedSongs.filter(
+                songId =>
+                    songId !== id
+            );
+
+    } else {
+
+        likedSongs.push(id);
+
+    }
+
+
+    localStorage.setItem(
+        "likedSongs",
+        JSON.stringify(
+            likedSongs
+        )
+    );
+
+
+    renderSongs();
+
+}
+
+
+/* ========================================
+   SEARCH
+======================================== */
+
+search.addEventListener(
+    "input",
+    () => {
+
+        const query =
+            search.value
+                .toLowerCase()
+                .trim();
+
+
+        document
+            .querySelectorAll(".song-card")
+            .forEach(card => {
+
+                const text =
+                    card.textContent
+                        .toLowerCase();
+
+
+                card.style.display =
+                    text.includes(query)
+                        ? ""
+                        : "none";
+
+            });
+
+    }
+);
+
+
+/* ========================================
+   KEYBOARD
+======================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.code === "Space" &&
+            document.activeElement !== search
+        ) {
+
+            event.preventDefault();
+
+            togglePlay();
+
+        }
+
+
+        if (
+            event.key === "ArrowRight"
+        ) {
+
+            seekForward();
+
+        }
+
+
+        if (
+            event.key === "ArrowLeft"
+        ) {
+
+            seekBack();
+
+        }
+
+
+        if (
+            event.key === "Escape" &&
+            nowPlaying.classList.contains(
+                "open"
+            )
+        ) {
+
+            closeNowPlaying();
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   START
+======================================== */
+
+renderFeatured();
+
+renderSongs();
+
+</script>
+
+</body>
+</html>
+```
