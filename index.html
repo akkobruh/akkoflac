@@ -1,11 +1,12 @@
-```html
+\```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Akko Music</title>
+<title>AkkoFlac</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +23,6 @@
 :root {
     --bg: #161616;
     --bg-deep: #111111;
-
     --surface: #1b1b1b;
     --surface-2: #1f1f1f;
     --surface-3: #232323;
@@ -40,12 +40,6 @@
     --shadow-light: #272727;
 }
 
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-}
-
 body {
     background:
         radial-gradient(
@@ -61,20 +55,16 @@ body {
         var(--bg);
 
     color: var(--text);
-
     font-family: "Pixelify Sans", sans-serif;
-
     overflow-x: hidden;
 }
 
-
-/* ========================================
+/* =========================
    SIDEBAR
-======================================== */
+========================= */
 
 .sidebar {
     position: fixed;
-
     left: 0;
     top: 0;
 
@@ -109,6 +99,7 @@ body {
 
     font-size: 27px;
     font-weight: 700;
+
     letter-spacing: 2px;
 
     background: var(--surface);
@@ -121,7 +112,6 @@ body {
 .nav {
     display: flex;
     flex-direction: column;
-
     gap: 12px;
 }
 
@@ -136,7 +126,6 @@ body {
     border-radius: 16px;
 
     background: var(--surface);
-
     color: var(--muted);
 
     font-family: inherit;
@@ -167,16 +156,14 @@ body {
         inset -5px -5px 10px var(--shadow-light);
 }
 
-
-/* ========================================
+/* =========================
    MAIN
-======================================== */
+========================= */
 
 .main {
     margin-left: 245px;
 
     padding: 35px;
-
     padding-bottom: 150px;
 
     transition:
@@ -186,22 +173,13 @@ body {
 
 .main.hidden {
     opacity: 0;
-
     transform: scale(.97);
-
     pointer-events: none;
 }
 
-
-/* ========================================
-   HEADER
-======================================== */
-
 .header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     margin-bottom: 32px;
@@ -209,7 +187,6 @@ body {
 
 .header h1 {
     color: var(--white);
-
     font-size: 32px;
 }
 
@@ -224,7 +201,6 @@ body {
     border-radius: 16px;
 
     background: var(--surface);
-
     color: var(--white);
 
     font-family: inherit;
@@ -239,10 +215,9 @@ body {
     color: var(--muted-dark);
 }
 
-
-/* ========================================
+/* =========================
    PAGES
-======================================== */
+========================= */
 
 .page {
     display: none;
@@ -250,12 +225,10 @@ body {
 
 .page.active {
     display: block;
-
     animation: pageIn .4s ease;
 }
 
 @keyframes pageIn {
-
     from {
         opacity: 0;
         transform: translateY(15px);
@@ -265,13 +238,11 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-
 }
 
-
-/* ========================================
-   HOME FEATURED
-======================================== */
+/* =========================
+   FEATURED
+========================= */
 
 .featured {
     position: relative;
@@ -279,13 +250,11 @@ body {
     min-height: 370px;
 
     display: flex;
-
     align-items: center;
 
     overflow: hidden;
 
     padding: 45px;
-
     margin-bottom: 45px;
 
     border-radius: 28px;
@@ -323,7 +292,6 @@ body {
 
 .featured-info {
     position: relative;
-
     z-index: 2;
 
     max-width: 55%;
@@ -333,7 +301,6 @@ body {
     color: var(--orange);
 
     font-size: 14px;
-
     letter-spacing: 2px;
 
     margin-bottom: 13px;
@@ -342,7 +309,7 @@ body {
 .featured h2 {
     color: var(--white);
 
-    font-size: clamp(34px, 4vw, 55px);
+    font-size: clamp(34px,4vw,55px);
 
     line-height: 1.05;
 
@@ -365,11 +332,9 @@ body {
     border-radius: 15px;
 
     background: var(--orange);
-
     color: #111;
 
     font-family: inherit;
-
     font-size: 16px;
 
     cursor: pointer;
@@ -383,7 +348,6 @@ body {
 
 .featured-play:hover {
     background: var(--orange-light);
-
     transform: translateY(-3px);
 }
 
@@ -409,21 +373,16 @@ body {
 }
 
 .featured:hover .featured-cover {
-    transform:
-        rotate(0deg)
-        scale(1.025);
+    transform: rotate(0deg) scale(1.025);
 }
 
-
-/* ========================================
-   HOME SECTION
-======================================== */
+/* =========================
+   SECTIONS
+========================= */
 
 .section-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     margin-bottom: 20px;
@@ -431,20 +390,17 @@ body {
 
 .section-header h2 {
     color: var(--white);
-
     font-size: 24px;
 }
 
 .section-header span {
     color: var(--muted);
-
     font-size: 13px;
 }
 
-
-/* ========================================
-   SONG GRID
-======================================== */
+/* =========================
+   SONG CARDS
+========================= */
 
 .song-grid {
     display: grid;
@@ -452,7 +408,7 @@ body {
     grid-template-columns:
         repeat(
             auto-fill,
-            minmax(190px, 1fr)
+            minmax(190px,1fr)
         );
 
     gap: 24px;
@@ -556,7 +512,6 @@ body {
 
 .like-button:hover {
     color: var(--orange);
-
     transform: scale(1.1);
 }
 
@@ -564,10 +519,9 @@ body {
     color: var(--orange);
 }
 
-
-/* ========================================
+/* =========================
    BOTTOM PLAYER
-======================================== */
+========================= */
 
 .bottom-player {
     position: fixed;
@@ -583,7 +537,6 @@ body {
     background: var(--surface);
 
     display: flex;
-
     align-items: center;
 
     padding: 14px 20px;
@@ -622,15 +575,12 @@ body {
 
 .mini-title {
     color: var(--white);
-
     font-size: 16px;
 }
 
 .mini-artist {
     color: var(--muted);
-
     font-size: 13px;
-
     margin-top: 4px;
 }
 
@@ -669,7 +619,6 @@ body {
 
 .control:hover {
     color: var(--orange);
-
     transform: scale(1.06);
 }
 
@@ -686,7 +635,6 @@ body {
 
 .play-button:hover {
     color: #111;
-
     background: var(--orange-light);
 }
 
@@ -726,10 +674,9 @@ body {
     background: var(--orange);
 }
 
-
-/* ========================================
+/* =========================
    NOW PLAYING
-======================================== */
+========================= */
 
 .now-playing {
     position: fixed;
@@ -758,7 +705,6 @@ body {
 }
 
 @keyframes nowOpen {
-
     from {
         opacity: 0;
         transform: scale(1.025);
@@ -768,13 +714,7 @@ body {
         opacity: 1;
         transform: scale(1);
     }
-
 }
-
-
-/* ========================================
-   NOW PLAYING LEFT
-======================================== */
 
 .now-left {
     position: relative;
@@ -784,12 +724,12 @@ body {
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
     padding: 50px;
 
-    border-right: 1px solid rgba(255,255,255,.025);
+    border-right:
+        1px solid rgba(255,255,255,.025);
 }
 
 .back-button {
@@ -824,14 +764,12 @@ body {
 
 .back-button:hover {
     color: var(--orange);
-
     transform: translateX(-3px);
 }
 
 .now-cover {
-    width: min(430px, 38vw);
-
-    height: min(430px, 38vw);
+    width: min(430px,38vw);
+    height: min(430px,38vw);
 
     object-fit: cover;
 
@@ -841,13 +779,13 @@ body {
         20px 20px 40px #080808,
         -15px -15px 35px #252525;
 
-    animation: floatCover 4s ease-in-out infinite;
+    animation:
+        floatCover 4s ease-in-out infinite;
 }
 
 @keyframes floatCover {
 
-    0%,
-    100% {
+    0%,100% {
         transform: translateY(0);
     }
 
@@ -912,7 +850,6 @@ body {
 
 .now-control:hover {
     color: var(--orange);
-
     transform: scale(1.07);
 }
 
@@ -929,12 +866,11 @@ body {
 
 .now-play:hover {
     color: #111;
-
     background: var(--orange-light);
 }
 
 .now-progress-area {
-    width: min(500px, 70%);
+    width: min(500px,70%);
 
     margin-top: 28px;
 }
@@ -951,10 +887,9 @@ body {
     margin-top: 8px;
 }
 
-
-/* ========================================
+/* =========================
    LYRICS
-======================================== */
+========================= */
 
 .now-right {
     position: relative;
@@ -1012,20 +947,21 @@ body {
 }
 
 .lyric-line {
-    color: #505050;
+    color: #f5f5f5;
 
-    font-size: clamp(20px, 2vw, 31px);
+    font-size: clamp(20px,2vw,31px);
 
     line-height: 1.35;
 
     padding: 14px 0;
 
-    opacity: .55;
+    opacity: .72;
 
     transition:
         color .35s ease,
         transform .35s ease,
-        opacity .35s ease;
+        opacity .35s ease,
+        text-shadow .35s ease;
 }
 
 .lyric-line.active {
@@ -1033,26 +969,26 @@ body {
 
     opacity: 1;
 
-    transform: scale(1.025);
+    transform: scale(1.035);
 
     text-shadow:
-        0 0 20px rgba(255,101,0,.16);
+        0 0 18px rgba(255,101,0,.35);
 }
 
 .lyric-line.past {
-    color: #707070;
+    color: #777777;
+
+    opacity: .55;
 }
 
+/* =========================
+   MOBILE
+========================= */
 
-/* ========================================
-   RESPONSIVE
-======================================== */
-
-@media (max-width: 950px) {
+@media(max-width:950px) {
 
     .sidebar {
         width: 75px;
-
         padding: 20px 10px;
     }
 
@@ -1062,13 +998,11 @@ body {
 
     .logo::after {
         content: "A";
-
         font-size: 25px;
     }
 
     .nav button {
         font-size: 0;
-
         text-align: center;
     }
 
@@ -1091,7 +1025,7 @@ body {
 
 }
 
-@media (max-width: 750px) {
+@media(max-width:750px) {
 
     .now-playing.open {
         grid-template-columns: 1fr;
@@ -1116,9 +1050,8 @@ body {
     }
 
     .now-cover {
-        width: min(330px, 70vw);
-
-        height: min(330px, 70vw);
+        width: min(330px,70vw);
+        height: min(330px,70vw);
     }
 
     .now-title {
@@ -1139,7 +1072,7 @@ body {
 
 }
 
-@media (max-width: 650px) {
+@media(max-width:650px) {
 
     .main {
         padding: 22px;
@@ -1182,7 +1115,7 @@ body {
     }
 
     .song-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2,1fr);
 
         gap: 15px;
     }
@@ -1192,17 +1125,18 @@ body {
 </style>
 </head>
 
+
 <body>
 
 
-<!-- ========================================
+<!-- =========================
      SIDEBAR
-======================================== -->
+========================= -->
 
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
-        AKKO
+        AKKOFLAC
     </div>
 
     <nav class="nav">
@@ -1210,22 +1144,19 @@ body {
         <button
             class="active"
             data-page="home"
-            onclick="showPage('home', this)"
-        >
+            onclick="showPage('home',this)">
             Home
         </button>
 
         <button
             data-page="songs"
-            onclick="showPage('songs', this)"
-        >
+            onclick="showPage('songs',this)">
             Songs
         </button>
 
         <button
             data-page="liked"
-            onclick="showPage('liked', this)"
-        >
+            onclick="showPage('liked',this)">
             Liked
         </button>
 
@@ -1234,16 +1165,16 @@ body {
 </aside>
 
 
-<!-- ========================================
+<!-- =========================
      MAIN
-======================================== -->
+========================= -->
 
 <main class="main" id="main">
 
     <header class="header">
 
         <h1 id="pageTitle">
-            Home
+            AkkoFlac
         </h1>
 
         <input
@@ -1256,19 +1187,11 @@ body {
     </header>
 
 
-    <!-- ====================================
-         HOME
-    ==================================== -->
+    <!-- HOME -->
 
-    <section
-        class="page active"
-        id="home"
-    >
+    <section class="page active" id="home">
 
-        <div
-            class="featured"
-            id="featured"
-        >
+        <div class="featured">
 
             <div class="featured-info">
 
@@ -1282,15 +1205,13 @@ body {
 
                 <div
                     class="featured-artist"
-                    id="featuredArtist"
-                >
+                    id="featuredArtist">
                     Alessia Cara
                 </div>
 
                 <button
                     class="featured-play"
-                    onclick="playFeatured()"
-                >
+                    onclick="playFeatured()">
                     Play Now
                 </button>
 
@@ -1320,8 +1241,8 @@ body {
 
         <div
             class="song-grid"
-            id="recentGrid"
-        ></div>
+            id="recentGrid">
+        </div>
 
 
         <div class="section-header">
@@ -1338,20 +1259,15 @@ body {
 
         <div
             class="song-grid"
-            id="homeGrid"
-        ></div>
+            id="homeGrid">
+        </div>
 
     </section>
 
 
-    <!-- ====================================
-         SONGS
-    ==================================== -->
+    <!-- SONGS -->
 
-    <section
-        class="page"
-        id="songs"
-    >
+    <section class="page" id="songs">
 
         <div class="section-header">
 
@@ -1367,20 +1283,15 @@ body {
 
         <div
             class="song-grid"
-            id="songsGrid"
-        ></div>
+            id="songsGrid">
+        </div>
 
     </section>
 
 
-    <!-- ====================================
-         LIKED
-    ==================================== -->
+    <!-- LIKED -->
 
-    <section
-        class="page"
-        id="liked"
-    >
+    <section class="page" id="liked">
 
         <div class="section-header">
 
@@ -1396,22 +1307,21 @@ body {
 
         <div
             class="song-grid"
-            id="likedGrid"
-        ></div>
+            id="likedGrid">
+        </div>
 
     </section>
 
 </main>
 
 
-<!-- ========================================
-     MINI PLAYER
-======================================== -->
+<!-- =========================
+     BOTTOM PLAYER
+========================= -->
 
 <div
     class="bottom-player hidden"
-    id="bottomPlayer"
->
+    id="bottomPlayer">
 
     <img
         class="mini-cover"
@@ -1424,15 +1334,13 @@ body {
 
         <div
             class="mini-title"
-            id="miniTitle"
-        >
+            id="miniTitle">
             Nothing playing
         </div>
 
         <div
             class="mini-artist"
-            id="miniArtist"
-        >
+            id="miniArtist">
             —
         </div>
 
@@ -1443,44 +1351,38 @@ body {
 
         <button
             class="control"
-            onclick="previousSong()"
-        >
+            onclick="previousSong()">
             ⏮
         </button>
 
         <button
             class="control"
-            onclick="seekBack()"
-        >
+            onclick="seekBack()">
             ↶
         </button>
 
         <button
             class="control play-button"
             id="miniPlay"
-            onclick="togglePlay()"
-        >
+            onclick="togglePlay()">
             ▶
         </button>
 
         <button
             class="control"
-            onclick="seekForward()"
-        >
+            onclick="seekForward()">
             ↷
         </button>
 
         <button
             class="control"
-            onclick="nextSong()"
-        >
+            onclick="nextSong()">
             ⏭
         </button>
 
         <button
             class="control"
-            onclick="toggleRepeat()"
-        >
+            onclick="toggleRepeat()">
             ↻
         </button>
 
@@ -1503,25 +1405,22 @@ body {
 </div>
 
 
-<!-- ========================================
-     FULL SCREEN NOW PLAYING
-======================================== -->
+<!-- =========================
+     FULL SCREEN PLAYER
+========================= -->
 
 <section
     class="now-playing"
-    id="nowPlaying"
->
-
-    <!-- LEFT -->
+    id="nowPlaying">
 
     <div class="now-left">
 
         <button
             class="back-button"
-            onclick="closeNowPlaying()"
-        >
+            onclick="closeNowPlaying()">
             ←
         </button>
+
 
         <img
             class="now-cover"
@@ -1530,59 +1429,55 @@ body {
             alt=""
         >
 
+
         <h2
             class="now-title"
-            id="nowTitle"
-        ></h2>
+            id="nowTitle">
+        </h2>
+
 
         <div
             class="now-artist"
-            id="nowArtist"
-        ></div>
+            id="nowArtist">
+        </div>
 
 
         <div class="now-controls">
 
             <button
                 class="now-control"
-                onclick="previousSong()"
-            >
+                onclick="previousSong()">
                 ⏮
             </button>
 
             <button
                 class="now-control"
-                onclick="seekBack()"
-            >
+                onclick="seekBack()">
                 ↶
             </button>
 
             <button
                 class="now-control now-play"
                 id="nowPlay"
-                onclick="togglePlay()"
-            >
+                onclick="togglePlay()">
                 ▶
             </button>
 
             <button
                 class="now-control"
-                onclick="seekForward()"
-            >
+                onclick="seekForward()">
                 ↷
             </button>
 
             <button
                 class="now-control"
-                onclick="nextSong()"
-            >
+                onclick="nextSong()">
                 ⏭
             </button>
 
             <button
                 class="now-control"
-                onclick="toggleRepeat()"
-            >
+                onclick="toggleRepeat()">
                 ↻
             </button>
 
@@ -1617,7 +1512,7 @@ body {
     </div>
 
 
-    <!-- RIGHT -->
+    <!-- LYRICS -->
 
     <div class="now-right">
 
@@ -1627,10 +1522,11 @@ body {
 
         <div
             class="lyrics-scroll"
-            id="lyricsScroll"
-        >
+            id="lyricsScroll">
 
-            <div id="lyricsContainer"></div>
+            <div
+                id="lyricsContainer">
+            </div>
 
         </div>
 
@@ -1644,10 +1540,9 @@ body {
 
 <script>
 
-
-/* ========================================
-   YOUR MUSIC LIBRARY
-======================================== */
+/* =========================
+   AKKOFLAC MUSIC LIBRARY
+========================= */
 
 const songs = [
 
@@ -1667,28 +1562,12 @@ const songs = [
         lyrics: "lyrics/here.lrc"
     }
 
-    /*
-       ADD MORE SONGS HERE:
-
-       ,
-       {
-           id: "song2",
-           title: "Song Name",
-           artist: "Artist",
-           album: "Album",
-           audio: "music/song2.flac",
-           cover: "covers/song2.jpg",
-           lyrics: "lyrics/song2.lrc"
-       }
-
-    */
-
 ];
 
 
-/* ========================================
-   VARIABLES
-======================================== */
+/* =========================
+   ELEMENTS
+========================= */
 
 const audio =
     document.getElementById("audio");
@@ -1744,12 +1623,13 @@ const duration =
 const lyricsContainer =
     document.getElementById("lyricsContainer");
 
-const lyricsScroll =
-    document.getElementById("lyricsScroll");
-
 const search =
     document.getElementById("search");
 
+
+/* =========================
+   STATE
+========================= */
 
 let currentIndex = 0;
 
@@ -1763,9 +1643,9 @@ let likedSongs =
     );
 
 
-/* ========================================
+/* =========================
    FEATURED
-======================================== */
+========================= */
 
 function renderFeatured() {
 
@@ -1784,15 +1664,22 @@ function renderFeatured() {
     document.getElementById(
         "featuredCover"
     ).src = song.cover;
-
 }
 
 
-/* ========================================
-   CREATE SONG CARD
-======================================== */
+function playFeatured() {
 
-function createSongCard(song, index) {
+    if (!songs.length) return;
+
+    playSong(0);
+}
+
+
+/* =========================
+   SONG CARDS
+========================= */
+
+function createSongCard(song,index) {
 
     const liked =
         likedSongs.includes(song.id);
@@ -1820,34 +1707,22 @@ function createSongCard(song, index) {
 
         <button
             class="like-button ${liked ? "liked" : ""}"
-            data-like="${song.id}"
-        >
+            data-like="${song.id}">
             ${liked ? "♥" : "♡"}
         </button>
 
     `;
 
 
-    /*
-       IMPORTANT:
-       The click listener is attached
-       DIRECTLY to every card.
-
-       This fixes Home playback.
-    */
-
     card.addEventListener(
         "click",
-        () => {
-
-            playSong(index);
-
-        }
+        () => playSong(index)
     );
 
 
     const likeButton =
         card.querySelector(".like-button");
+
 
     likeButton.addEventListener(
         "click",
@@ -1862,13 +1737,12 @@ function createSongCard(song, index) {
 
 
     return card;
-
 }
 
 
-/* ========================================
-   RENDER ALL MUSIC
-======================================== */
+/* =========================
+   RENDER
+========================= */
 
 function renderSongs() {
 
@@ -1894,89 +1768,67 @@ function renderSongs() {
     likedGrid.innerHTML = "";
 
 
-    /*
-       ALL MUSIC ON HOME
-    */
+    songs.forEach((song,index) => {
 
-    songs.forEach(
-        (song, index) => {
+        homeGrid.appendChild(
+            createSongCard(song,index)
+        );
 
-            homeGrid.appendChild(
-                createSongCard(song, index)
-            );
+    });
 
-        }
-    );
-
-
-    /*
-       RECENTLY ADDED
-       Newest songs appear first.
-    */
 
     songs
         .slice()
         .reverse()
-        .forEach(
-            song => {
+        .forEach(song => {
 
-                const index =
-                    songs.indexOf(song);
+            const index =
+                songs.indexOf(song);
 
-                recentGrid.appendChild(
-                    createSongCard(song, index)
-                );
+            recentGrid.appendChild(
+                createSongCard(song,index)
+            );
 
-            }
+        });
+
+
+    songs.forEach((song,index) => {
+
+        songsGrid.appendChild(
+            createSongCard(song,index)
         );
 
+    });
 
-    /*
-       SONGS PAGE
-    */
 
-    songs.forEach(
-        (song, index) => {
+    songs.forEach((song,index) => {
 
-            songsGrid.appendChild(
-                createSongCard(song, index)
+        if (
+            likedSongs.includes(song.id)
+        ) {
+
+            likedGrid.appendChild(
+                createSongCard(song,index)
             );
 
         }
-    );
 
-
-    /*
-       LIKED PAGE
-    */
-
-    songs.forEach(
-        (song, index) => {
-
-            if (
-                likedSongs.includes(song.id)
-            ) {
-
-                likedGrid.appendChild(
-                    createSongCard(song, index)
-                );
-
-            }
-
-        }
-    );
+    });
 
 
     if (!likedSongs.length) {
 
         likedGrid.innerHTML = `
-            <div style="
-                color:#666;
-                padding:30px 0;
-                font-size:16px;
-            ">
+
+            <div
+                style="
+                    color:#666;
+                    padding:30px 0;
+                    font-size:16px;
+                ">
                 You haven't liked any songs yet.
             </div>
+
         `;
 
     }
@@ -1984,29 +1836,16 @@ function renderSongs() {
 }
 
 
-/* ========================================
-   FEATURED PLAY
-======================================== */
+/* =========================
+   PAGE SWITCHING
+========================= */
 
-function playFeatured() {
-
-    if (!songs.length) return;
-
-    playSong(0);
-
-}
-
-
-/* ========================================
-   SHOW PAGE
-======================================== */
-
-function showPage(page, button) {
+function showPage(page,button) {
 
     document
         .querySelectorAll(".page")
-        .forEach(
-            p => p.classList.remove("active")
+        .forEach(p =>
+            p.classList.remove("active")
         );
 
 
@@ -2017,8 +1856,8 @@ function showPage(page, button) {
 
     document
         .querySelectorAll(".nav button")
-        .forEach(
-            b => b.classList.remove("active")
+        .forEach(b =>
+            b.classList.remove("active")
         );
 
 
@@ -2027,7 +1866,7 @@ function showPage(page, button) {
 
     const titles = {
 
-        home: "Home",
+        home: "AkkoFlac",
 
         songs: "Songs",
 
@@ -2039,13 +1878,12 @@ function showPage(page, button) {
     document.getElementById(
         "pageTitle"
     ).textContent = titles[page];
-
 }
 
 
-/* ========================================
+/* =========================
    PLAY SONG
-======================================== */
+========================= */
 
 function playSong(index) {
 
@@ -2059,10 +1897,6 @@ function playSong(index) {
     audio.src = song.audio;
 
 
-    /*
-       MINI PLAYER
-    */
-
     miniCover.src = song.cover;
 
     miniTitle.textContent =
@@ -2071,10 +1905,6 @@ function playSong(index) {
     miniArtist.textContent =
         song.artist;
 
-
-    /*
-       FULL PLAYER
-    */
 
     nowCover.src = song.cover;
 
@@ -2085,10 +1915,6 @@ function playSong(index) {
         song.artist;
 
 
-    /*
-       HIDE EVERYTHING ELSE
-    */
-
     main.classList.add("hidden");
 
     sidebar.style.opacity = "0";
@@ -2096,28 +1922,21 @@ function playSong(index) {
     sidebar.style.pointerEvents =
         "none";
 
-    bottomPlayer.classList.add("hidden");
+    bottomPlayer.classList.add(
+        "hidden"
+    );
 
 
-    /*
-       OPEN FULL SCREEN
-    */
+    nowPlaying.classList.add(
+        "open"
+    );
 
-    nowPlaying.classList.add("open");
-
-
-    /*
-       LOAD LYRICS
-    */
 
     loadLyrics(song.lyrics);
 
 
-    /*
-       START MUSIC
-    */
-
     audio.currentTime = 0;
+
 
     audio.play()
         .then(() => {
@@ -2134,24 +1953,24 @@ function playSong(index) {
 }
 
 
-/* ========================================
-   CLOSE NOW PLAYING
-======================================== */
+/* =========================
+   CLOSE PLAYER
+========================= */
 
 function closeNowPlaying() {
 
-    nowPlaying.classList.remove("open");
+    nowPlaying.classList.remove(
+        "open"
+    );
 
-    main.classList.remove("hidden");
+    main.classList.remove(
+        "hidden"
+    );
 
     sidebar.style.opacity = "";
 
     sidebar.style.pointerEvents = "";
 
-    /*
-       Keep music playing when returning
-       to the normal UI.
-    */
 
     if (!audio.paused) {
 
@@ -2164,9 +1983,9 @@ function closeNowPlaying() {
 }
 
 
-/* ========================================
+/* =========================
    PLAY / PAUSE
-======================================== */
+========================= */
 
 function togglePlay() {
 
@@ -2191,7 +2010,6 @@ audio.addEventListener(
     updatePlayButtons
 );
 
-
 audio.addEventListener(
     "pause",
     updatePlayButtons
@@ -2211,13 +2029,12 @@ function updatePlayButtons() {
 
     nowPlay.textContent =
         symbol;
-
 }
 
 
-/* ========================================
+/* =========================
    NEXT
-======================================== */
+========================= */
 
 function nextSong() {
 
@@ -2225,22 +2042,24 @@ function nextSong() {
 
     currentIndex++;
 
+
     if (
-        currentIndex >= songs.length
+        currentIndex >=
+        songs.length
     ) {
 
         currentIndex = 0;
 
     }
 
-    playSong(currentIndex);
 
+    playSong(currentIndex);
 }
 
 
-/* ========================================
+/* =========================
    PREVIOUS
-======================================== */
+========================= */
 
 function previousSong() {
 
@@ -2258,7 +2077,9 @@ function previousSong() {
     currentIndex--;
 
 
-    if (currentIndex < 0) {
+    if (
+        currentIndex < 0
+    ) {
 
         currentIndex =
             songs.length - 1;
@@ -2267,13 +2088,12 @@ function previousSong() {
 
 
     playSong(currentIndex);
-
 }
 
 
-/* ========================================
+/* =========================
    SEEK
-======================================== */
+========================= */
 
 function seekBack() {
 
@@ -2297,9 +2117,9 @@ function seekForward() {
 }
 
 
-/* ========================================
+/* =========================
    REPEAT
-======================================== */
+========================= */
 
 function toggleRepeat() {
 
@@ -2307,6 +2127,10 @@ function toggleRepeat() {
 
 }
 
+
+/* =========================
+   ENDED
+========================= */
 
 audio.addEventListener(
     "ended",
@@ -2328,15 +2152,16 @@ audio.addEventListener(
 );
 
 
-/* ========================================
+/* =========================
    PROGRESS
-======================================== */
+========================= */
 
 audio.addEventListener(
     "timeupdate",
     () => {
 
-        if (!audio.duration) return;
+        if (!audio.duration)
+            return;
 
 
         const value =
@@ -2377,13 +2202,16 @@ progress.addEventListener(
     "input",
     () => {
 
-        if (!audio.duration) return;
+        if (!audio.duration)
+            return;
+
 
         audio.currentTime =
             (
                 progress.value /
                 100
-            ) * audio.duration;
+            ) *
+            audio.duration;
 
     }
 );
@@ -2393,21 +2221,24 @@ nowProgress.addEventListener(
     "input",
     () => {
 
-        if (!audio.duration) return;
+        if (!audio.duration)
+            return;
+
 
         audio.currentTime =
             (
                 nowProgress.value /
                 100
-            ) * audio.duration;
+            ) *
+            audio.duration;
 
     }
 );
 
 
-/* ========================================
-   TIME FORMAT
-======================================== */
+/* =========================
+   FORMAT TIME
+========================= */
 
 function formatTime(seconds) {
 
@@ -2432,17 +2263,16 @@ function formatTime(seconds) {
             seconds % 60
         )
         .toString()
-        .padStart(2, "0");
+        .padStart(2,"0");
 
 
     return `${mins}:${secs}`;
-
 }
 
 
-/* ========================================
-   LRC
-======================================== */
+/* =========================
+   LOAD LYRICS
+========================= */
 
 async function loadLyrics(url) {
 
@@ -2474,14 +2304,17 @@ async function loadLyrics(url) {
             parseLRC(text);
 
 
-        if (!currentLyrics.length) {
+        if (
+            !currentLyrics.length
+        ) {
 
-            lyricsContainer.innerHTML =
-                `
+            lyricsContainer.innerHTML = `
+
                 <div class="lyric-line">
                     No lyrics found.
                 </div>
-                `;
+
+            `;
 
             return;
 
@@ -2489,7 +2322,7 @@ async function loadLyrics(url) {
 
 
         currentLyrics.forEach(
-            (line, index) => {
+            (line,index) => {
 
                 const element =
                     document.createElement(
@@ -2517,23 +2350,24 @@ async function loadLyrics(url) {
         );
 
 
-    } catch (error) {
+    } catch(error) {
 
-        lyricsContainer.innerHTML =
-            `
+        lyricsContainer.innerHTML = `
+
             <div class="lyric-line">
                 Lyrics could not be loaded.
             </div>
-            `;
+
+        `;
 
     }
 
 }
 
 
-/* ========================================
+/* =========================
    PARSE LRC
-======================================== */
+========================= */
 
 function parseLRC(text) {
 
@@ -2544,12 +2378,11 @@ function parseLRC(text) {
         .split(/\r?\n/)
         .forEach(line => {
 
-            const matches =
-                [
-                    ...line.matchAll(
-                        /\[(\d+):(\d+(?:\.\d+)?)\]/g
-                    )
-                ];
+            const matches = [
+                ...line.matchAll(
+                    /\[(\d+):(\d+(?:\.\d+)?)\]/g
+                )
+            ];
 
 
             const lyric =
@@ -2588,24 +2421,24 @@ function parseLRC(text) {
 
 
     lines.sort(
-        (a, b) =>
+        (a,b) =>
             a.time - b.time
     );
 
 
     return lines;
-
 }
 
 
-/* ========================================
-   SYNC LYRICS
-======================================== */
+/* =========================
+   UPDATE LYRICS
+========================= */
 
 function updateLyrics(time) {
 
-    if (!currentLyrics.length)
-        return;
+    if (
+        !currentLyrics.length
+    ) return;
 
 
     let activeIndex = -1;
@@ -2640,7 +2473,7 @@ function updateLyrics(time) {
 
 
     elements.forEach(
-        (element, index) => {
+        (element,index) => {
 
             element.classList.remove(
                 "active",
@@ -2669,8 +2502,11 @@ function updateLyrics(time) {
 
 
                 element.scrollIntoView({
+
                     behavior: "smooth",
+
                     block: "center"
+
                 });
 
             }
@@ -2681,9 +2517,9 @@ function updateLyrics(time) {
 }
 
 
-/* ========================================
+/* =========================
    LIKES
-======================================== */
+========================= */
 
 function toggleLike(id) {
 
@@ -2713,13 +2549,12 @@ function toggleLike(id) {
 
 
     renderSongs();
-
 }
 
 
-/* ========================================
+/* =========================
    SEARCH
-======================================== */
+========================= */
 
 search.addEventListener(
     "input",
@@ -2732,7 +2567,9 @@ search.addEventListener(
 
 
         document
-            .querySelectorAll(".song-card")
+            .querySelectorAll(
+                ".song-card"
+            )
             .forEach(card => {
 
                 const text =
@@ -2751,9 +2588,9 @@ search.addEventListener(
 );
 
 
-/* ========================================
+/* =========================
    KEYBOARD
-======================================== */
+========================= */
 
 document.addEventListener(
     "keydown",
@@ -2804,9 +2641,9 @@ document.addEventListener(
 );
 
 
-/* ========================================
+/* =========================
    START
-======================================== */
+========================= */
 
 renderFeatured();
 
