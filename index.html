@@ -1440,11 +1440,12 @@ img {
     overflow-y: auto;
     overflow-x: hidden;
 
-    padding:
-        40vh
-        35px
-        40vh
-        0;
+    /* START FROM THE TOP */
+    padding-top: 18px;
+    padding-right: 35px;
+    /* big bottom padding so later lines can be scrolled into the middle and STAY there */
+    padding-bottom: 55vh;
+    padding-left: 0;
 
     scrollbar-width: thin;
     scrollbar-color: #333 transparent;
@@ -1748,11 +1749,10 @@ img {
     }
 
     #lyricsContainer {
-        padding:
-            30vh
-            12px
-            30vh
-            0;
+        padding-top: 14px;
+        padding-right: 12px;
+        padding-bottom: 45vh;
+        padding-left: 0;
     }
 
     .lyric-line {
@@ -2947,7 +2947,7 @@ async function loadLyrics(path) {
 
         lyricsContainer.appendChild(fragment);
 
-        // Start at the top
+        // Force start at the very top
         lyricsContainer.scrollTop = 0;
 
         updateLyrics(audio.currentTime || 0);
@@ -2960,7 +2960,8 @@ async function loadLyrics(path) {
 
 /* =========================================================
    LYRIC SYNC
-   Current line is centered so past + future are visible
+   - Lyrics start from the TOP
+   - Once the current line reaches the middle it STAYS locked there
    ========================================================= */
 
 function updateLyrics(time) {
@@ -2981,11 +2982,6 @@ function updateLyrics(time) {
             break;
         }
     }
-
-    /*
-     Only touch the lyric DOM when the active line changes.
-     This prevents the lyrics from constantly resizing/jumping.
-    */
 
     if (activeIndex === lastActiveIndex) {
         return;
@@ -3015,6 +3011,10 @@ function updateLyrics(time) {
         activeIndex >= 0 &&
         elements[activeIndex]
     ) {
+        // This makes the active line go to the middle
+        // and stay locked there for the rest of the song.
+        // Because top padding is small, the first lines stay near the top
+        // until they naturally reach the center.
         elements[activeIndex].scrollIntoView({
             behavior: "smooth",
             block: "center"
