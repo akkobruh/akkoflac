@@ -1441,7 +1441,7 @@ img {
     overflow-x: hidden;
 
     padding:
-        12px
+        40vh
         35px
         40vh
         0;
@@ -1501,6 +1501,11 @@ img {
 .lyric-line.past {
     color: #707070;
     opacity: .48;
+}
+
+.lyric-line.pause {
+    opacity: .45;
+    letter-spacing: 2px;
 }
 
 .no-lyrics {
@@ -1744,7 +1749,7 @@ img {
 
     #lyricsContainer {
         padding:
-            12px
+            30vh
             12px
             30vh
             0;
@@ -2819,6 +2824,7 @@ function setProgress(value) {
    [00:05.20]
    [00:05:20]
    [00:05.2]
+   Empty lines / pauses → music symbol ♪
    ========================================================= */
 
 function parseLRC(text) {
@@ -2834,14 +2840,14 @@ function parseLRC(text) {
         const matches =
             [...line.matchAll(timePattern)];
 
+        if (!matches.length) {
+            return;
+        }
+
         const lyric =
             line
                 .replace(timePattern, "")
                 .trim();
-
-        if (!lyric) {
-            return;
-        }
 
         matches.forEach(match => {
             const minutes =
@@ -2868,7 +2874,8 @@ function parseLRC(text) {
                     seconds +
                     fraction,
 
-                text: lyric
+                text: lyric || "♪",
+                isPause: !lyric
             });
         });
     });
@@ -2930,12 +2937,18 @@ async function loadLyrics(path) {
                 document.createElement("div");
 
             line.className = "lyric-line";
+            if (item.isPause) {
+                line.classList.add("pause");
+            }
             line.textContent = item.text;
 
             fragment.appendChild(line);
         });
 
         lyricsContainer.appendChild(fragment);
+
+        // Start at the top
+        lyricsContainer.scrollTop = 0;
 
         updateLyrics(audio.currentTime || 0);
 
@@ -2947,6 +2960,7 @@ async function loadLyrics(path) {
 
 /* =========================================================
    LYRIC SYNC
+   Current line is centered so past + future are visible
    ========================================================= */
 
 function updateLyrics(time) {
@@ -3003,7 +3017,7 @@ function updateLyrics(time) {
     ) {
         elements[activeIndex].scrollIntoView({
             behavior: "smooth",
-            block: "nearest"
+            block: "center"
         });
     }
 }
