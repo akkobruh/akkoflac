@@ -2170,6 +2170,152 @@ html[data-theme="light"] .search-box input {
     color: var(--text);
 }
 
+
+/* -------------------- ONBOARDING -------------------- */
+
+.onboarding {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
+        radial-gradient(circle at 80% 85%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 40%),
+        var(--bg);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .45s var(--ease), visibility .45s ease;
+}
+
+.onboarding.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.onboard-card {
+    width: min(440px, 100%);
+    padding: 42px 36px 36px;
+    border-radius: 28px;
+    background: var(--surface);
+    box-shadow:
+        16px 16px 40px var(--shadow-dark),
+        -10px -10px 28px var(--shadow-light);
+    text-align: center;
+    animation: popIn .55s var(--ease) both;
+}
+
+.onboard-step {
+    display: none;
+}
+
+.onboard-step.active {
+    display: block;
+    animation: fadeUp .4s var(--ease) both;
+}
+
+.onboard-kicker {
+    margin-bottom: 12px;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+}
+
+.onboard-title {
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: clamp(28px, 5vw, 36px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+}
+
+.onboard-title span {
+    color: var(--accent);
+}
+
+.onboard-text {
+    margin: 0 auto 28px;
+    max-width: 320px;
+    color: var(--text-soft);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.onboard-accent-label {
+    margin-bottom: 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    transition: color .25s var(--ease);
+}
+
+.onboard-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.onboard-swatches .accent-swatch {
+    width: 46px;
+    height: 46px;
+}
+
+.onboard-btn {
+    width: 100%;
+    height: 52px;
+    border-radius: 16px;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow:
+        6px 6px 14px var(--shadow-dark),
+        0 0 20px var(--accent-glow);
+    transition:
+        transform .2s var(--ease),
+        background .2s ease,
+        box-shadow .2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.onboard-btn:hover {
+    background: var(--accent-bright);
+    transform: translateY(-2px);
+}
+
+.onboard-btn:active {
+    transform: translateY(0);
+    box-shadow:
+        inset 4px 4px 8px rgba(0,0,0,.25);
+}
+
+.onboard-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 760px) {
+    .onboard-card {
+        padding: 34px 22px 28px;
+        border-radius: 22px;
+    }
+
+    .onboard-btn {
+        height: 50px;
+        min-height: 50px;
+    }
+}
+
 /* -------------------- REDUCED MOTION -------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2186,6 +2332,42 @@ html[data-theme="light"] .search-box input {
 </head>
 
 <body>
+
+<!-- =========================================================
+     ONBOARDING
+     ========================================================= -->
+
+<div class="onboarding hidden" id="onboarding" aria-modal="true" role="dialog">
+    <div class="onboard-card">
+
+        <div class="onboard-step active" id="onboardStepWelcome">
+            <div class="onboard-kicker">Welcome</div>
+            <h2 class="onboard-title">Welcome to Akko<span>Flac</span></h2>
+            <p class="onboard-text">
+                Your personal music player. High quality tracks, synced lyrics, and a clean focus mode built for listening.
+            </p>
+            <button class="onboard-btn" id="onboardContinue" type="button">Continue</button>
+        </div>
+
+        <div class="onboard-step" id="onboardStepAccent">
+            <div class="onboard-kicker">Personalize</div>
+            <h2 class="onboard-title" style="font-size: clamp(24px, 4.5vw, 30px);">Make it yours</h2>
+            <div class="onboard-accent-label" id="onboardAccentLabel">Choose your accent color</div>
+            <div class="onboard-swatches" id="onboardSwatches">
+                <button class="accent-swatch" data-accent="#7b8cff" style="background:#7b8cff" title="Blue" type="button"></button>
+                <button class="accent-swatch" data-accent="#86E3CE" style="background:#86E3CE" title="Mint" type="button"></button>
+                <button class="accent-swatch" data-accent="#D0E6A5" style="background:#D0E6A5" title="Lime" type="button"></button>
+                <button class="accent-swatch" data-accent="#FFDD94" style="background:#FFDD94" title="Butter" type="button"></button>
+                <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral" type="button"></button>
+                <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac" type="button"></button>
+                <button class="accent-swatch" data-accent="#ffffff" style="background:#ffffff; border: 1px solid rgba(255,255,255,.35);" title="White" type="button"></button>
+            </div>
+            <button class="onboard-btn" id="onboardFinish" type="button">Get started</button>
+        </div>
+
+    </div>
+</div>
+
 
 <!-- =========================================================
      SIDEBAR
@@ -3794,12 +3976,10 @@ function updateLyrics(time) {
             else break;
         }
 
-        // Keep the first lyric in the same upper-middle slot even before
-        // playback reaches it, so the lyrics never jump down when starting.
-        const displayIndex = activeIndex < 0 ? 0 : activeIndex;
-
-        if (displayIndex === lastActiveIndex && lastActiveIndex !== -1) return;
-        lastActiveIndex = displayIndex;
+        // Only treat a line as "current" once playback has reached its timestamp.
+        // Before that, lines are incoming (next / next-next / next-third).
+        if (activeIndex === lastActiveIndex) return;
+        lastActiveIndex = activeIndex;
 
         const elements = Array.from(
             lyricsContainer.querySelectorAll('.lyric-line')
@@ -3813,45 +3993,58 @@ function updateLyrics(time) {
                 'next-fourth', 'past', 'fade-past', 'offscreen'
             );
 
-            // Clear any pending fade timers on this line
             if (element._fadeTimer) {
                 clearTimeout(element._fadeTimer);
                 element._fadeTimer = null;
             }
 
-            if (index === displayIndex - 1) {
-                // Just-passed line: show gray briefly, then fade out
+            if (activeIndex < 0) {
+                // Nothing playing yet — first lines are upcoming only
+                if (index === 0) {
+                    element.classList.add('next');
+                } else if (index === 1) {
+                    element.classList.add('next-next');
+                } else if (index === 2) {
+                    element.classList.add('next-third');
+                } else {
+                    element.classList.add('offscreen');
+                }
+                return;
+            }
+
+            if (index === activeIndex - 1) {
                 element.classList.add('past');
                 element._fadeTimer = setTimeout(() => {
                     element.classList.remove('past');
                     element.classList.add('fade-past');
-                    // After transition finishes, fully hide
                     element._fadeTimer = setTimeout(() => {
                         element.classList.remove('fade-past');
                         element.classList.add('offscreen');
                         element._fadeTimer = null;
                     }, 400);
                 }, 280);
-            } else if (index === displayIndex) {
+            } else if (index === activeIndex) {
                 element.classList.add('active');
-            } else if (index === displayIndex + 1) {
+            } else if (index === activeIndex + 1) {
                 element.classList.add('next');
-            } else if (index === displayIndex + 2) {
+            } else if (index === activeIndex + 2) {
                 element.classList.add('next-next');
-            } else if (index === displayIndex + 3) {
-                // 5th line: incoming, bottom half dissolved
+            } else if (index === activeIndex + 3) {
                 element.classList.add('next-third');
             } else {
                 element.classList.add('offscreen');
             }
         });
 
-        const line = elements[displayIndex];
+        // Anchor on current line, or first upcoming line before lyrics start
+        const focusIndex = activeIndex < 0 ? 0 : activeIndex;
+        const line = elements[focusIndex];
         if (!line) return;
 
         requestAnimationFrame(() => {
-            // Current = upper-middle. Past sits above briefly then fades.
-            const anchor = lyricsContainer.clientHeight * 0.18;
+            // Before first lyric: sit a bit higher so incoming lines fill the box
+            const anchorRatio = activeIndex < 0 ? 0.28 : 0.18;
+            const anchor = lyricsContainer.clientHeight * anchorRatio;
             const target = line.offsetTop - anchor;
             track.style.transform =
                 `translate3d(0, ${-Math.max(0, target)}px, 0)`;
@@ -4058,6 +4251,11 @@ function applyAccent(hex) {
         );
     });
 
+    const onboardLabel = document.getElementById("onboardAccentLabel");
+    if (onboardLabel) {
+        onboardLabel.style.color = hex;
+    }
+
     localStorage.setItem("akkoflac-accent", hex);
 }
 
@@ -4076,8 +4274,62 @@ document.getElementById("accentRow")?.addEventListener("click", (e) => {
    INITIALIZE
    ========================================================= */
 
+/* =========================================================
+   ONBOARDING
+   ========================================================= */
+
+function isOnboardingDone() {
+    return localStorage.getItem("akkoflac-onboarded") === "1";
+}
+
+function completeOnboarding() {
+    localStorage.setItem("akkoflac-onboarded", "1");
+    const el = document.getElementById("onboarding");
+    if (!el) return;
+    el.classList.add("hidden");
+    document.body.style.overflow = "";
+}
+
+function showOnboarding() {
+    const el = document.getElementById("onboarding");
+    if (!el) return;
+    el.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    const welcome = document.getElementById("onboardStepWelcome");
+    const accent = document.getElementById("onboardStepAccent");
+    welcome?.classList.add("active");
+    accent?.classList.remove("active");
+
+    // Sync swatch active state to current accent
+    const current = localStorage.getItem("akkoflac-accent") || "#7b8cff";
+    applyAccent(current);
+}
+
+function setupOnboarding() {
+    document.getElementById("onboardContinue")?.addEventListener("click", () => {
+        document.getElementById("onboardStepWelcome")?.classList.remove("active");
+        document.getElementById("onboardStepAccent")?.classList.add("active");
+    });
+
+    document.getElementById("onboardSwatches")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".accent-swatch");
+        if (!btn) return;
+        applyAccent(btn.dataset.accent);
+    });
+
+    document.getElementById("onboardFinish")?.addEventListener("click", () => {
+        completeOnboarding();
+    });
+
+    if (!isOnboardingDone()) {
+        showOnboarding();
+    }
+}
+
 function initialize() {
     loadSettings();
+    setupOnboarding();
 
     /* Default queue = all songs (shuffled order ready for home/songs) */
     playQueue = songs.length ? shuffleArray(songs) : [];
