@@ -1602,7 +1602,7 @@ img {
 
     color: var(--text-soft);
 
-    opacity: .7;
+    opacity: .42;
 
     font-size: clamp(19px, 2.1vw, 32px);
     font-weight: 500;
@@ -1621,20 +1621,42 @@ img {
 .lyric-line.active {
     color: var(--accent);
     opacity: 1;
-
-    transform: translateX(2px);
+    transform: translateX(2px) scale(1.015);
 
     text-shadow:
         0 0 20px var(--accent-glow);
 }
 
+/* Apple Music-style lyric progression:
+   upcoming lines brighten as they approach, then the current line
+   becomes accent-colored, and past lines briefly fade gray before disappearing. */
+.lyric-line.next {
+    color: var(--text-soft);
+    opacity: .68;
+    transform: translateX(0) scale(1);
+}
+
+.lyric-line.next-next {
+    color: var(--text-soft);
+    opacity: .30;
+    transform: translateX(0) scale(.985);
+}
+
 .lyric-line.past {
+    color: rgba(190,190,190,.30);
+    opacity: .30;
+    transform: translateY(-10px) scale(.985);
+    filter: blur(0);
+    visibility: visible;
+    pointer-events: none;
+}
+
+.lyric-line.past.fade-out {
     color: transparent;
     opacity: 0;
-    transform: translateY(-32px) scale(.96);
+    transform: translateY(-28px) scale(.96);
     filter: blur(5px);
     visibility: hidden;
-    pointer-events: none;
     height: 0;
     min-height: 0;
     margin-top: 0;
@@ -3551,22 +3573,33 @@ function updateLyrics(time) {
     const track = lyricsContainer.querySelector(".lyrics-track");
 
     elements.forEach((element, index) => {
-        element.classList.remove("active", "past");
+        element.classList.remove("active", "next", "next-next", "past", "fade-out");
 
         if (index < activeIndex) {
             element.classList.add("past");
         } else if (index === activeIndex) {
             element.classList.add("active");
+        } else if (index === activeIndex + 1) {
+            element.classList.add("next");
+        } else if (index === activeIndex + 2) {
+            element.classList.add("next-next");
         }
     });
 
+    // Keep the current line a little above the vertical center of the cover.
+    // The track itself eases into place instead of snapping.
     if (activeIndex >= 0 && elements[activeIndex] && track) {
         const line = elements[activeIndex];
 
-        // Let the past line collapse first, then smoothly reposition the lyric track.
         requestAnimationFrame(() => {
-            const target = line.offsetTop - (lyricsContainer.clientHeight * 0.30);
+            const target = line.offsetTop - (lyricsContainer.clientHeight * 0.36);
             track.style.transform = `translate3d(0, ${-Math.max(0, target)}px, 0)`;
+
+            // Past lyrics remain translucent gray for a moment, then disappear.
+            window.setTimeout(() => {
+                const past = Array.from(elements).filter((element, index) => index < activeIndex);
+                past.forEach(element => element.classList.add("fade-out"));
+            }, 280);
         });
     }
 }
