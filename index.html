@@ -2966,7 +2966,7 @@ let currentIndex = 0;
 let currentLyrics = [];
 let repeatEnabled = false;
 let shuffleEnabled = false;
-let lastActiveIndex = -1;
+let lastActiveIndex = null;
 let currentPage = "home";
 let searchQuery = "";
 let repeatTimer = null;
@@ -3602,7 +3602,7 @@ function playCurrentFromQueue() {
     updateSongUI();
 
     currentLyrics = []; lyricsContainer.classList.add('lyrics-idle');
-    lastActiveIndex = -1;
+    lastActiveIndex = null;
     lyricsContainer.innerHTML = "";
     loadLyrics(song.lyrics);
 
@@ -3888,7 +3888,7 @@ function parseLRC(text) {
 
 async function loadLyrics(path) {
     currentLyrics = []; lyricsContainer.classList.add('lyrics-idle');
-    lastActiveIndex = -1;
+    lastActiveIndex = null;
 
     lyricsContainer.innerHTML = "";
 
@@ -3950,7 +3950,7 @@ async function loadLyrics(path) {
         lyricsContainer.scrollTop = 0;
 
         // First lyric sits in the "current" slot immediately
-        lastActiveIndex = -1;
+        lastActiveIndex = null;
         updateLyrics(audio.currentTime || 0);
 
     } catch (error) {
@@ -3978,7 +3978,8 @@ function updateLyrics(time) {
 
         // Only treat a line as "current" once playback has reached its timestamp.
         // Before that, lines are incoming (next / next-next / next-third).
-        if (activeIndex === lastActiveIndex) return;
+        // lastActiveIndex starts null so the first paint always runs.
+        if (lastActiveIndex !== null && activeIndex === lastActiveIndex) return;
         lastActiveIndex = activeIndex;
 
         const elements = Array.from(
@@ -4162,7 +4163,7 @@ audio.addEventListener("ended", () => {
     if (repeatEnabled) {
         audio.currentTime = 0;
 
-        lastActiveIndex = -1;
+        lastActiveIndex = null;
 
         updateLyrics(0);
 
