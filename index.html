@@ -436,6 +436,53 @@ img {
     font-weight: 700;
 }
 
+.shuffle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    background: var(--surface);
+    color: var(--accent);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    box-shadow:
+        5px 5px 12px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+
+    transition:
+        transform .2s var(--ease),
+        box-shadow .2s var(--ease),
+        background .2s ease,
+        color .2s ease;
+}
+
+.shuffle-btn:hover {
+    transform: translateY(-2px);
+    color: #fff;
+    background: var(--accent);
+    box-shadow:
+        6px 6px 14px var(--shadow-dark),
+        0 0 18px var(--accent-glow);
+}
+
+.shuffle-btn:active {
+    transform: translateY(0);
+    box-shadow:
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
+}
+
+.shuffle-btn svg {
+    display: block;
+    pointer-events: none;
+}
+
 /* -------------------- FEATURED -------------------- */
 
 .featured {
@@ -1013,7 +1060,8 @@ img {
         0 0 28px var(--accent-glow);
 }
 
-.repeat.active {
+.repeat.active,
+.shuffle.active {
     color: var(--accent);
 
     box-shadow:
@@ -1022,7 +1070,8 @@ img {
         0 0 16px var(--accent-soft);
 }
 
-.repeat.active::after {
+.repeat.active::after,
+.shuffle.active::after {
     content: "";
 
     position: absolute;
@@ -1161,10 +1210,8 @@ img {
     visibility: hidden;
     opacity: 0;
 
-    background:
-        radial-gradient(circle at 16% 45%, var(--accent-glow), transparent 33%),
-        radial-gradient(circle at 86% 8%, var(--accent-soft), transparent 27%),
-        var(--bg);
+    background: var(--bg);
+    overflow: hidden;
 
     transform: scale(1.018);
 
@@ -1180,13 +1227,46 @@ img {
     transform: scale(1);
 }
 
+/* Blurred enlarged album cover background */
+.full-bg {
+    position: absolute;
+    inset: -40px;
+    z-index: 0;
+
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+
+    object-fit: cover;
+    object-position: center;
+
+    filter: blur(48px) saturate(1.25) brightness(0.45);
+    transform: scale(1.15);
+
+    pointer-events: none;
+    user-select: none;
+
+    transition: opacity .5s ease;
+}
+
+.full-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background:
+        radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,.35) 70%),
+        linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.55) 100%);
+
+    pointer-events: none;
+}
+
 .full-back {
     position: absolute;
 
     left: 28px;
     top: 24px;
 
-    z-index: 20;
+    z-index: 30;
 
     width: 46px;
     height: 46px;
@@ -1223,6 +1303,9 @@ img {
 }
 
 .full-content {
+    position: relative;
+    z-index: 10;
+
     width: 100%;
     height: 100%;
 
@@ -2072,6 +2155,14 @@ html[data-theme="light"] .search-box input {
 
         <div class="section">
 
+            <div class="section-heading">
+                <h2>Liked</h2>
+                <button class="shuffle-btn" id="likedShuffleBtn" title="Shuffle liked songs">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                    Shuffle
+                </button>
+            </div>
+
             <div class="song-grid" id="likedGrid"></div>
 
             <div class="empty hidden" id="likedEmpty">
@@ -2167,6 +2258,10 @@ html[data-theme="light"] .search-box input {
 
     <div class="player-controls">
 
+        <button class="control shuffle" id="shuffleButton" title="Shuffle">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        </button>
+
         <button class="control" id="previousButton" title="Previous">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
         </button>
@@ -2228,6 +2323,9 @@ html[data-theme="light"] .search-box input {
 
 <div class="full-player" id="fullPlayer">
 
+    <img class="full-bg" id="fullBg" src="covers/here.jfif" alt="">
+    <div class="full-bg-overlay"></div>
+
     <button class="full-back" id="fullBack" title="Back">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </button>
@@ -2288,6 +2386,10 @@ html[data-theme="light"] .search-box input {
             </div>
 
             <div class="full-controls">
+
+                <button class="full-control shuffle" id="fullShuffle" title="Shuffle">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                </button>
 
                 <button class="full-control" id="fullPrevious" title="Previous">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
@@ -2531,10 +2633,15 @@ const songs = [
 let currentIndex = 0;
 let currentLyrics = [];
 let repeatEnabled = false;
+let shuffleEnabled = false;
 let lastActiveIndex = -1;
 let currentPage = "home";
 let searchQuery = "";
 let repeatTimer = null;
+
+/* Current playback queue. Liked uses liked-only queue. */
+let playQueue = [];
+let queueIndex = 0;
 
 /* =========================================================
    ELEMENTS
@@ -2638,7 +2745,7 @@ function toggleLike(id) {
    SONG CARD
    ========================================================= */
 
-function createSongCard(song, index) {
+function createSongCard(song, list, autoShuffle = false) {
     const card = document.createElement("div");
 
     card.className = "song-card";
@@ -2666,7 +2773,7 @@ function createSongCard(song, index) {
     `;
 
     card.addEventListener("click", () => {
-        playSong(index);
+        startPlayback(list, song.id, autoShuffle);
         openFullPlayer();
     });
 
@@ -2697,15 +2804,12 @@ function escapeHTML(value) {
    RENDER GRID
    ========================================================= */
 
-function renderGrid(container, list, emptyElement = null) {
+function renderGrid(container, list, emptyElement = null, autoShuffle = false) {
     container.innerHTML = "";
 
     list.forEach(song => {
-        const index =
-            songs.findIndex(item => item.id === song.id);
-
         container.appendChild(
-            createSongCard(song, index)
+            createSongCard(song, list, autoShuffle)
         );
     });
 
@@ -2757,7 +2861,7 @@ function renderFeatured() {
     `;
 
     featured.addEventListener("click", () => {
-        playSong(0);
+        startPlayback(songs, song.id, true);
         openFullPlayer();
     });
 
@@ -2795,25 +2899,38 @@ function getFilteredSongs() {
 function renderAll() {
     const filtered = getFilteredSongs();
 
+    /* Home / Songs: auto-shuffle when you click a song */
     renderGrid(
         recentGrid,
-        [...filtered].reverse().slice(0, 6)
+        [...filtered].reverse().slice(0, 6),
+        null,
+        true
     );
 
     renderGrid(
         songsGrid,
         filtered,
-        songsEmpty
+        songsEmpty,
+        true
     );
 
-    const liked = filtered.filter(song =>
-        isLiked(song.id)
-    );
+    /* Liked: only liked songs, sequential unless Shuffle button */
+    const liked = songs.filter(song => isLiked(song.id));
+
+    const likedVisible = searchQuery
+        ? liked.filter(song => {
+            const text = [song.title, song.artist, song.album]
+                .join(" ")
+                .toLowerCase();
+            return text.includes(searchQuery.trim().toLowerCase());
+        })
+        : liked;
 
     renderGrid(
         likedGrid,
-        liked,
-        likedEmpty
+        likedVisible,
+        likedEmpty,
+        false
     );
 }
 
@@ -2888,12 +3005,16 @@ searchInput.addEventListener("input", event => {
    PLAYER UI
    ========================================================= */
 
-function updateSongUI() {
-    if (!songs.length) {
-        return;
+function getCurrentSong() {
+    if (playQueue.length) {
+        return playQueue[queueIndex] || null;
     }
+    return songs[currentIndex] || null;
+}
 
-    const song = songs[currentIndex];
+function updateSongUI() {
+    const song = getCurrentSong();
+    if (!song) return;
 
     document.getElementById("miniCover").src =
         song.cover;
@@ -2913,15 +3034,18 @@ function updateSongUI() {
     document.getElementById("fullArtist").textContent =
         song.artist;
 
+    /* Blurred focus-mode background follows current cover */
+    const bg = document.getElementById("fullBg");
+    if (bg) bg.src = song.cover;
+
     updateFullLikeButton();
 }
 
 function updateFullLikeButton() {
-    if (!songs.length) return;
+    const song = getCurrentSong();
+    if (!song) return;
 
-    const song = songs[currentIndex];
     const btn = document.getElementById("fullLike");
-
     btn.classList.toggle("liked", isLiked(song.id));
 }
 
@@ -2939,18 +3063,56 @@ function updatePlayButtons() {
 }
 
 /* =========================================================
-   PLAY SONG
+   SHUFFLE + QUEUE PLAYBACK
    ========================================================= */
 
-function playSong(index) {
-    if (!songs.length) {
-        return;
+function shuffleArray(list) {
+    const arr = [...list];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function startPlayback(list, startId, autoShuffle = false) {
+    if (!list || !list.length) return;
+
+    let queue = [...list];
+
+    if (autoShuffle && queue.length > 1) {
+        queue = shuffleArray(queue);
+        /* Keep the clicked song first so it plays immediately */
+        const idx = queue.findIndex(s => s.id === startId);
+        if (idx > 0) {
+            const [picked] = queue.splice(idx, 1);
+            queue.unshift(picked);
+        }
     }
 
-    currentIndex =
-        (index + songs.length) % songs.length;
+    playQueue = queue;
+    queueIndex = Math.max(0, playQueue.findIndex(s => s.id === startId));
+    if (queueIndex < 0) queueIndex = 0;
 
-    const song = songs[currentIndex];
+    /* Keep currentIndex in sync for any legacy use */
+    currentIndex = songs.findIndex(s => s.id === playQueue[queueIndex].id);
+    if (currentIndex < 0) currentIndex = 0;
+
+    playCurrentFromQueue();
+}
+
+function playCurrentFromQueue() {
+    if (!playQueue.length) {
+        if (!songs.length) return;
+        playQueue = [...songs];
+        queueIndex = 0;
+    }
+
+    const song = playQueue[queueIndex];
+    if (!song) return;
+
+    currentIndex = songs.findIndex(s => s.id === song.id);
+    if (currentIndex < 0) currentIndex = 0;
 
     audio.src = song.audio;
     audio.load();
@@ -2959,18 +3121,30 @@ function playSong(index) {
 
     currentLyrics = [];
     lastActiveIndex = -1;
-
     lyricsContainer.innerHTML = "";
-
     loadLyrics(song.lyrics);
 
     audio.play()
-        .then(() => {
-            updatePlayButtons();
-        })
-        .catch(() => {
-            updatePlayButtons();
-        });
+        .then(() => updatePlayButtons())
+        .catch(() => updatePlayButtons());
+}
+
+/* Legacy helper still used by some call sites */
+function playSong(index) {
+    if (!songs.length) return;
+    const song = songs[(index + songs.length) % songs.length];
+    startPlayback(songs, song.id, true);
+}
+
+function shuffleLikedSongs() {
+    const liked = songs.filter(s => isLiked(s.id));
+    if (!liked.length) return;
+
+    playQueue = shuffleArray(liked);
+    queueIndex = 0;
+    currentIndex = songs.findIndex(s => s.id === playQueue[0].id);
+    playCurrentFromQueue();
+    openFullPlayer();
 }
 
 /* =========================================================
@@ -2979,7 +3153,11 @@ function playSong(index) {
 
 function togglePlay() {
     if (!audio.src) {
-        playSong(currentIndex);
+        if (playQueue.length) {
+            playCurrentFromQueue();
+        } else {
+            startPlayback(songs, songs[0]?.id, true);
+        }
         return;
     }
 
@@ -2991,23 +3169,29 @@ function togglePlay() {
 }
 
 /* =========================================================
-   NEXT / PREVIOUS
+   NEXT / PREVIOUS  (stay inside current queue)
    ========================================================= */
 
 function nextSong() {
-    if (!songs.length) {
+    if (!playQueue.length) {
+        if (!songs.length) return;
+        startPlayback(songs, songs[0].id, true);
         return;
     }
 
-    playSong(currentIndex + 1);
+    queueIndex = (queueIndex + 1) % playQueue.length;
+    playCurrentFromQueue();
 }
 
 function previousSong() {
-    if (!songs.length) {
+    if (!playQueue.length) {
+        if (!songs.length) return;
+        startPlayback(songs, songs[0].id, true);
         return;
     }
 
-    playSong(currentIndex - 1);
+    queueIndex = (queueIndex - 1 + playQueue.length) % playQueue.length;
+    playCurrentFromQueue();
 }
 
 /* =========================================================
@@ -3073,6 +3257,38 @@ function toggleRepeat(showMessage = true) {
     repeatTimer = setTimeout(() => {
         label.classList.remove("show");
     }, 1400);
+}
+
+function updateShuffleButtons() {
+    document.getElementById("shuffleButton")
+        ?.classList.toggle("active", shuffleEnabled);
+
+    document.getElementById("fullShuffle")
+        ?.classList.toggle("active", shuffleEnabled);
+}
+
+function toggleShuffle(showMessage = true) {
+    shuffleEnabled = !shuffleEnabled;
+    updateShuffleButtons();
+
+    if (shuffleEnabled && playQueue.length > 1) {
+        const current = playQueue[queueIndex];
+        const rest = playQueue.filter((_, i) => i !== queueIndex);
+        playQueue = [current, ...shuffleArray(rest)];
+        queueIndex = 0;
+    }
+
+    if (!showMessage) return;
+
+    const label = document.getElementById("repeatLabel");
+    if (label) {
+        label.textContent = shuffleEnabled ? "Shuffle On" : "Shuffle Off";
+        label.classList.add("show");
+        clearTimeout(repeatTimer);
+        repeatTimer = setTimeout(() => {
+            label.classList.remove("show");
+        }, 1400);
+    }
 }
 
 /* =========================================================
@@ -3387,6 +3603,16 @@ document.getElementById("fullRepeat")
         toggleRepeat(true);
     });
 
+document.getElementById("shuffleButton")
+    ?.addEventListener("click", () => {
+        toggleShuffle(true);
+    });
+
+document.getElementById("fullShuffle")
+    ?.addEventListener("click", () => {
+        toggleShuffle(true);
+    });
+
 document.getElementById("fullBack")
     .addEventListener("click", closeFullPlayer);
 
@@ -3405,8 +3631,14 @@ document.getElementById("fullProgressBar")
 
 document.getElementById("fullLike")
     .addEventListener("click", () => {
-        if (!songs.length) return;
-        toggleLike(songs[currentIndex].id);
+        const song = getCurrentSong();
+        if (!song) return;
+        toggleLike(song.id);
+    });
+
+document.getElementById("likedShuffleBtn")
+    ?.addEventListener("click", () => {
+        shuffleLikedSongs();
     });
 
 /* =========================================================
@@ -3543,12 +3775,21 @@ document.getElementById("accentRow")?.addEventListener("click", (e) => {
 function initialize() {
     loadSettings();
 
+    /* Default queue = all songs (shuffled order ready for home/songs) */
+    playQueue = songs.length ? shuffleArray(songs) : [];
+    queueIndex = 0;
+    if (songs.length) {
+        currentIndex = songs.findIndex(s => s.id === playQueue[0].id);
+        if (currentIndex < 0) currentIndex = 0;
+    }
+
     renderFeatured();
     renderAll();
 
     updateSongUI();
     updatePlayButtons();
     updateRepeatButtons();
+    updateShuffleButtons();
 
     /*
      We intentionally do not autoplay.
@@ -3556,7 +3797,7 @@ function initialize() {
     */
 
     loadLyrics(
-        songs[0]?.lyrics
+        getCurrentSong()?.lyrics
     );
 }
 
