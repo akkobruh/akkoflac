@@ -1615,7 +1615,7 @@ img {
         text-shadow .4s ease;
 }
 
-/* Rolling 4-line lyric window: 1 past + current + 2 upcoming. */
+/* Rolling lyric window: brief past (gray ~0.28s then fade) + current + 2 upcoming. */
 .lyric-line.active {
     color: var(--accent);
     opacity: 1;
@@ -1645,9 +1645,11 @@ img {
 }
 
 .lyric-line.fade-past {
-    opacity: 0;
+    opacity: 0 !important;
     transform: translateY(-16px) scale(.96);
     filter: blur(3px);
+    visibility: visible;
+    pointer-events: none;
 }
 
 .lyric-line.offscreen {
@@ -2686,7 +2688,7 @@ const songs = [
    ========================================================= */
 
 let currentIndex = 0;
-let currentLyrics = []; lyricsContainer.classList.add('lyrics-idle');
+let currentLyrics = [];
 let repeatEnabled = false;
 let shuffleEnabled = false;
 let lastActiveIndex = -1;
@@ -3713,11 +3715,28 @@ function updateLyrics(time) {
         elements.forEach((element, index) => {
             element.classList.remove(
                 'active', 'next', 'next-next', 'next-third',
-                'next-fourth', 'past', 'offscreen'
+                'next-fourth', 'past', 'fade-past', 'offscreen'
             );
 
+            // Clear any pending fade timers on this line
+            if (element._fadeTimer) {
+                clearTimeout(element._fadeTimer);
+                element._fadeTimer = null;
+            }
+
             if (index === displayIndex - 1) {
+                // Just-passed line: show gray briefly, then fade out
                 element.classList.add('past');
+                element._fadeTimer = setTimeout(() => {
+                    element.classList.remove('past');
+                    element.classList.add('fade-past');
+                    // After transition finishes, fully hide
+                    element._fadeTimer = setTimeout(() => {
+                        element.classList.remove('fade-past');
+                        element.classList.add('offscreen');
+                        element._fadeTimer = null;
+                    }, 400);
+                }, 280);
             } else if (index === displayIndex) {
                 element.classList.add('active');
             } else if (index === displayIndex + 1) {
@@ -3733,8 +3752,7 @@ function updateLyrics(time) {
         if (!line) return;
 
         requestAnimationFrame(() => {
-            // Current = upper-middle. Past = top, next = lower-middle,
-            // next-next = lower.
+            // Current = upper-middle. Past sits above briefly then fades.
             const anchor = lyricsContainer.clientHeight * 0.31;
             const target = line.offsetTop - anchor;
             track.style.transform =
