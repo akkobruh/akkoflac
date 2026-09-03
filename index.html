@@ -1240,7 +1240,6 @@ img {
     object-position: center;
 
     filter: blur(48px) saturate(1.35) brightness(0.62);
-    animation: focusBgDrift 22s ease-in-out infinite;
     transform: scale(1.15);
 
     pointer-events: none;
@@ -1249,30 +1248,34 @@ img {
     transition: opacity .5s ease;
 }
 
-@keyframes focusBgDrift {
-    0% { transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
-    25% { transform: scale(1.23) translate3d(1%, -0.5%, 0); }
-    50% { transform: scale(1.27) translate3d(1.5%, 1%, 0); }
-    75% { transform: scale(1.22) translate3d(-1%, 1.5%, 0); }
-    100% { transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
-}
 
 @keyframes focusOverlayPulse {
     0% { opacity: .88; }
     100% { opacity: .96; }
 }
 
+.focus-palette {
+    position: absolute;
+    inset: -12%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: .95;
+    filter: blur(55px) saturate(1.35);
+    transform: scale(1.08);
+    background:
+        radial-gradient(circle at 18% 24%, var(--palette-1, rgba(123,140,255,.58)) 0%, transparent 42%),
+        radial-gradient(circle at 82% 28%, var(--palette-2, rgba(70,90,210,.48)) 0%, transparent 45%),
+        radial-gradient(circle at 48% 82%, var(--palette-3, rgba(170,80,190,.42)) 0%, transparent 48%);
+    transition: opacity 1.2s ease;
+}
+
 .full-bg-overlay {
     position: absolute;
     inset: 0;
-    z-index: 1;
-
+    z-index: 2;
     background:
-        radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,.22) 70%),
-        linear-gradient(180deg, rgba(0,0,0,.12) 0%, rgba(0,0,0,.38) 100%);
-
-    animation: focusOverlayPulse 18s ease-in-out infinite alternate;
-
+        linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.30) 100%),
+        radial-gradient(circle at 50% 45%, transparent 0%, rgba(0,0,0,.16) 100%);
     pointer-events: none;
 }
 
@@ -1587,7 +1590,7 @@ img {
 .lyrics-track {
     will-change: transform;
     transform: translate3d(0, 0, 0);
-    transition: transform .72s cubic-bezier(.22, .61, .36, 1);
+    transition: transform 1.15s cubic-bezier(.22, .61, .36, 1);
 }
 
 .lyric-line {
@@ -2345,6 +2348,7 @@ html[data-theme="light"] .search-box input {
 <div class="full-player" id="fullPlayer">
 
     <img class="full-bg" id="fullBg" src="covers/here.jfif" alt="">
+    <div class="focus-palette" id="focusPalette"></div>
     <div class="full-bg-overlay"></div>
 
     <button class="full-back" id="fullBack" title="Back">
@@ -3051,7 +3055,7 @@ function getCurrentSong() {
     return songs[currentIndex] || null;
 }
 
-function updateSongUI() {
+/* =========================================================\n   FOCUS MODE DYNAMIC ART PALETTE\n   Extracts dominant colors from the active cover and smoothly\n   diffuses/amplifies them behind the Focus Mode player.\n   ========================================================= */\n\nlet focusPaletteAnimation = null;\n\nfunction clampByte(value) {\n    return Math.max(0, Math.min(255, Math.round(value)));\n}\n\nfunction rgbString(rgb, alpha = 1) {\n    return `rgba(${clampByte(rgb[0])}, ${clampByte(rgb[1])}, ${clampByte(rgb[2])}, ${alpha})`;\n}\n\nfunction amplifyPaletteColor(rgb, amount = 1) {\n    const max = Math.max(rgb[0], rgb[1], rgb[2]);\n    const min = Math.min(rgb[0], rgb[1], rgb[2]);\n    const spread = max - min;\n    const lift = 1.08 * amount;\n    const saturation = 1.22 * amount;\n    const avg = (rgb[0] + rgb[1] + rgb[2]) / 3;\n\n    return rgb.map(channel =>\n        clampByte(avg + (channel - avg) * saturation + (channel - avg) * .10 + (avg - 128) * (lift - 1) * .35)\n    );\n}\n\nfunction extractFocusPalette(image) {\n    return new Promise(resolve => {\n        const canvas = document.createElement("canvas");\n        const ctx = canvas.getContext("2d", { willReadFrequently: true });\n\n        if (!ctx) {\n            resolve([[123,140,255],[70,90,210],[170,80,190]]);\n            return;\n        }\n\n        const sampleSize = 48;\n        canvas.width = sampleSize;\n        canvas.height = sampleSize;\n\n        try {\n            ctx.drawImage(image, 0, 0, sampleSize, sampleSize);\n            const data = ctx.getImageData(0, 0, sampleSize, sampleSize).data;\n            const buckets = new Map();\n\n            for (let i = 0; i < data.length; i += 4) {\n                const a = data[i + 3];\n                if (a < 150) continue;\n\n                const r = data[i];\n                const g = data[i + 1];\n                const b = data[i + 2];\n                const max = Math.max(r,g,b);\n                const min = Math.min(r,g,b);\n                const brightness = (r + g + b) / 3;\n                const saturation = max === 0 ? 0 : (max - min) / max;\n\n                if (brightness < 12 || brightness > 248) continue;\n\n                const qr = Math.round(r / 24) * 24;\n                const qg = Math.round(g / 24) * 24;\n                const qb = Math.round(b / 24) * 24;\n                const key = `${qr},${qg},${qb}`;\n                const weight = 1 + saturation * 2.2;\n                const old = buckets.get(key);\n\n                if (old) {\n                    old.weight += weight;\n                    old.count++;\n                } else {\n                    buckets.set(key, { rgb:[qr,qg,qb], weight, count:1 });\n                }\n            }\n\n            const ranked = [...buckets.values()]\n                .sort((a,b) => b.weight - a.weight)\n                .filter((item, index, arr) => {\n                    return arr.every((other, otherIndex) => {\n                        if (otherIndex >= index) return true;\n                        const d = Math.hypot(\n                            item.rgb[0] - other.rgb[0],\n                            item.rgb[1] - other.rgb[1],\n                            item.rgb[2] - other.rgb[2]\n                        );\n                        return d > 48;\n                    });\n                })\n                .slice(0, 3);\n\n            const fallback = [[123,140,255],[70,90,210],[170,80,190]];\n            const palette = [0,1,2].map((i) => amplifyPaletteColor(ranked[i]?.rgb || fallback[i], 1));\n            resolve(palette);\n        } catch (error) {\n            resolve([[123,140,255],[70,90,210],[170,80,190]]);\n        }\n    });\n}\n\nfunction animateFocusPalette(nextPalette) {\n    const paletteLayer = document.getElementById("focusPalette");\n    if (!paletteLayer) return;\n\n    if (focusPaletteAnimation) cancelAnimationFrame(focusPaletteAnimation);\n\n    const styles = getComputedStyle(paletteLayer);\n    const current = [1,2,3].map(i => {\n        const match = styles.getPropertyValue(`--palette-${i}`).match(/rgba?\\(([^)]+)\\)/);\n        if (!match) return [123,140,255];\n        return match[1].split(",").slice(0,3).map(Number);\n    });\n\n    const start = performance.now();\n    const duration = 1400;\n    const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;\n\n    function frame(now) {\n        const t = Math.min(1, (now - start) / duration);\n        const e = ease(t);\n\n        nextPalette.forEach((target, index) => {\n            const from = current[index] || target;\n            const mixed = from.map((v, c) => v + (target[c] - v) * e);\n            paletteLayer.style.setProperty(`--palette-${index + 1}`, rgbString(mixed, [.62,.52,.46][index]));\n        });\n\n        if (t < 1) focusPaletteAnimation = requestAnimationFrame(frame);\n    }\n\n    focusPaletteAnimation = requestAnimationFrame(frame);\n}\n\nasync function updateFocusPalette(song) {\n    const bg = document.getElementById("fullBg");\n    if (!bg || !song?.cover) return;\n\n    const image = new Image();\n    image.crossOrigin = "anonymous";\n    image.src = song.cover;\n\n    image.onload = async () => {\n        const palette = await extractFocusPalette(image);\n        animateFocusPalette(palette);\n    };\n}\n\nfunction updateSongUI() {
     const song = getCurrentSong();
     if (!song) return;
 
@@ -3076,6 +3080,8 @@ function updateSongUI() {
     /* Blurred focus-mode background follows current cover */
     const bg = document.getElementById("fullBg");
     if (bg) bg.src = song.cover;
+
+    updateFocusPalette(song);
 
     updateFullLikeButton();
 }
