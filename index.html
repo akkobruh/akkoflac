@@ -1590,80 +1590,72 @@ img {
 .lyrics-track {
     will-change: transform;
     transform: translate3d(0, 0, 0);
-    transition: transform 1.15s cubic-bezier(.22, .61, .36, 1);
+    transition: transform 1.05s cubic-bezier(.22, .61, .36, 1);
 }
 
 .lyric-line {
     width: 100%;
     max-width: 850px;
-
-    margin: 17px 0;
+    margin: 10px 0;
     padding-right: 25px;
-
     color: var(--text-soft);
-
-    opacity: .42;
-
-    font-size: clamp(19px, 2.1vw, 32px);
+    opacity: .16;
+    font-size: clamp(19px, 2.05vw, 31px);
     font-weight: 500;
-    line-height: 1.45;
-
+    line-height: 1.28;
     overflow-wrap: anywhere;
     word-break: break-word;
-
+    transform: translate3d(0, 0, 0) scale(.98);
     transition:
-        color .35s var(--ease),
-        opacity .35s var(--ease),
-        text-shadow .35s var(--ease),
-        transform .3s var(--ease);
+        color .45s var(--ease),
+        opacity .45s var(--ease),
+        transform .65s var(--ease),
+        filter .45s ease,
+        text-shadow .45s ease;
 }
 
+/* The lyric window intentionally keeps about 4–5 lines readable. */
 .lyric-line.active {
     color: var(--accent);
     opacity: 1;
-    transform: translateX(2px) scale(1.015);
-
-    text-shadow:
-        0 0 20px var(--accent-glow);
+    transform: translate3d(0, 0, 0) scale(1.02);
+    text-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* Apple Music-style lyric progression:
-   upcoming lines brighten as they approach, then the current line
-   becomes accent-colored, and past lines briefly fade gray before disappearing. */
 .lyric-line.next {
     color: var(--text-soft);
     opacity: .68;
-    transform: translateX(0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
 }
 
 .lyric-line.next-next {
     color: var(--text-soft);
-    opacity: .30;
-    transform: translateX(0) scale(.985);
+    opacity: .38;
+    transform: translate3d(0, 0, 0) scale(.99);
 }
 
+.lyric-line.next-third {
+    color: var(--text-soft);
+    opacity: .20;
+    transform: translate3d(0, 0, 0) scale(.985);
+}
+
+/* Past lyrics briefly turn translucent gray, then disappear without
+   collapsing their layout, preventing the whole track from jumping. */
 .lyric-line.past {
     color: rgba(190,190,190,.30);
     opacity: .30;
-    transform: translateY(-10px) scale(.985);
+    transform: translate3d(0, -6px, 0) scale(.985);
     filter: blur(0);
-    visibility: visible;
     pointer-events: none;
 }
 
 .lyric-line.past.fade-out {
-    color: transparent;
+    color: rgba(190,190,190,0);
     opacity: 0;
-    transform: translateY(-28px) scale(.96);
-    filter: blur(5px);
+    transform: translate3d(0, -18px, 0) scale(.97);
+    filter: blur(4px);
     visibility: hidden;
-    height: 0;
-    min-height: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    overflow: hidden;
 }
 
 .lyric-line.pause {
@@ -1918,9 +1910,10 @@ img {
     }
 
     .lyric-line {
-        margin: 15px 0;
+        margin: 9px 0;
         padding-right: 15px;
         font-size: 22px;
+        line-height: 1.3;
     }
 
     .credits-card {
@@ -3697,59 +3690,55 @@ async function loadLyrics(path) {
    ========================================================= */
 
 function updateLyrics(time) {
-    if (!currentLyrics.length) {
-        return;
-    }
+    if (!currentLyrics.length) return;
 
     let activeIndex = -1;
-
     for (let i = 0; i < currentLyrics.length; i++) {
-        if (time >= currentLyrics[i].time) {
-            activeIndex = i;
-        } else {
-            break;
-        }
+        if (time >= currentLyrics[i].time) activeIndex = i;
+        else break;
     }
 
-    if (activeIndex === lastActiveIndex) {
-        return;
-    }
-
+    if (activeIndex === lastActiveIndex) return;
     lastActiveIndex = activeIndex;
 
-    const elements = document.querySelectorAll(".lyric-line");
-    const track = lyricsContainer.querySelector(".lyrics-track");
+    const elements = Array.from(document.querySelectorAll('.lyric-line'));
+    const track = lyricsContainer.querySelector('.lyrics-track');
+    if (!track || !elements.length) return;
 
     elements.forEach((element, index) => {
-        element.classList.remove("active", "next", "next-next", "past", "fade-out");
+        element.classList.remove('active', 'next', 'next-next', 'next-third', 'past', 'fade-out');
 
         if (index < activeIndex) {
-            element.classList.add("past");
+            element.classList.add('past');
         } else if (index === activeIndex) {
-            element.classList.add("active");
+            element.classList.add('active');
         } else if (index === activeIndex + 1) {
-            element.classList.add("next");
+            element.classList.add('next');
         } else if (index === activeIndex + 2) {
-            element.classList.add("next-next");
+            element.classList.add('next-next');
+        } else if (index === activeIndex + 3) {
+            element.classList.add('next-third');
         }
     });
 
-    // Keep the current line a little above the vertical center of the cover.
-    // The track itself eases into place instead of snapping.
-    if (activeIndex >= 0 && elements[activeIndex] && track) {
-        const line = elements[activeIndex];
+    if (activeIndex < 0) return;
 
-        requestAnimationFrame(() => {
-            const target = line.offsetTop - (lyricsContainer.clientHeight * 0.36);
-            track.style.transform = `translate3d(0, ${-Math.max(0, target)}px, 0)`;
+    const line = elements[activeIndex];
 
-            // Past lyrics remain translucent gray for a moment, then disappear.
-            window.setTimeout(() => {
-                const past = Array.from(elements).filter((element, index) => index < activeIndex);
-                past.forEach(element => element.classList.add("fade-out"));
-            }, 280);
-        });
-    }
+    requestAnimationFrame(() => {
+        /* Put the active lyric around the upper-middle of the cover.
+           Because every line keeps its layout height, this never jumps. */
+        const anchor = lyricsContainer.clientHeight * 0.30;
+        const target = line.offsetTop - anchor;
+        track.style.transform = `translate3d(0, ${-Math.max(0, target)}px, 0)`;
+
+        /* Keep the previous line gray for ~0.3s before fading it out. */
+        window.setTimeout(() => {
+            elements.forEach((element, index) => {
+                if (index < activeIndex) element.classList.add('fade-out');
+            });
+        }, 300);
+    });
 }
 
 /* =========================================================
