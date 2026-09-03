@@ -1239,7 +1239,8 @@ img {
     object-fit: cover;
     object-position: center;
 
-    filter: blur(48px) saturate(1.25) brightness(0.45);
+    filter: blur(48px) saturate(1.35) brightness(0.62);
+    animation: focusBgDrift 22s ease-in-out infinite alternate;
     transform: scale(1.15);
 
     pointer-events: none;
@@ -1248,14 +1249,27 @@ img {
     transition: opacity .5s ease;
 }
 
+@keyframes focusBgDrift {
+    0% { transform: scale(1.16) translate3d(-.35%, -.35%, 0); }
+    50% { transform: scale(1.18) translate3d(.35%, .25%, 0); }
+    100% { transform: scale(1.17) translate3d(-.2%, .35%, 0); }
+}
+
+@keyframes focusOverlayPulse {
+    0% { opacity: .88; }
+    100% { opacity: .96; }
+}
+
 .full-bg-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
 
     background:
-        radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,.35) 70%),
-        linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.55) 100%);
+        radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,.22) 70%),
+        linear-gradient(180deg, rgba(0,0,0,.12) 0%, rgba(0,0,0,.38) 100%);
+
+    animation: focusOverlayPulse 18s ease-in-out infinite alternate;
 
     pointer-events: none;
 }
