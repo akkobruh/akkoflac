@@ -69,6 +69,18 @@ html input[type="range"] {
     transition-property: background-color, color, border-color, box-shadow, transform, opacity;
 }
 
+.control,
+.full-control,
+.nav-button,
+.like-btn,
+.full-like,
+.full-back,
+.shuffle-btn,
+.play-overlay {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* -------------------- RESET -------------------- */
 
 * {
@@ -1000,14 +1012,15 @@ img {
 
     border-radius: 50%;
 
-    background: var(--surface);
-    color: var(--accent);
+    background: var(--accent);
+    color: #0a0a0a;
 
     font-size: 15px;
 
     box-shadow:
         5px 5px 10px var(--shadow-dark),
-        -4px -4px 9px var(--shadow-light);
+        -4px -4px 9px var(--shadow-light),
+        0 0 14px var(--accent-soft);
 
     transition:
         color .2s ease,
@@ -1027,7 +1040,8 @@ img {
 }
 
 .control:hover {
-    color: #fff;
+    color: #0a0a0a;
+    background: var(--accent-bright);
     transform: translateY(-2px);
 }
 
@@ -1044,7 +1058,7 @@ img {
     height: 54px;
 
     background: var(--accent);
-    color: #fff;
+    color: #0a0a0a;
 
     box-shadow:
         6px 6px 14px #080808,
@@ -1054,6 +1068,7 @@ img {
 
 .control.main-play:hover {
     background: var(--accent-bright);
+    color: #0a0a0a;
     box-shadow:
         7px 7px 16px #070707,
         -4px -4px 9px var(--shadow-light),
@@ -1062,7 +1077,8 @@ img {
 
 .repeat.active,
 .shuffle.active {
-    color: var(--accent);
+    color: #0a0a0a;
+    background: var(--accent-bright);
 
     box-shadow:
         inset 4px 4px 8px var(--shadow-dark),
@@ -1488,14 +1504,15 @@ img {
 
     border-radius: 50%;
 
-    background: var(--surface);
-    color: var(--accent);
+    background: var(--accent);
+    color: #0a0a0a;
 
     font-size: 16px;
 
     box-shadow:
         6px 6px 12px var(--shadow-dark),
-        -4px -4px 9px rgba(255,255,255,.035);
+        -4px -4px 9px rgba(255,255,255,.035),
+        0 0 14px var(--accent-soft);
 
     transition:
         transform .2s var(--ease),
@@ -1505,7 +1522,8 @@ img {
 }
 
 .full-control:hover {
-    color: var(--accent);
+    color: #0a0a0a;
+    background: var(--accent-bright);
     transform: translateY(-2px);
 }
 
@@ -1521,21 +1539,22 @@ img {
     width: 62px;
     height: 62px;
 
-    background: var(--surface);
-    color: var(--accent);
+    background: var(--accent);
+    color: #0a0a0a;
 
     box-shadow:
         8px 8px 18px var(--shadow-dark),
         -4px -4px 12px var(--shadow-light),
-        0 0 24px rgba(123,140,255,.3);
+        0 0 24px var(--accent-glow);
 }
 
 .full-control.big:hover {
-    background: var(--surface-2);
+    background: var(--accent-bright);
+    color: #0a0a0a;
     box-shadow:
         10px 10px 22px var(--shadow-dark),
         -5px -5px 14px var(--shadow-light),
-        0 0 32px rgba(123,140,255,.4);
+        0 0 32px var(--accent-glow);
 }
 
 /* -------------------- LYRICS -------------------- */
@@ -1707,11 +1726,41 @@ img {
     }
 
     .mini-song {
-        width: 215px;
+        width: 200px;
     }
 
     .progress-area {
-        width: 230px;
+        width: 200px;
+    }
+
+    .player-controls {
+        gap: 6px;
+    }
+
+    .control {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        min-height: 46px;
+    }
+
+    .control.main-play {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+    }
+
+    .full-control {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+
+    .full-control.big {
+        width: 64px;
+        height: 64px;
     }
 
     .full-content {
@@ -1852,23 +1901,46 @@ img {
     }
 
     .player-controls {
-        gap: 1px;
+        gap: 6px;
+        flex-wrap: nowrap;
     }
 
     .control {
-        width: 33px;
-        height: 33px;
-
-        font-size: 12px;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 14px;
+        /* better touch */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .control.main-play {
-        width: 41px;
-        height: 41px;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
     }
 
     .progress-area {
         display: none;
+    }
+
+    .full-control {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .full-control.big {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
     }
 
     .full-player {
@@ -1903,17 +1975,23 @@ img {
     }
 
     .full-controls {
-        gap: 8px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .full-control {
-        width: 40px;
-        height: 40px;
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
     }
 
     .full-control.big {
-        width: 54px;
-        height: 54px;
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
     }
 
     .lyrics-panel {
@@ -2059,7 +2137,6 @@ html[data-theme="light"] .bottom-player {
 }
 
 html[data-theme="light"] .song-card,
-html[data-theme="light"] .control,
 html[data-theme="light"] .theme-btn,
 html[data-theme="light"] .credits-card {
     background: var(--surface-2);
@@ -2071,11 +2148,21 @@ html[data-theme="light"] .nav-button.active {
     color: var(--text);
 }
 
+html[data-theme="light"] .theme-btn.active {
+    color: #0a0a0a;
+}
+
+html[data-theme="light"] .control,
+html[data-theme="light"] .full-control,
 html[data-theme="light"] .control.main-play,
-html[data-theme="light"] .full-control.big,
-html[data-theme="light"] .theme-btn.active,
+html[data-theme="light"] .full-control.big {
+    background: var(--accent);
+    color: #0a0a0a;
+}
+
 html[data-theme="light"] .play-overlay {
-    color: var(--shadow-light);
+    color: #0a0a0a;
+    background: var(--accent);
 }
 
 html[data-theme="light"] .search-box input {
@@ -2249,6 +2336,7 @@ html[data-theme="light"] .search-box input {
                     <button class="accent-swatch" data-accent="#FFDD94" style="background:#FFDD94" title="Butter"></button>
                     <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral"></button>
                     <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac"></button>
+                    <button class="accent-swatch" data-accent="#ffffff" style="background:#ffffff; border: 1px solid rgba(255,255,255,.35);" title="White"></button>
                 </div>
             </div>
 
@@ -3763,7 +3851,7 @@ function updateLyrics(time) {
 
         requestAnimationFrame(() => {
             // Current = upper-middle. Past sits above briefly then fades.
-            const anchor = lyricsContainer.clientHeight * 0.28;
+            const anchor = lyricsContainer.clientHeight * 0.18;
             const target = line.offsetTop - anchor;
             track.style.transform =
                 `translate3d(0, ${-Math.max(0, target)}px, 0)`;
