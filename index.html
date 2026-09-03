@@ -1240,7 +1240,7 @@ img {
     object-position: center;
 
     filter: blur(48px) saturate(1.35) brightness(0.62);
-    animation: focusBgDrift 22s ease-in-out infinite alternate;
+    animation: focusBgDrift 22s ease-in-out infinite;
     transform: scale(1.15);
 
     pointer-events: none;
@@ -1250,9 +1250,11 @@ img {
 }
 
 @keyframes focusBgDrift {
-    0% { transform: scale(1.16) translate3d(-.35%, -.35%, 0); }
-    50% { transform: scale(1.18) translate3d(.35%, .25%, 0); }
-    100% { transform: scale(1.17) translate3d(-.2%, .35%, 0); }
+    0% { transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
+    25% { transform: scale(1.23) translate3d(1%, -0.5%, 0); }
+    50% { transform: scale(1.27) translate3d(1.5%, 1%, 0); }
+    75% { transform: scale(1.22) translate3d(-1%, 1.5%, 0); }
+    100% { transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
 }
 
 @keyframes focusOverlayPulse {
@@ -1567,31 +1569,25 @@ img {
     min-width: 0;
     min-height: 0;
 
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: hidden;
 
-    /* START FROM THE TOP */
     padding-top: 18px;
     padding-right: 35px;
-    /* big bottom padding so later lines can be scrolled into the middle and STAY there */
-    padding-bottom: 55vh;
+    padding-bottom: 0;
     padding-left: 0;
 
-    scrollbar-width: thin;
-    scrollbar-color: #333 transparent;
+    scrollbar-width: none;
 }
 
 #lyricsContainer::-webkit-scrollbar {
-    width: 5px;
+    display: none;
 }
 
-#lyricsContainer::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#lyricsContainer::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 99px;
+.lyrics-track {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    transition: transform .72s cubic-bezier(.22, .61, .36, 1);
 }
 
 .lyric-line {
@@ -1630,8 +1626,19 @@ img {
 }
 
 .lyric-line.past {
-    color: var(--muted);
-    opacity: .5;
+    color: transparent;
+    opacity: 0;
+    transform: translateY(-32px) scale(.96);
+    filter: blur(5px);
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+    min-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
 }
 
 .lyric-line.pause {
@@ -3474,6 +3481,9 @@ async function loadLyrics(path) {
             return;
         }
 
+        const track = document.createElement("div");
+        track.className = "lyrics-track";
+
         const fragment =
             document.createDocumentFragment();
 
@@ -3490,7 +3500,8 @@ async function loadLyrics(path) {
             fragment.appendChild(line);
         });
 
-        lyricsContainer.appendChild(fragment);
+        track.appendChild(fragment);
+        lyricsContainer.appendChild(track);
 
         // Force start at the very top
         lyricsContainer.scrollTop = 0;
@@ -3516,11 +3527,7 @@ function updateLyrics(time) {
 
     let activeIndex = -1;
 
-    for (
-        let i = 0;
-        i < currentLyrics.length;
-        i++
-    ) {
+    for (let i = 0; i < currentLyrics.length; i++) {
         if (time >= currentLyrics[i].time) {
             activeIndex = i;
         } else {
@@ -3534,35 +3541,26 @@ function updateLyrics(time) {
 
     lastActiveIndex = activeIndex;
 
-    const elements =
-        document.querySelectorAll(".lyric-line");
+    const elements = document.querySelectorAll(".lyric-line");
+    const track = lyricsContainer.querySelector(".lyrics-track");
 
     elements.forEach((element, index) => {
-        element.classList.remove(
-            "active",
-            "past"
-        );
+        element.classList.remove("active", "past");
 
         if (index < activeIndex) {
             element.classList.add("past");
-        }
-
-        if (index === activeIndex) {
+        } else if (index === activeIndex) {
             element.classList.add("active");
         }
     });
 
-    if (
-        activeIndex >= 0 &&
-        elements[activeIndex]
-    ) {
-        // This makes the active line go to the middle
-        // and stay locked there for the rest of the song.
-        // Because top padding is small, the first lines stay near the top
-        // until they naturally reach the center.
-        elements[activeIndex].scrollIntoView({
-            behavior: "smooth",
-            block: "center"
+    if (activeIndex >= 0 && elements[activeIndex] && track) {
+        const line = elements[activeIndex];
+
+        // Let the past line collapse first, then smoothly reposition the lyric track.
+        requestAnimationFrame(() => {
+            const target = line.offsetTop - (lyricsContainer.clientHeight * 0.30);
+            track.style.transform = `translate3d(0, ${-Math.max(0, target)}px, 0)`;
         });
     }
 }
