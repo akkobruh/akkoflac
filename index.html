@@ -1272,17 +1272,109 @@ img {
 
 .focus-palette {
     position: absolute;
-    inset: -12%;
+    inset: -20%;
     z-index: 1;
     pointer-events: none;
-    opacity: .95;
-    filter: blur(55px) saturate(1.35);
-    transform: scale(1.08);
-    background:
-        radial-gradient(circle at 18% 24%, var(--palette-1, rgba(123,140,255,.58)) 0%, transparent 42%),
-        radial-gradient(circle at 82% 28%, var(--palette-2, rgba(70,90,210,.48)) 0%, transparent 45%),
-        radial-gradient(circle at 48% 82%, var(--palette-3, rgba(170,80,190,.42)) 0%, transparent 48%);
-    transition: opacity 1.2s ease;
+    opacity: 0;
+    transition: opacity 1s ease;
+    overflow: hidden;
+}
+
+.full-player.open .focus-palette {
+    opacity: 1;
+}
+
+.focus-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px) saturate(1.45);
+    will-change: transform;
+    mix-blend-mode: screen;
+    opacity: .85;
+}
+
+.focus-blob.b1 {
+    width: 62%;
+    height: 62%;
+    top: -10%;
+    left: -8%;
+    background: var(--palette-1, rgba(123,140,255,.7));
+    animation: blobDrift1 18s ease-in-out infinite alternate;
+}
+
+.focus-blob.b2 {
+    width: 55%;
+    height: 55%;
+    top: -5%;
+    right: -12%;
+    left: auto;
+    background: var(--palette-2, rgba(70,90,210,.62));
+    animation: blobDrift2 22s ease-in-out infinite alternate;
+}
+
+.focus-blob.b3 {
+    width: 70%;
+    height: 70%;
+    bottom: -18%;
+    left: 15%;
+    top: auto;
+    background: var(--palette-3, rgba(170,80,190,.55));
+    animation: blobDrift3 26s ease-in-out infinite alternate;
+}
+
+.focus-blob.b4 {
+    width: 48%;
+    height: 48%;
+    bottom: 10%;
+    right: -5%;
+    left: auto;
+    top: auto;
+    background: var(--palette-1, rgba(123,140,255,.45));
+    opacity: .65;
+    animation: blobDrift4 20s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift1 {
+    0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33%  { transform: translate(12%, 18%) scale(1.12) rotate(8deg); }
+    66%  { transform: translate(-8%, 28%) scale(0.92) rotate(-6deg); }
+    100% { transform: translate(18%, -10%) scale(1.08) rotate(12deg); }
+}
+
+@keyframes blobDrift2 {
+    0%   { transform: translate(0, 0) scale(1.05) rotate(0deg); }
+    40%  { transform: translate(-20%, 14%) scale(0.9) rotate(-10deg); }
+    70%  { transform: translate(-8%, -16%) scale(1.15) rotate(6deg); }
+    100% { transform: translate(-22%, 8%) scale(1) rotate(-4deg); }
+}
+
+@keyframes blobDrift3 {
+    0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+    25%  { transform: translate(16%, -12%) scale(1.1) rotate(10deg); }
+    55%  { transform: translate(-14%, -20%) scale(0.88) rotate(-8deg); }
+    100% { transform: translate(10%, 12%) scale(1.06) rotate(5deg); }
+}
+
+@keyframes blobDrift4 {
+    0%   { transform: translate(0, 0) scale(0.95); }
+    50%  { transform: translate(-18%, -22%) scale(1.18); }
+    100% { transform: translate(14%, 10%) scale(1.02); }
+}
+
+.full-player.open .full-bg {
+    animation: bgKenBurns 28s ease-in-out infinite alternate;
+}
+
+@keyframes bgKenBurns {
+    0%   { transform: scale(1.15) translate(0, 0); }
+    100% { transform: scale(1.28) translate(-2%, 1.5%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .focus-blob,
+    .full-player.open .full-bg {
+        animation: none !important;
+    }
 }
 
 .full-bg-overlay {
@@ -2645,7 +2737,12 @@ html[data-theme="light"] .search-box input {
 <div class="full-player" id="fullPlayer">
 
     <img class="full-bg" id="fullBg" src="covers/here.jfif" alt="">
-    <div class="focus-palette" id="focusPalette"></div>
+    <div class="focus-palette" id="focusPalette">
+        <div class="focus-blob b1"></div>
+        <div class="focus-blob b2"></div>
+        <div class="focus-blob b3"></div>
+        <div class="focus-blob b4"></div>
+    </div>
     <div class="full-bg-overlay"></div>
 
     <button class="full-back" id="fullBack" title="Back">
@@ -3452,15 +3549,17 @@ function animateFocusPalette(nextPalette) {
     if (focusPaletteAnimation) cancelAnimationFrame(focusPaletteAnimation);
 
     const styles = getComputedStyle(paletteLayer);
-    const current = [1,2,3].map(i => {
-        const match = styles.getPropertyValue(`--palette-${i}`).match(/rgba?\\(([^)]+)\\)/);
-        if (!match) return [123,140,255];
-        return match[1].split(",").slice(0,3).map(Number);
+    const current = [1, 2, 3].map(i => {
+        const raw = styles.getPropertyValue("--palette-" + i);
+        const match = raw.match(/rgba?\(([^)]+)\)/);
+        if (!match) return [123, 140, 255];
+        return match[1].split(",").slice(0, 3).map(Number);
     });
 
+    const alphas = [0.72, 0.62, 0.55];
     const start = performance.now();
-    const duration = 1400;
-    const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const duration = 1600;
+    const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     function frame(now) {
         const t = Math.min(1, (now - start) / duration);
@@ -3469,7 +3568,10 @@ function animateFocusPalette(nextPalette) {
         nextPalette.forEach((target, index) => {
             const from = current[index] || target;
             const mixed = from.map((v, c) => v + (target[c] - v) * e);
-            paletteLayer.style.setProperty(`--palette-${index + 1}`, rgbString(mixed, [.62,.52,.46][index]));
+            paletteLayer.style.setProperty(
+                "--palette-" + (index + 1),
+                rgbString(mixed, alphas[index])
+            );
         });
 
         if (t < 1) focusPaletteAnimation = requestAnimationFrame(frame);
