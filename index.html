@@ -3687,60 +3687,60 @@ async function loadLyrics(path) {
    ========================================================= */
 
 function updateLyrics(time) {
-    if (!currentLyrics.length) return;
+        if (!currentLyrics.length) return;
 
-    let activeIndex = -1;
-    for (let i = 0; i < currentLyrics.length; i++) {
-        if (time >= currentLyrics[i].time) activeIndex = i;
-        else break;
-    }
+        lyricsContainer.classList.remove('lyrics-idle');
 
-    if (activeIndex === lastActiveIndex) return;
-    lastActiveIndex = activeIndex;
-
-    const elements = Array.from(lyricsContainer.querySelectorAll('.lyric-line'));
-    const track = lyricsContainer.querySelector('.lyrics-track');
-    if (!track || !elements.length) return;
-
-    elements.forEach((element, index) => {
-        element.classList.remove(
-            'active', 'next', 'next-next', 'next-third',
-            'next-fourth', 'past', 'fade-past', 'offscreen'
-        );
-
-        if (index === activeIndex - 1) {
-            element.classList.add('past');
-        } else if (index === activeIndex) {
-            element.classList.add('active');
-        } else if (index === activeIndex + 1) {
-            element.classList.add('next');
-        } else if (index === activeIndex + 2) {
-            element.classList.add('next-next');
-        } else {
-            element.classList.add('offscreen');
+        let activeIndex = -1;
+        for (let i = 0; i < currentLyrics.length; i++) {
+            if (time >= currentLyrics[i].time) activeIndex = i;
+            else break;
         }
-    });
 
-    if (activeIndex < 0) return;
+        // Keep the first lyric in the same upper-middle slot even before
+        // playback reaches it, so the lyrics never jump down when starting.
+        const displayIndex = activeIndex < 0 ? 0 : activeIndex;
 
-    const line = elements[activeIndex];
+        if (displayIndex === lastActiveIndex && activeIndex >= 0) return;
+        lastActiveIndex = displayIndex;
 
-    requestAnimationFrame(() => {
-        /* Active lyric stays in the upper-middle of the panel. */
-        const anchor = lyricsContainer.clientHeight * 0.28;
-        const target = line.offsetTop - anchor;
-        track.style.transform = `translate3d(0, ${-Math.max(0, target)}px, 0)`;
-    });
+        const elements = Array.from(
+            lyricsContainer.querySelectorAll('.lyric-line')
+        );
+        const track = lyricsContainer.querySelector('.lyrics-track');
+        if (!track || !elements.length) return;
 
-    /* Let the previous lyric visibly fade out before the new window settles. */
-    window.clearTimeout(window.lyricFadeTimer);
-    const previous = elements[activeIndex - 1];
-    if (previous) {
-        window.lyricFadeTimer = window.setTimeout(() => {
-            previous.classList.add('fade-past');
-        }, 220);
+        elements.forEach((element, index) => {
+            element.classList.remove(
+                'active', 'next', 'next-next', 'next-third',
+                'next-fourth', 'past', 'offscreen'
+            );
+
+            if (index === displayIndex - 1) {
+                element.classList.add('past');
+            } else if (index === displayIndex) {
+                element.classList.add('active');
+            } else if (index === displayIndex + 1) {
+                element.classList.add('next');
+            } else if (index === displayIndex + 2) {
+                element.classList.add('next-next');
+            } else {
+                element.classList.add('offscreen');
+            }
+        });
+
+        const line = elements[displayIndex];
+        if (!line) return;
+
+        requestAnimationFrame(() => {
+            // Current = upper-middle. Past = top, next = lower-middle,
+            // next-next = lower.
+            const anchor = lyricsContainer.clientHeight * 0.31;
+            const target = line.offsetTop - anchor;
+            track.style.transform =
+                `translate3d(0, ${-Math.max(0, target)}px, 0)`;
+        });
     }
-}
 
 
 /* =========================================================
