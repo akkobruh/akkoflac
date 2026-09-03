@@ -1381,7 +1381,7 @@ img {
 .full-info {
     width: min(430px, 75vh, 42vw);
 
-    margin-top: 25px;
+    margin-top: 14px;
 
     display: flex;
     align-items: flex-start;
@@ -1395,7 +1395,7 @@ img {
 }
 
 .full-title {
-    margin-bottom: 7px;
+    margin-bottom: 4px;
 
     color: var(--accent);
 
@@ -1451,7 +1451,7 @@ img {
 .full-progress {
     width: min(430px, 75vh, 42vw);
 
-    margin-top: 28px;
+    margin-top: 16px;
 }
 
 .full-progress-bar {
@@ -1474,9 +1474,9 @@ img {
     align-items: center;
     justify-content: center;
 
-    gap: 15px;
+    gap: 12px;
 
-    margin-top: 20px;
+    margin-top: 14px;
 }
 
 .full-control {
@@ -1633,6 +1633,26 @@ img {
     color: var(--text-soft);
     opacity: .34;
     transform: scale(.985);
+}
+
+.lyric-line.next-third {
+    color: var(--text-soft);
+    opacity: .22;
+    transform: scale(.97);
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 35%,
+        rgba(0,0,0,.45) 65%,
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 35%,
+        rgba(0,0,0,.45) 65%,
+        transparent 100%
+    );
 }
 
 .lyric-line.past {
@@ -2305,17 +2325,9 @@ html[data-theme="light"] .search-box input {
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
         </button>
 
-        <button class="control" id="backButton" title="Back 10 seconds">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-
         <button class="control main-play" id="playButton" title="Play">
             <svg class="icon-play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="icon-pause hidden" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </button>
-
-        <button class="control" id="forwardButton" title="Forward 10 seconds">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
         </button>
 
         <button class="control" id="nextButton" title="Next">
@@ -2435,17 +2447,9 @@ html[data-theme="light"] .search-box input {
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
                 </button>
 
-                <button class="full-control" id="fullBack10" title="Back 10 seconds">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-                </button>
-
                 <button class="full-control big" id="fullPlay" title="Play">
                     <svg class="icon-play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     <svg class="icon-pause hidden" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </button>
-
-                <button class="full-control" id="fullForward10" title="Forward 10 seconds">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
                 </button>
 
                 <button class="full-control" id="fullNext" title="Next">
@@ -3675,6 +3679,8 @@ async function loadLyrics(path) {
         // Force start at the very top
         lyricsContainer.scrollTop = 0;
 
+        // First lyric sits in the "current" slot immediately
+        lastActiveIndex = -1;
         updateLyrics(audio.currentTime || 0);
 
     } catch (error) {
@@ -3704,7 +3710,7 @@ function updateLyrics(time) {
         // playback reaches it, so the lyrics never jump down when starting.
         const displayIndex = activeIndex < 0 ? 0 : activeIndex;
 
-        if (displayIndex === lastActiveIndex && activeIndex >= 0) return;
+        if (displayIndex === lastActiveIndex && lastActiveIndex !== -1) return;
         lastActiveIndex = displayIndex;
 
         const elements = Array.from(
@@ -3744,6 +3750,9 @@ function updateLyrics(time) {
                 element.classList.add('next');
             } else if (index === displayIndex + 2) {
                 element.classList.add('next-next');
+            } else if (index === displayIndex + 3) {
+                // 5th line: incoming, bottom half dissolved
+                element.classList.add('next-third');
             } else {
                 element.classList.add('offscreen');
             }
@@ -3799,26 +3808,6 @@ document.getElementById("previousButton")
 
 document.getElementById("fullPrevious")
     .addEventListener("click", previousSong);
-
-document.getElementById("backButton")
-    .addEventListener("click", () => {
-        seek(-10);
-    });
-
-document.getElementById("fullBack10")
-    .addEventListener("click", () => {
-        seek(-10);
-    });
-
-document.getElementById("forwardButton")
-    .addEventListener("click", () => {
-        seek(10);
-    });
-
-document.getElementById("fullForward10")
-    .addEventListener("click", () => {
-        seek(10);
-    });
 
 document.getElementById("repeatButton")
     .addEventListener("click", () => {
