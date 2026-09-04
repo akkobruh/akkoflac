@@ -15,6 +15,30 @@
    AKKOFLAC — SPATIAL UI + GLASS
    ========================================================= */
 
+@property --accent {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #7b8cff;
+}
+
+@property --accent-bright {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #95a3ff;
+}
+
+@property --accent-soft {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: rgba(123, 140, 255, 0.2);
+}
+
+@property --accent-glow {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: rgba(123, 140, 255, 0.45);
+}
+
 :root {
     --bg: #0a0a12;
     --bg-deep: #06060c;
@@ -47,6 +71,12 @@
     --player-height: 92px;
 
     --ease: cubic-bezier(.2,.8,.2,1);
+
+    transition:
+        --accent .45s var(--ease),
+        --accent-bright .45s var(--ease),
+        --accent-soft .45s var(--ease),
+        --accent-glow .45s var(--ease);
 }
 
 html {
@@ -56,7 +86,7 @@ html {
 }
 
 html * {
-    transition-property: background-color, color, border-color, box-shadow, fill, stroke, text-shadow, backdrop-filter;
+    transition-property: background-color, color, border-color, box-shadow, fill, stroke, text-shadow, backdrop-filter, transform, opacity;
     transition-duration: .4s;
     transition-timing-function: var(--ease);
 }
@@ -967,6 +997,273 @@ img {
     cursor: pointer;
 }
 
+/* -------------------- QUEUE PANEL -------------------- */
+
+.queue-panel {
+    position: fixed;
+    z-index: 95;
+    right: 18px;
+    bottom: calc(var(--player-height) + 14px);
+    width: min(360px, calc(100vw - 36px));
+    max-height: min(52vh, 420px);
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 20px;
+    background: rgba(16, 16, 26, 0.88);
+    backdrop-filter: blur(36px) saturate(1.35);
+    -webkit-backdrop-filter: blur(36px) saturate(1.35);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,255,255,.06);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(.98);
+    pointer-events: none;
+    transition:
+        opacity .28s var(--ease),
+        transform .28s var(--ease),
+        visibility .28s ease;
+}
+
+.queue-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    flex-shrink: 0;
+}
+
+.queue-header h3 {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.queue-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.queue-search {
+    padding: 8px 12px 6px;
+    flex-shrink: 0;
+}
+
+.queue-search input {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    outline: 0;
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    font-size: 12px;
+    transition: all .25s var(--ease);
+}
+
+.queue-search input::placeholder {
+    color: var(--muted);
+}
+
+.queue-search input:focus {
+    border-color: rgba(123,140,255,.4);
+    box-shadow: 0 0 0 1px rgba(123,140,255,.15);
+}
+
+.queue-action {
+    padding: 7px 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--glass-border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    transition: .2s var(--ease);
+}
+
+.queue-action:hover {
+    color: var(--text);
+    background: rgba(255,255,255,.1);
+}
+
+.queue-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.15) transparent;
+}
+
+.queue-add-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    opacity: 0;
+    transform: scale(.85);
+    transition: all .2s var(--ease);
+    z-index: 2;
+}
+
+.song-card:hover .queue-add-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.queue-add-btn:hover {
+    background: rgba(123,140,255,.25);
+    transform: scale(1.08);
+}
+
+.queue-toast {
+    position: fixed;
+    z-index: 130;
+    left: 50%;
+    bottom: calc(var(--player-height) + 18px);
+    transform: translateX(-50%) translateY(10px);
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(20,20,30,.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .28s var(--ease);
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.queue-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .22s var(--ease);
+    animation: fadeUp .35s var(--ease) both;
+}
+
+.queue-item:hover {
+    background: rgba(255,255,255,.06);
+}
+
+.queue-item.current {
+    background: rgba(123,140,255,.12);
+    border-color: rgba(123,140,255,.2);
+}
+
+.queue-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.queue-item-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.queue-item-title {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.queue-item-artist {
+    color: var(--muted);
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.queue-item-remove {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: .15s ease;
+}
+
+.queue-item:hover .queue-item-remove {
+    opacity: 1;
+}
+
+.queue-item-remove:hover {
+    color: #ff7b7b;
+    background: rgba(255,80,80,.12);
+}
+
+.queue-empty {
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.control.queue-btn.active {
+    background: var(--accent-bright);
+    color: #0a0a0a;
+}
+
+@media (max-width: 760px) {
+    .queue-panel {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        bottom: calc(var(--player-height) + 10px);
+        max-height: 45vh;
+    }
+}
+
 /* -------------------- FULL PLAYER (FOCUS MODE) -------------------- */
 
 .full-player {
@@ -1029,6 +1326,8 @@ img {
     will-change: transform;
     mix-blend-mode: screen;
     opacity: .9;
+    /* JS drives transform for random motion — no fixed CSS path */
+    transition: none;
 }
 
 .focus-blob.b1 {
@@ -1037,7 +1336,6 @@ img {
     top: -10%;
     left: -8%;
     background: var(--palette-1, rgba(90,90,100,.55));
-    animation: blobDrift1 9s ease-in-out infinite alternate;
 }
 
 .focus-blob.b2 {
@@ -1047,7 +1345,6 @@ img {
     right: -12%;
     left: auto;
     background: var(--palette-2, rgba(70,70,80,.5));
-    animation: blobDrift2 11s ease-in-out infinite alternate;
 }
 
 .focus-blob.b3 {
@@ -1057,7 +1354,6 @@ img {
     left: 15%;
     top: auto;
     background: var(--palette-3, rgba(110,110,120,.45));
-    animation: blobDrift3 13s ease-in-out infinite alternate;
 }
 
 .focus-blob.b4 {
@@ -1069,38 +1365,6 @@ img {
     top: auto;
     background: var(--palette-1, rgba(90,90,100,.4));
     opacity: .7;
-    animation: blobDrift4 10s ease-in-out infinite alternate;
-}
-
-@keyframes blobDrift1 {
-    0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
-    25%  { transform: translate(22%, 28%) scale(1.22) rotate(14deg); }
-    50%  { transform: translate(-18%, 35%) scale(0.85) rotate(-12deg); }
-    75%  { transform: translate(28%, -15%) scale(1.18) rotate(18deg); }
-    100% { transform: translate(-12%, 20%) scale(1.05) rotate(-8deg); }
-}
-
-@keyframes blobDrift2 {
-    0%   { transform: translate(0, 0) scale(1.05) rotate(0deg); }
-    30%  { transform: translate(-32%, 22%) scale(0.82) rotate(-16deg); }
-    55%  { transform: translate(-15%, -28%) scale(1.25) rotate(12deg); }
-    80%  { transform: translate(20%, 18%) scale(0.9) rotate(-10deg); }
-    100% { transform: translate(-28%, 10%) scale(1.08) rotate(6deg); }
-}
-
-@keyframes blobDrift3 {
-    0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
-    20%  { transform: translate(25%, -20%) scale(1.2) rotate(15deg); }
-    45%  { transform: translate(-25%, -30%) scale(0.8) rotate(-14deg); }
-    70%  { transform: translate(18%, 22%) scale(1.15) rotate(10deg); }
-    100% { transform: translate(-15%, 15%) scale(1.05) rotate(-6deg); }
-}
-
-@keyframes blobDrift4 {
-    0%   { transform: translate(0, 0) scale(0.95) rotate(0deg); }
-    35%  { transform: translate(-30%, -32%) scale(1.28) rotate(-12deg); }
-    65%  { transform: translate(25%, 18%) scale(0.88) rotate(10deg); }
-    100% { transform: translate(-10%, 22%) scale(1.12) rotate(-5deg); }
 }
 
 .full-player.open .full-bg {
@@ -1528,7 +1792,8 @@ img {
         gap: 12px;
     }
 
-    .like-btn {
+    .like-btn,
+    .queue-add-btn {
         opacity: 1;
         transform: scale(1);
     }
@@ -2064,10 +2329,24 @@ html[data-theme="light"] .search-box input {
 
         </div>
 
+        <div class="section" id="recentlyPlayedSection">
+
+            <div class="section-heading">
+                <h2>Recently Played</h2>
+            </div>
+
+            <div class="song-grid" id="recentlyPlayedGrid"></div>
+
+            <div class="empty hidden" id="recentlyPlayedEmpty">
+                Play some songs and they'll show up here.
+            </div>
+
+        </div>
+
         <div class="section">
 
             <div class="section-heading">
-                <h2>Recently Added</h2>
+                <h2>New at Akkoflac</h2>
             </div>
 
             <div class="song-grid" id="recentGrid"></div>
@@ -2223,6 +2502,10 @@ html[data-theme="light"] .search-box input {
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
         </button>
 
+        <button class="control queue-btn" id="queueButton" title="Up Next">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h12v2H3v-2z"/></svg>
+        </button>
+
     </div>
 
     <div class="repeat-label" id="repeatLabel">
@@ -2252,6 +2535,27 @@ html[data-theme="light"] .search-box input {
     </div>
 
 </div>
+
+<!-- =========================================================
+     QUEUE / UP NEXT PANEL
+     ========================================================= -->
+
+<div class="queue-panel" id="queuePanel">
+    <div class="queue-header">
+        <h3>Up Next</h3>
+        <div class="queue-header-actions">
+            <button class="queue-action" id="queueShuffleBtn" type="button">Shuffle</button>
+            <button class="queue-action" id="queueClearBtn" type="button">Clear</button>
+            <button class="queue-action" id="queueCloseBtn" type="button">Close</button>
+        </div>
+    </div>
+    <div class="queue-search">
+        <input id="queueSearchInput" type="text" placeholder="Search queue..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="queue-list" id="queueList"></div>
+</div>
+
+<div class="queue-toast" id="queueToast">Added to Up Next</div>
 
 <!-- =========================================================
      FULL SCREEN PLAYER (FOCUS MODE)
@@ -2731,6 +3035,42 @@ const lyricsPanel =
 const lyricsContainer =
     document.getElementById("lyricsContainer");
 
+const recentlyPlayedGrid =
+    document.getElementById("recentlyPlayedGrid");
+
+const recentlyPlayedEmpty =
+    document.getElementById("recentlyPlayedEmpty");
+
+/* =========================================================
+   RECENTLY PLAYED
+   ========================================================= */
+
+function getRecentlyPlayedIds() {
+    try {
+        const value = JSON.parse(
+            localStorage.getItem("akkoflac-recent") || "[]"
+        );
+        return Array.isArray(value) ? value : [];
+    } catch {
+        return [];
+    }
+}
+
+function addToRecentlyPlayed(id) {
+    if (!id) return;
+    let list = getRecentlyPlayedIds().filter(item => item !== id);
+    list.unshift(id);
+    list = list.slice(0, 12);
+    localStorage.setItem("akkoflac-recent", JSON.stringify(list));
+}
+
+function getRecentlyPlayedSongs() {
+    const ids = getRecentlyPlayedIds();
+    return ids
+        .map(id => songs.find(s => s.id === id))
+        .filter(Boolean);
+}
+
 /* =========================================================
    TIME
    ========================================================= */
@@ -2810,6 +3150,7 @@ function createSongCard(song, list, autoShuffle = false) {
             <div class="play-overlay">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </div>
+            <button class="queue-add-btn" title="Add to Up Next" type="button">+</button>
             <button class="like-btn ${liked ? "liked" : ""}" title="Like" data-id="${escapeHTML(song.id)}">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </button>
@@ -2830,13 +3171,48 @@ function createSongCard(song, list, autoShuffle = false) {
     });
 
     const likeBtn = card.querySelector(".like-btn");
-
     likeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         toggleLike(song.id);
     });
 
+    const addBtn = card.querySelector(".queue-add-btn");
+    addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        addSongToQueue(song);
+    });
+
     return card;
+}
+
+function showQueueToast(message) {
+    const toast = document.getElementById("queueToast");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(showQueueToast._t);
+    showQueueToast._t = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1400);
+}
+
+function addSongToQueue(song) {
+    if (!song) return;
+
+    if (!playQueue.length) {
+        playQueue = [song];
+        queueIndex = 0;
+        playCurrentFromQueue();
+        showQueueToast("Now playing");
+        return;
+    }
+
+    playQueue.push(song);
+    showQueueToast("Added to Up Next");
+
+    if (document.getElementById("queuePanel")?.classList.contains("open")) {
+        renderQueuePanel();
+    }
 }
 
 /* =========================================================
@@ -2951,7 +3327,18 @@ function getFilteredSongs() {
 function renderAll() {
     const filtered = getFilteredSongs();
 
-    /* Home / Songs: auto-shuffle when you click a song */
+    /* Recently Played (home) */
+    if (recentlyPlayedGrid) {
+        const recentSongs = getRecentlyPlayedSongs().slice(0, 6);
+        renderGrid(
+            recentlyPlayedGrid,
+            recentSongs,
+            recentlyPlayedEmpty,
+            true
+        );
+    }
+
+    /* New at Akkoflac (home) — newest first */
     renderGrid(
         recentGrid,
         [...filtered].reverse().slice(0, 6),
@@ -3227,6 +3614,85 @@ async function updateFocusPalette(song) {
     };
 }
 
+/* =========================================================
+   RANDOM DYNAMIC BLOB MOTION
+   Continuous random targets — never the same path twice
+   ========================================================= */
+
+let blobMotionRaf = null;
+const blobStates = [];
+
+function rand(min, max) {
+    return min + Math.random() * (max - min);
+}
+
+function initBlobMotion() {
+    const blobs = document.querySelectorAll(".focus-blob");
+    blobStates.length = 0;
+
+    blobs.forEach((el) => {
+        const state = {
+            el,
+            x: rand(-10, 10),
+            y: rand(-10, 10),
+            scale: rand(0.95, 1.1),
+            rot: rand(-8, 8),
+            tx: rand(-28, 28),
+            ty: rand(-28, 28),
+            tscale: rand(0.82, 1.28),
+            trot: rand(-18, 18),
+            speed: rand(0.0008, 0.0018),
+            nextAt: performance.now() + rand(2500, 5500)
+        };
+        blobStates.push(state);
+        el.style.transform =
+            `translate(${state.x}%, ${state.y}%) scale(${state.scale}) rotate(${state.rot}deg)`;
+    });
+}
+
+function pickNewBlobTarget(state, now) {
+    state.tx = rand(-32, 32);
+    state.ty = rand(-32, 32);
+    state.tscale = rand(0.8, 1.3);
+    state.trot = rand(-20, 20);
+    state.speed = rand(0.0007, 0.002);
+    state.nextAt = now + rand(2800, 6500);
+}
+
+function tickBlobMotion(now) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        blobMotionRaf = null;
+        return;
+    }
+
+    const open = document.getElementById("fullPlayer")?.classList.contains("open");
+
+    if (open) {
+        blobStates.forEach((state) => {
+            if (now >= state.nextAt) {
+                pickNewBlobTarget(state, now);
+            }
+
+            const ease = 1 - Math.exp(-state.speed * 16);
+            state.x += (state.tx - state.x) * ease;
+            state.y += (state.ty - state.y) * ease;
+            state.scale += (state.tscale - state.scale) * ease;
+            state.rot += (state.trot - state.rot) * ease;
+
+            state.el.style.transform =
+                `translate(${state.x.toFixed(2)}%, ${state.y.toFixed(2)}%) scale(${state.scale.toFixed(3)}) rotate(${state.rot.toFixed(2)}deg)`;
+        });
+    }
+
+    blobMotionRaf = requestAnimationFrame(tickBlobMotion);
+}
+
+function startBlobMotion() {
+    if (blobMotionRaf) return;
+    if (!blobStates.length) initBlobMotion();
+    blobMotionRaf = requestAnimationFrame(tickBlobMotion);
+}
+
 function updateSongUI() {
     const song = getCurrentSong();
     if (!song) return;
@@ -3331,6 +3797,8 @@ function playCurrentFromQueue() {
     currentIndex = songs.findIndex(s => s.id === song.id);
     if (currentIndex < 0) currentIndex = 0;
 
+    addToRecentlyPlayed(song.id);
+
     audio.src = song.audio;
     audio.load();
 
@@ -3340,6 +3808,16 @@ function playCurrentFromQueue() {
     lastActiveIndex = null;
     lyricsContainer.innerHTML = "";
     loadLyrics(song.lyrics);
+
+    /* Refresh home Recently Played without full re-render cost on every tick */
+    if (recentlyPlayedGrid && currentPage === "home") {
+        const recentSongs = getRecentlyPlayedSongs().slice(0, 6);
+        renderGrid(recentlyPlayedGrid, recentSongs, recentlyPlayedEmpty, true);
+    }
+
+    if (document.getElementById("queuePanel")?.classList.contains("open")) {
+        renderQueuePanel();
+    }
 
     audio.play()
         .then(() => updatePlayButtons())
@@ -3794,14 +4272,140 @@ function updateLyrics(time) {
 
 function openFullPlayer() {
     fullPlayer.classList.add("open");
-
     document.body.style.overflow = "hidden";
+    startBlobMotion();
 }
 
 function closeFullPlayer() {
     fullPlayer.classList.remove("open");
 
     document.body.style.overflow = "";
+}
+
+/* =========================================================
+   QUEUE / UP NEXT PANEL
+   ========================================================= */
+
+let queueSearchQuery = "";
+
+function renderQueuePanel() {
+    const list = document.getElementById("queueList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    if (!playQueue.length) {
+        list.innerHTML = '<div class="queue-empty">Queue is empty. Play a song or tap + on a card.</div>';
+        return;
+    }
+
+    const q = queueSearchQuery.trim().toLowerCase();
+    const entries = playQueue
+        .map((song, index) => ({ song, index }))
+        .filter(({ song }) => {
+            if (!q) return true;
+            return [song.title, song.artist, song.album]
+                .join(" ")
+                .toLowerCase()
+                .includes(q);
+        });
+
+    if (!entries.length) {
+        list.innerHTML = '<div class="queue-empty">No matches in queue.</div>';
+        return;
+    }
+
+    entries.forEach(({ song, index }, i) => {
+        const row = document.createElement("div");
+        row.className = "queue-item" + (index === queueIndex ? " current" : "");
+        row.style.animationDelay = `${Math.min(i, 12) * 0.03}s`;
+        row.dataset.index = String(index);
+
+        row.innerHTML = `
+            <img src="${escapeHTML(song.cover)}" alt="">
+            <div class="queue-item-info">
+                <div class="queue-item-title">${escapeHTML(song.title)}</div>
+                <div class="queue-item-artist">${escapeHTML(song.artist)}</div>
+            </div>
+            <button class="queue-item-remove" title="Remove" data-index="${index}" type="button">×</button>
+        `;
+
+        row.addEventListener("click", (e) => {
+            if (e.target.closest(".queue-item-remove")) return;
+            queueIndex = index;
+            playCurrentFromQueue();
+            renderQueuePanel();
+        });
+
+        row.querySelector(".queue-item-remove")?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            removeFromQueue(index);
+        });
+
+        list.appendChild(row);
+    });
+}
+
+function removeFromQueue(index) {
+    if (index < 0 || index >= playQueue.length) return;
+
+    const wasCurrent = index === queueIndex;
+    playQueue.splice(index, 1);
+
+    if (!playQueue.length) {
+        queueIndex = 0;
+        renderQueuePanel();
+        return;
+    }
+
+    if (index < queueIndex) {
+        queueIndex = Math.max(0, queueIndex - 1);
+    } else if (wasCurrent) {
+        queueIndex = Math.min(queueIndex, playQueue.length - 1);
+        playCurrentFromQueue();
+    }
+
+    renderQueuePanel();
+}
+
+function clearQueueKeepCurrent() {
+    const current = playQueue[queueIndex];
+    if (!current) {
+        playQueue = [];
+        queueIndex = 0;
+    } else {
+        playQueue = [current];
+        queueIndex = 0;
+    }
+    renderQueuePanel();
+}
+
+function shuffleQueueKeepCurrent() {
+    if (playQueue.length <= 1) return;
+    const current = playQueue[queueIndex];
+    const rest = playQueue.filter((_, i) => i !== queueIndex);
+    playQueue = [current, ...shuffleArray(rest)];
+    queueIndex = 0;
+    renderQueuePanel();
+}
+
+function toggleQueuePanel() {
+    const panel = document.getElementById("queuePanel");
+    const btn = document.getElementById("queueButton");
+    if (!panel) return;
+
+    const open = panel.classList.toggle("open");
+    btn?.classList.toggle("active", open);
+    if (open) {
+        const input = document.getElementById("queueSearchInput");
+        if (input) input.value = queueSearchQuery;
+        renderQueuePanel();
+    }
+}
+
+function closeQueuePanel() {
+    document.getElementById("queuePanel")?.classList.remove("open");
+    document.getElementById("queueButton")?.classList.remove("active");
 }
 
 /* =========================================================
@@ -3873,6 +4477,35 @@ document.getElementById("likedShuffleBtn")
     ?.addEventListener("click", () => {
         shuffleLikedSongs();
     });
+
+document.getElementById("queueButton")
+    ?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleQueuePanel();
+    });
+
+document.getElementById("queueCloseBtn")
+    ?.addEventListener("click", closeQueuePanel);
+
+document.getElementById("queueClearBtn")
+    ?.addEventListener("click", clearQueueKeepCurrent);
+
+document.getElementById("queueShuffleBtn")
+    ?.addEventListener("click", shuffleQueueKeepCurrent);
+
+document.getElementById("queueSearchInput")
+    ?.addEventListener("input", (e) => {
+        queueSearchQuery = e.target.value || "";
+        renderQueuePanel();
+    });
+
+document.addEventListener("click", (e) => {
+    const panel = document.getElementById("queuePanel");
+    const btn = document.getElementById("queueButton");
+    if (!panel?.classList.contains("open")) return;
+    if (panel.contains(e.target) || btn?.contains(e.target)) return;
+    closeQueuePanel();
+});
 
 /* =========================================================
    AUDIO EVENTS
@@ -4082,6 +4715,8 @@ function initialize() {
     updatePlayButtons();
     updateRepeatButtons();
     updateShuffleButtons();
+
+    initBlobMotion();
 
     /*
      We intentionally do not autoplay.
