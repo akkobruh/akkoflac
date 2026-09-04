@@ -40,24 +40,24 @@
 }
 
 :root {
-    --bg: #0a0a12;
-    --bg-deep: #06060c;
-    --surface: rgba(255, 255, 255, 0.08);
-    --surface-2: rgba(255, 255, 255, 0.12);
-    --surface-3: rgba(255, 255, 255, 0.16);
+    --bg: #0c0c18;
+    --bg-deep: #080812;
+    --surface: color-mix(in srgb, var(--accent) 10%, rgba(255, 255, 255, 0.07));
+    --surface-2: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.10));
+    --surface-3: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.14));
 
     --accent: #7b8cff;
     --accent-bright: #95a3ff;
-    --accent-soft: rgba(123, 140, 255, 0.2);
-    --accent-glow: rgba(123, 140, 255, 0.45);
+    --accent-soft: rgba(123, 140, 255, 0.22);
+    --accent-glow: rgba(123, 140, 255, 0.5);
 
     --text: #f5f5f5;
-    --text-soft: #c8c8c8;
-    --muted: #818181;
-    --muted-2: #5d5d5d;
+    --text-soft: #d0d0e0;
+    --muted: #9a9ab0;
+    --muted-2: #6e6e88;
 
-    --glass-border: rgba(255, 255, 255, 0.14);
-    --glass-border-strong: rgba(255, 255, 255, 0.22);
+    --glass-border: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.12));
+    --glass-border-strong: color-mix(in srgb, var(--accent) 28%, rgba(255, 255, 255, 0.18));
     --glass-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.4),
         0 2px 8px rgba(0, 0, 0, 0.25),
@@ -131,9 +131,10 @@ body {
     width: 100%;
     min-height: 100vh;
     background:
-        radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
-        radial-gradient(circle at 85% 90%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(30, 20, 60, 0.4), transparent 70%),
+        radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 45%),
+        radial-gradient(circle at 88% 92%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 42%),
+        radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(25, 20, 55, 0.5), transparent 70%),
         var(--bg);
     color: var(--text);
     font-family: "Inter", Arial, sans-serif;
@@ -255,13 +256,13 @@ img {
     flex-direction: column;
     padding: 28px 17px;
 
-    background: rgba(22, 22, 34, 0.62);
-    backdrop-filter: blur(40px) saturate(1.4);
-    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    background: color-mix(in srgb, var(--accent) 12%, rgba(18, 18, 30, 0.72));
+    backdrop-filter: blur(40px) saturate(1.5);
+    -webkit-backdrop-filter: blur(40px) saturate(1.5);
     border-right: 1px solid var(--glass-border);
     box-shadow: 
         12px 0 40px rgba(0,0,0,.45),
-        inset -1px 0 0 rgba(255,255,255,.04);
+        inset -1px 0 0 color-mix(in srgb, var(--accent) 15%, transparent);
 
     animation: pageIn .55s var(--ease) both;
 }
@@ -563,6 +564,94 @@ img {
     gap: 20px;
 }
 
+/* Spotify-style track list (used for search results) */
+.track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.track-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s var(--ease);
+    background: transparent;
+}
+
+.track-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--glass-border);
+}
+
+.track-row img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+.track-row-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.track-row-title {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+
+.track-row-artist {
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-row-like {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    opacity: 0.75;
+    transition: all .2s var(--ease);
+}
+
+.track-row:hover .track-row-like {
+    opacity: 1;
+    background: rgba(123,140,255,.18);
+}
+
+.track-row-like.liked {
+    opacity: 1;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.track-row-like:hover {
+    background: var(--accent) !important;
+    color: #0a0a0a;
+    transform: scale(1.08);
+}
+
 .song-card {
     position: relative;
     min-width: 0;
@@ -781,13 +870,14 @@ img {
     gap: 18px;
     padding: 12px 24px;
 
-    background: rgba(16, 16, 26, 0.72);
-    backdrop-filter: blur(40px) saturate(1.4);
-    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    background: color-mix(in srgb, var(--accent) 14%, rgba(14, 14, 24, 0.78));
+    backdrop-filter: blur(40px) saturate(1.5);
+    -webkit-backdrop-filter: blur(40px) saturate(1.5);
     border-top: 1px solid var(--glass-border);
     box-shadow: 
         0 -16px 48px rgba(0,0,0,.5),
-        inset 0 1px 0 rgba(255,255,255,.06);
+        0 -4px 24px color-mix(in srgb, var(--accent) 12%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
 .mini-song {
@@ -796,7 +886,6 @@ img {
     align-items: center;
     gap: 12px;
     min-width: 0;
-    cursor: pointer;
 }
 
 .mini-song img {
@@ -807,14 +896,17 @@ img {
     border-radius: 11px;
     box-shadow: 0 6px 16px rgba(0,0,0,.35);
     transition: transform .25s var(--ease);
+    cursor: pointer;
 }
 
-.mini-song:hover img {
-    transform: scale(1.035);
+.mini-song img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px var(--accent-soft);
 }
 
 .mini-info {
     min-width: 0;
+    cursor: pointer;
 }
 
 .mini-title,
@@ -1004,20 +1096,21 @@ img {
     z-index: 95;
     right: 18px;
     bottom: calc(var(--player-height) + 14px);
-    width: min(360px, calc(100vw - 36px));
-    max-height: min(52vh, 420px);
+    width: min(380px, calc(100vw - 36px));
+    max-height: min(68vh, 560px);
 
     display: flex;
     flex-direction: column;
 
     border-radius: 20px;
-    background: rgba(16, 16, 26, 0.88);
-    backdrop-filter: blur(36px) saturate(1.35);
-    -webkit-backdrop-filter: blur(36px) saturate(1.35);
+    background: color-mix(in srgb, var(--accent) 12%, rgba(14, 14, 24, 0.9));
+    backdrop-filter: blur(36px) saturate(1.45);
+    -webkit-backdrop-filter: blur(36px) saturate(1.45);
     border: 1px solid var(--glass-border);
     box-shadow:
         0 20px 50px rgba(0,0,0,.5),
-        inset 0 1px 0 rgba(255,255,255,.06);
+        0 0 30px color-mix(in srgb, var(--accent) 10%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--accent) 12%, transparent);
 
     opacity: 0;
     visibility: hidden;
@@ -1065,14 +1158,14 @@ img {
 
 .queue-search input {
     width: 100%;
-    height: 36px;
-    padding: 0 12px;
-    border-radius: 10px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 12px;
     border: 1px solid var(--glass-border);
     outline: 0;
-    background: rgba(255,255,255,.06);
+    background: rgba(255,255,255,.07);
     color: var(--text);
-    font-size: 12px;
+    font-size: 13px;
     transition: all .25s var(--ease);
 }
 
@@ -1081,8 +1174,8 @@ img {
 }
 
 .queue-search input:focus {
-    border-color: rgba(123,140,255,.4);
-    box-shadow: 0 0 0 1px rgba(123,140,255,.15);
+    border-color: rgba(123,140,255,.45);
+    box-shadow: 0 0 0 1px rgba(123,140,255,.2);
 }
 
 .queue-action {
@@ -1101,6 +1194,28 @@ img {
     background: rgba(255,255,255,.1);
 }
 
+.queue-item-add {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(123,140,255,.18);
+    border: 1px solid rgba(123,140,255,.3);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    transition: .15s ease;
+}
+
+.queue-item-add:hover {
+    background: var(--accent);
+    color: #0a0a0a;
+    transform: scale(1.08);
+}
+
 .queue-list {
     flex: 1;
     overflow-y: auto;
@@ -1113,33 +1228,37 @@ img {
     position: absolute;
     top: 8px;
     left: 8px;
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(0,0,0,.45);
+    background: rgba(0,0,0,.55);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
     color: var(--accent);
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     line-height: 1;
-    opacity: 0;
-    transform: scale(.85);
+    opacity: 1;
+    transform: scale(1);
     transition: all .2s var(--ease);
-    z-index: 2;
+    z-index: 5;
+    cursor: pointer;
 }
 
 .song-card:hover .queue-add-btn {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.08);
+    background: rgba(123,140,255,.35);
+    box-shadow: 0 0 12px var(--accent-soft);
 }
 
 .queue-add-btn:hover {
-    background: rgba(123,140,255,.25);
-    transform: scale(1.08);
+    background: rgba(123,140,255,.5);
+    transform: scale(1.12);
+    color: #fff;
 }
 
 .queue-toast {
@@ -1260,7 +1379,7 @@ img {
         right: 12px;
         width: auto;
         bottom: calc(var(--player-height) + 10px);
-        max-height: 45vh;
+        max-height: 55vh;
     }
 }
 
@@ -2361,10 +2480,15 @@ html[data-theme="light"] .search-box input {
 
         <div class="section">
 
+            <div class="section-heading">
+                <h2 id="songsHeading">All Songs</h2>
+            </div>
+
             <div class="song-grid" id="songsGrid"></div>
+            <div class="track-list hidden" id="songsList"></div>
 
             <div class="empty hidden" id="songsEmpty">
-                No songs found.
+                No songs found. Try a different search.
             </div>
 
         </div>
@@ -2463,9 +2587,10 @@ html[data-theme="light"] .search-box input {
             id="miniCover"
             src="covers/here.jfif"
             alt=""
+            title="Open Up Next"
         >
 
-        <div class="mini-info">
+        <div class="mini-info" id="miniInfo">
 
             <div class="mini-title" id="miniTitle">
                 Here (Lucian Remix)
@@ -2542,15 +2667,14 @@ html[data-theme="light"] .search-box input {
 
 <div class="queue-panel" id="queuePanel">
     <div class="queue-header">
-        <h3>Up Next</h3>
+        <h3 id="queueTitle">Up Next</h3>
         <div class="queue-header-actions">
             <button class="queue-action" id="queueShuffleBtn" type="button">Shuffle</button>
-            <button class="queue-action" id="queueClearBtn" type="button">Clear</button>
             <button class="queue-action" id="queueCloseBtn" type="button">Close</button>
         </div>
     </div>
     <div class="queue-search">
-        <input id="queueSearchInput" type="text" placeholder="Search queue..." autocomplete="off" spellcheck="false">
+        <input id="queueSearchInput" type="text" placeholder="Search all songs to add..." autocomplete="off" spellcheck="false">
     </div>
     <div class="queue-list" id="queueList"></div>
 </div>
@@ -3017,6 +3141,9 @@ const recentGrid =
 const songsGrid =
     document.getElementById("songsGrid");
 
+const songsList =
+    document.getElementById("songsList");
+
 const likedGrid =
     document.getElementById("likedGrid");
 
@@ -3185,6 +3312,37 @@ function createSongCard(song, list, autoShuffle = false) {
     return card;
 }
 
+/* Spotify-style list row for search results */
+function createTrackRow(song, list) {
+    const row = document.createElement("div");
+    row.className = "track-row";
+    const liked = isLiked(song.id);
+
+    row.innerHTML = `
+        <img src="${escapeHTML(song.cover)}" alt="">
+        <div class="track-row-info">
+            <div class="track-row-title">${escapeHTML(song.title)}</div>
+            <div class="track-row-artist">${escapeHTML(song.artist)}</div>
+        </div>
+        <button class="track-row-like ${liked ? "liked" : ""}" title="Like" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+    `;
+
+    row.addEventListener("click", (e) => {
+        if (e.target.closest(".track-row-like")) return;
+        startPlayback(list, song.id, true);
+        openFullPlayer();
+    });
+
+    row.querySelector(".track-row-like")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleLike(song.id);
+    });
+
+    return row;
+}
+
 function showQueueToast(message) {
     const toast = document.getElementById("queueToast");
     if (!toast) return;
@@ -3204,13 +3362,21 @@ function addSongToQueue(song) {
         queueIndex = 0;
         playCurrentFromQueue();
         showQueueToast("Now playing");
+        const panel = document.getElementById("queuePanel");
+        if (panel && !panel.classList.contains("open")) {
+            panel.classList.add("open");
+        }
+        renderQueuePanel();
         return;
     }
 
     playQueue.push(song);
-    showQueueToast("Added to Up Next");
+    const total = playQueue.length;
+    showQueueToast(`Added · ${total} in queue`);
 
-    if (document.getElementById("queuePanel")?.classList.contains("open")) {
+    const panel = document.getElementById("queuePanel");
+    if (panel) {
+        panel.classList.add("open");
         renderQueuePanel();
     }
 }
@@ -3346,12 +3512,40 @@ function renderAll() {
         true
     );
 
-    renderGrid(
-        songsGrid,
-        filtered,
-        songsEmpty,
-        true
-    );
+    /* Songs / Search page */
+    const songsHeading = document.getElementById("songsHeading");
+    if (songsHeading) {
+        if (searchQuery) {
+            const q = searchQuery.trim();
+            songsHeading.textContent = filtered.length
+                ? `Results for “${q}” (${filtered.length})`
+                : `No results for “${q}”`;
+        } else {
+            songsHeading.textContent = `All Songs (${songs.length})`;
+        }
+    }
+
+    // Search = Spotify-style list | No search = card grid
+    if (searchQuery && songsList) {
+        songsGrid?.classList.add("hidden");
+        songsList.classList.remove("hidden");
+        songsList.innerHTML = "";
+        filtered.forEach(song => {
+            songsList.appendChild(createTrackRow(song, filtered));
+        });
+        if (songsEmpty) {
+            songsEmpty.classList.toggle("hidden", filtered.length > 0);
+        }
+    } else {
+        songsList?.classList.add("hidden");
+        songsGrid?.classList.remove("hidden");
+        renderGrid(
+            songsGrid,
+            filtered,
+            songsEmpty,
+            true
+        );
+    }
 
     /* Liked: only liked songs, sequential unless Shuffle button */
     const liked = songs.filter(song => isLiked(song.id));
@@ -3377,7 +3571,7 @@ function renderAll() {
    NAVIGATION
    ========================================================= */
 
-function showPage(page) {
+function showPage(page, keepSearch = false) {
     currentPage = page;
 
     const pages = [
@@ -3408,12 +3602,18 @@ function showPage(page) {
             );
         });
 
-    pageTitle.textContent =
-        page.charAt(0).toUpperCase() +
-        page.slice(1);
+    if (!keepSearch) {
+        searchInput.value = "";
+        searchQuery = "";
+    }
 
-    searchInput.value = "";
-    searchQuery = "";
+    if (searchQuery) {
+        pageTitle.textContent = "Search";
+    } else {
+        pageTitle.textContent =
+            page.charAt(0).toUpperCase() +
+            page.slice(1);
+    }
 
     renderAll();
 }
@@ -3436,6 +3636,17 @@ document.querySelectorAll(".nav-button")
 searchInput.addEventListener("input", event => {
     searchQuery =
         event.target.value.trim().toLowerCase();
+
+    // When searching, always show the full Songs page so every match is visible
+    if (searchQuery) {
+        if (currentPage !== "songs") {
+            showPage("songs", true);
+            return;
+        }
+        pageTitle.textContent = "Search";
+    } else if (currentPage === "songs") {
+        pageTitle.textContent = "Songs";
+    }
 
     renderAll();
 });
@@ -3728,8 +3939,10 @@ function updateFullLikeButton() {
     const song = getCurrentSong();
     if (!song) return;
 
-    const btn = document.getElementById("fullLike");
-    btn.classList.toggle("liked", isLiked(song.id));
+    const liked = isLiked(song.id);
+
+    const fullBtn = document.getElementById("fullLike");
+    if (fullBtn) fullBtn.classList.toggle("liked", liked);
 }
 
 function updatePlayButtons() {
@@ -4290,35 +4503,76 @@ let queueSearchQuery = "";
 
 function renderQueuePanel() {
     const list = document.getElementById("queueList");
+    const title = document.getElementById("queueTitle");
     if (!list) return;
 
     list.innerHTML = "";
 
-    if (!playQueue.length) {
-        list.innerHTML = '<div class="queue-empty">Queue is empty. Play a song or tap + on a card.</div>';
-        return;
-    }
-
     const q = queueSearchQuery.trim().toLowerCase();
-    const entries = playQueue
-        .map((song, index) => ({ song, index }))
-        .filter(({ song }) => {
-            if (!q) return true;
-            return [song.title, song.artist, song.album]
+
+    // SEARCH MODE: search ALL songs so you can add them
+    if (q) {
+        if (title) title.textContent = "Add to Queue";
+
+        const matches = songs.filter(song => {
+            const text = [song.title, song.artist, song.album]
                 .join(" ")
-                .toLowerCase()
-                .includes(q);
+                .toLowerCase();
+            return text.includes(q);
         });
 
-    if (!entries.length) {
-        list.innerHTML = '<div class="queue-empty">No matches in queue.</div>';
+        if (!matches.length) {
+            list.innerHTML = '<div class="queue-empty">No songs match that search.</div>';
+            return;
+        }
+
+        matches.forEach((song, i) => {
+            const row = document.createElement("div");
+            row.className = "queue-item";
+            row.style.animationDelay = `${Math.min(i, 12) * 0.03}s`;
+
+            row.innerHTML = `
+                <img src="${escapeHTML(song.cover)}" alt="">
+                <div class="queue-item-info">
+                    <div class="queue-item-title">${escapeHTML(song.title)}</div>
+                    <div class="queue-item-artist">${escapeHTML(song.artist)}</div>
+                </div>
+                <button class="queue-item-add" title="Add to Up Next" type="button">+</button>
+            `;
+
+            row.querySelector(".queue-item-add")?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                addSongToQueue(song);
+                renderQueuePanel();
+            });
+
+            // clicking the row also adds
+            row.addEventListener("click", (e) => {
+                if (e.target.closest(".queue-item-add")) return;
+                addSongToQueue(song);
+                renderQueuePanel();
+            });
+
+            list.appendChild(row);
+        });
         return;
     }
 
-    entries.forEach(({ song, index }, i) => {
+    // NORMAL MODE: show current Up Next queue
+    const count = playQueue.length;
+    if (title) {
+        title.textContent = count > 0 ? `Up Next (${count})` : "Up Next";
+    }
+
+    if (!playQueue.length) {
+        list.innerHTML = '<div class="queue-empty">Queue is empty.<br>Search above to find songs and add them.</div>';
+        return;
+    }
+
+    playQueue.forEach((song, index) => {
         const row = document.createElement("div");
         row.className = "queue-item" + (index === queueIndex ? " current" : "");
-        row.style.animationDelay = `${Math.min(i, 12) * 0.03}s`;
+        row.style.animationDelay = `${Math.min(index, 12) * 0.03}s`;
         row.dataset.index = String(index);
 
         row.innerHTML = `
@@ -4368,18 +4622,6 @@ function removeFromQueue(index) {
     renderQueuePanel();
 }
 
-function clearQueueKeepCurrent() {
-    const current = playQueue[queueIndex];
-    if (!current) {
-        playQueue = [];
-        queueIndex = 0;
-    } else {
-        playQueue = [current];
-        queueIndex = 0;
-    }
-    renderQueuePanel();
-}
-
 function shuffleQueueKeepCurrent() {
     if (playQueue.length <= 1) return;
     const current = playQueue[queueIndex];
@@ -4398,7 +4640,10 @@ function toggleQueuePanel() {
     btn?.classList.toggle("active", open);
     if (open) {
         const input = document.getElementById("queueSearchInput");
-        if (input) input.value = queueSearchQuery;
+        if (input) {
+            input.value = queueSearchQuery;
+            setTimeout(() => input.focus(), 50);
+        }
         renderQueuePanel();
     }
 }
@@ -4406,6 +4651,9 @@ function toggleQueuePanel() {
 function closeQueuePanel() {
     document.getElementById("queuePanel")?.classList.remove("open");
     document.getElementById("queueButton")?.classList.remove("active");
+    queueSearchQuery = "";
+    const input = document.getElementById("queueSearchInput");
+    if (input) input.value = "";
 }
 
 /* =========================================================
@@ -4454,7 +4702,7 @@ document.getElementById("fullBack")
     .addEventListener("click", closeFullPlayer);
 
 document.getElementById("miniSong")
-    .addEventListener("click", openFullPlayer);
+    ?.addEventListener("click", openFullPlayer);
 
 document.getElementById("progressBar")
     .addEventListener("input", event => {
@@ -4487,9 +4735,6 @@ document.getElementById("queueButton")
 document.getElementById("queueCloseBtn")
     ?.addEventListener("click", closeQueuePanel);
 
-document.getElementById("queueClearBtn")
-    ?.addEventListener("click", clearQueueKeepCurrent);
-
 document.getElementById("queueShuffleBtn")
     ?.addEventListener("click", shuffleQueueKeepCurrent);
 
@@ -4497,6 +4742,11 @@ document.getElementById("queueSearchInput")
     ?.addEventListener("input", (e) => {
         queueSearchQuery = e.target.value || "";
         renderQueuePanel();
+    });
+
+document.getElementById("queuePanel")
+    ?.addEventListener("click", (e) => {
+        e.stopPropagation();
     });
 
 document.addEventListener("click", (e) => {
@@ -4700,21 +4950,31 @@ function initialize() {
     loadSettings();
     setupOnboarding();
 
-    /* Default queue = all songs (shuffled order ready for home/songs) */
-    playQueue = songs.length ? shuffleArray(songs) : [];
+    /* Start with empty queue — songs get added when you play or tap + */
+    playQueue = [];
     queueIndex = 0;
-    if (songs.length) {
-        currentIndex = songs.findIndex(s => s.id === playQueue[0].id);
-        if (currentIndex < 0) currentIndex = 0;
-    }
+    currentIndex = 0;
 
     renderFeatured();
     renderAll();
 
-    updateSongUI();
+    // Show first song in the mini player as a preview (doesn't start playback)
+    if (songs.length) {
+        const preview = songs[0];
+        document.getElementById("miniCover").src = preview.cover;
+        document.getElementById("miniTitle").textContent = preview.title;
+        document.getElementById("miniArtist").textContent = preview.artist;
+        document.getElementById("fullCover").src = preview.cover;
+        document.getElementById("fullTitle").textContent = preview.title;
+        document.getElementById("fullArtist").textContent = preview.artist;
+        const bg = document.getElementById("fullBg");
+        if (bg) bg.src = preview.cover;
+    }
+
     updatePlayButtons();
     updateRepeatButtons();
     updateShuffleButtons();
+    updateFullLikeButton();
 
     initBlobMotion();
 
@@ -4722,10 +4982,6 @@ function initialize() {
      We intentionally do not autoplay.
      The browser will block autoplay on many devices.
     */
-
-    loadLyrics(
-        getCurrentSong()?.lyrics
-    );
 }
 
 initialize();
