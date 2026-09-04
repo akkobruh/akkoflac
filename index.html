@@ -1092,7 +1092,7 @@ img {
 
 .queue-panel {
     position: fixed;
-    z-index: 95;
+    z-index: 220;
     right: 18px;
     bottom: calc(var(--player-height) + 14px);
     width: min(380px, calc(100vw - 36px));
@@ -1262,7 +1262,7 @@ img {
 
 .queue-toast {
     position: fixed;
-    z-index: 130;
+    z-index: 230;
     left: 50%;
     bottom: calc(var(--player-height) + 18px);
     transform: translateX(-50%) translateY(10px);
@@ -1367,7 +1367,8 @@ img {
     font-size: 12px;
 }
 
-.control.queue-btn.active {
+.control.queue-btn.active,
+.full-control.queue-btn.active {
     background: var(--accent-bright);
     color: #0a0a0a;
 }
@@ -2776,6 +2777,10 @@ html[data-theme="light"] .search-box input {
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                 </button>
 
+                <button class="full-control queue-btn" id="fullQueue" title="Up Next">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h12v2H3v-2z"/></svg>
+                </button>
+
             </div>
 
         </div>
@@ -3990,9 +3995,7 @@ function startPlayback(list, startId, autoShuffle = false) {
 
 function playCurrentFromQueue() {
     if (!playQueue.length) {
-        if (!songs.length) return;
-        playQueue = [...songs];
-        queueIndex = 0;
+        return;
     }
 
     const song = playQueue[queueIndex];
@@ -4534,6 +4537,10 @@ function renderQueuePanel() {
             row.querySelector(".queue-item-add")?.addEventListener("click", (e) => {
                 e.stopPropagation();
                 addSongToQueue(song);
+                // Go back to the real Up Next list after adding
+                queueSearchQuery = "";
+                const input = document.getElementById("queueSearchInput");
+                if (input) input.value = "";
                 renderQueuePanel();
             });
 
@@ -4541,6 +4548,9 @@ function renderQueuePanel() {
             row.addEventListener("click", (e) => {
                 if (e.target.closest(".queue-item-add")) return;
                 addSongToQueue(song);
+                queueSearchQuery = "";
+                const input = document.getElementById("queueSearchInput");
+                if (input) input.value = "";
                 renderQueuePanel();
             });
 
@@ -4625,10 +4635,12 @@ function shuffleQueueKeepCurrent() {
 function toggleQueuePanel() {
     const panel = document.getElementById("queuePanel");
     const btn = document.getElementById("queueButton");
+    const fullBtn = document.getElementById("fullQueue");
     if (!panel) return;
 
     const open = panel.classList.toggle("open");
     btn?.classList.toggle("active", open);
+    fullBtn?.classList.toggle("active", open);
     if (open) {
         const input = document.getElementById("queueSearchInput");
         if (input) {
@@ -4642,6 +4654,7 @@ function toggleQueuePanel() {
 function closeQueuePanel() {
     document.getElementById("queuePanel")?.classList.remove("open");
     document.getElementById("queueButton")?.classList.remove("active");
+    document.getElementById("fullQueue")?.classList.remove("active");
     queueSearchQuery = "";
     const input = document.getElementById("queueSearchInput");
     if (input) input.value = "";
@@ -4723,6 +4736,12 @@ document.getElementById("queueButton")
         toggleQueuePanel();
     });
 
+document.getElementById("fullQueue")
+    ?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleQueuePanel();
+    });
+
 document.getElementById("queueCloseBtn")
     ?.addEventListener("click", closeQueuePanel);
 
@@ -4743,8 +4762,9 @@ document.getElementById("queuePanel")
 document.addEventListener("click", (e) => {
     const panel = document.getElementById("queuePanel");
     const btn = document.getElementById("queueButton");
+    const fullBtn = document.getElementById("fullQueue");
     if (!panel?.classList.contains("open")) return;
-    if (panel.contains(e.target) || btn?.contains(e.target)) return;
+    if (panel.contains(e.target) || btn?.contains(e.target) || fullBtn?.contains(e.target)) return;
     closeQueuePanel();
 });
 
@@ -4777,12 +4797,14 @@ audio.addEventListener("ended", () => {
         return;
     }
 
-    // Remove the finished song from the queue, then play whatever is next
+    // Remove the finished song from Up Next
     if (playQueue.length) {
         playQueue.splice(queueIndex, 1);
 
+        // Last song finished — stop, don't loop it
         if (!playQueue.length) {
             queueIndex = 0;
+            audio.pause();
             updatePlayButtons();
             if (document.getElementById("queuePanel")?.classList.contains("open")) {
                 renderQueuePanel();
@@ -4790,14 +4812,17 @@ audio.addEventListener("ended", () => {
             return;
         }
 
-        // After removing current, the next song shifts into this same index
+        // Next song slides into this index
         if (queueIndex >= playQueue.length) {
             queueIndex = 0;
         }
         playCurrentFromQueue();
-    } else {
-        nextSong();
+        return;
     }
+
+    // Empty queue — just stop
+    audio.pause();
+    updatePlayButtons();
 });
 
 /* =========================================================
