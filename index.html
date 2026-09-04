@@ -1036,7 +1036,7 @@ img {
     height: 62%;
     top: -10%;
     left: -8%;
-    background: var(--palette-1, rgba(123,140,255,.7));
+    background: var(--palette-1, rgba(90,90,100,.55));
     animation: blobDrift1 9s ease-in-out infinite alternate;
 }
 
@@ -1046,7 +1046,7 @@ img {
     top: -5%;
     right: -12%;
     left: auto;
-    background: var(--palette-2, rgba(70,90,210,.62));
+    background: var(--palette-2, rgba(70,70,80,.5));
     animation: blobDrift2 11s ease-in-out infinite alternate;
 }
 
@@ -1056,7 +1056,7 @@ img {
     bottom: -18%;
     left: 15%;
     top: auto;
-    background: var(--palette-3, rgba(170,80,190,.55));
+    background: var(--palette-3, rgba(110,110,120,.45));
     animation: blobDrift3 13s ease-in-out infinite alternate;
 }
 
@@ -1067,7 +1067,7 @@ img {
     right: -5%;
     left: auto;
     top: auto;
-    background: var(--palette-1, rgba(123,140,255,.45));
+    background: var(--palette-1, rgba(90,90,100,.4));
     opacity: .7;
     animation: blobDrift4 10s ease-in-out infinite alternate;
 }
@@ -3078,8 +3078,10 @@ function extractFocusPalette(image) {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
+        const neutralFallback = [[95,95,105],[75,75,85],[115,115,125]];
+
         if (!ctx) {
-            resolve([[123,140,255],[70,90,210],[170,80,190]]);
+            resolve(neutralFallback);
             return;
         }
 
@@ -3091,6 +3093,8 @@ function extractFocusPalette(image) {
             ctx.drawImage(image, 0, 0, sampleSize, sampleSize);
             const data = ctx.getImageData(0, 0, sampleSize, sampleSize).data;
             const buckets = new Map();
+            let totalSat = 0;
+            let satCount = 0;
 
             for (let i = 0; i < data.length; i += 4) {
                 const a = data[i + 3];
@@ -3104,7 +3108,10 @@ function extractFocusPalette(image) {
                 const brightness = (r + g + b) / 3;
                 const saturation = max === 0 ? 0 : (max - min) / max;
 
-                if (brightness < 12 || brightness > 248) continue;
+                if (brightness < 5 || brightness > 252) continue;
+
+                totalSat += saturation;
+                satCount++;
 
                 const qr = Math.round(r / 24) * 24;
                 const qg = Math.round(g / 24) * 24;
@@ -3131,16 +3138,19 @@ function extractFocusPalette(image) {
                             item.rgb[1] - other.rgb[1],
                             item.rgb[2] - other.rgb[2]
                         );
-                        return d > 48;
+                        return d > 36;
                     });
                 })
                 .slice(0, 3);
 
-            const fallback = [[123,140,255],[70,90,210],[170,80,190]];
-            const palette = [0,1,2].map((i) => amplifyPaletteColor(ranked[i]?.rgb || fallback[i], 1));
+            // Always use real colors from the cover (including black / white / gray)
+            const palette = [0,1,2].map((i) => {
+                const rgb = ranked[i]?.rgb || neutralFallback[i];
+                return amplifyPaletteColor(rgb, 1);
+            });
             resolve(palette);
         } catch (error) {
-            resolve([[123,140,255],[70,90,210],[170,80,190]]);
+            resolve(neutralFallback);
         }
     });
 }
@@ -3155,7 +3165,7 @@ function animateFocusPalette(nextPalette) {
     const current = [1, 2, 3].map(i => {
         const raw = styles.getPropertyValue("--palette-" + i);
         const match = raw.match(/rgba?\(([^)]+)\)/);
-        if (!match) return [123, 140, 255];
+        if (!match) return [95, 95, 105];
         return match[1].split(",").slice(0, 3).map(Number);
     });
 
