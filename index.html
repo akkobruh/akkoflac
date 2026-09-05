@@ -3708,6 +3708,81 @@ body {
     }
 }
 
+
+
+/* THEME GRID AND INTERACTION POLISH */
+.theme-row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible;
+    padding: 2px 0;
+}
+
+.theme-option {
+    width: 100%;
+    min-width: 0;
+    flex: initial;
+    padding: 7px 3px;
+}
+
+.onboard-theme-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0 0 20px;
+}
+
+.accent-row,
+.onboard-swatches {
+    position: relative;
+    z-index: 5;
+}
+
+.accent-swatch {
+    position: relative;
+    z-index: 1;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+}
+
+.accent-swatch.active {
+    border-color: #fff;
+    outline: 3px solid color-mix(in srgb, var(--accent) 68%, #fff);
+    outline-offset: 2px;
+    transform: scale(1.05);
+}
+
+.settings-card::before,
+.onboard-card::before {
+    pointer-events: none;
+}
+
+.song-card,
+.song-card *,
+.track-row,
+.track-row *,
+.featured,
+.featured * {
+    cursor: pointer !important;
+    user-select: none;
+}
+
+@media (max-width: 760px) {
+    .theme-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .onboard-theme-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .theme-option {
+        flex-basis: auto;
+        font-size: 9px;
+    }
+}
+
 </style>
 </head>
 
@@ -6568,14 +6643,23 @@ const appThemeLabels = {
 };
 
 function renderThemePickers() {
-    const options = Object.entries(appThemes).map(([name, theme]) => {
-        const label = appThemeLabels[name] || name;
-        const preview = "linear-gradient(135deg, " + theme.top + ", " + theme.bottom + ")";
-        return '<button class="theme-option" data-theme="' + name + '" type="button">' +
-            '<span class="theme-preview" style="background:' + preview + '"></span>' +
-            '<span>' + label + '</span>' +
-            '</button>';
-    }).join("");
+    const rainbowThemeOrder = [
+        "ember", "dawn", "cocoa", "forest",
+        "aurora", "ocean", "glacier", "midnight",
+        "lavender", "plum", "rosewood", "charcoal"
+    ];
+
+    const options = rainbowThemeOrder
+        .filter(name => appThemes[name])
+        .map(name => {
+            const theme = appThemes[name];
+            const label = appThemeLabels[name] || name;
+            const preview = "linear-gradient(135deg, " + theme.top + ", " + theme.bottom + ")";
+            return '<button class="theme-option" data-theme="' + name + '" type="button">' +
+                '<span class="theme-preview" style="background:' + preview + '"></span>' +
+                '<span>' + label + '</span>' +
+                '</button>';
+        }).join("");
 
     document.querySelectorAll("[data-theme-picker]").forEach(picker => {
         picker.innerHTML = options;
@@ -6595,6 +6679,12 @@ document.getElementById("accentRow")?.addEventListener("click", (e) => {
     if (!btn) return;
     applyAccent(btn.dataset.accent);
 });
+
+document.addEventListener("click", event => {
+    const button = event.target.closest(".accent-swatch");
+    if (!button?.dataset.accent) return;
+    applyAccent(button.dataset.accent);
+}, true);
 
 document.getElementById("themeRow")?.addEventListener("click", (event) => {
     const button = event.target.closest(".theme-option");
