@@ -3672,25 +3672,43 @@ body {
 }
 
 .onboard-theme-row {
-    margin: 0 -2px 20px;
+    margin: 0 0 24px;
 }
 
 .onboard-swatches {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 10px;
-    overflow-x: auto;
-    margin: 0 -2px 24px;
-    padding: 2px 2px 7px;
-    scrollbar-width: none;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px;
+    overflow: visible;
+    margin: 0 0 26px;
+    padding: 5px 4px 8px;
 }
 
-.onboard-swatches::-webkit-scrollbar { display: none; }
-
 .onboard-swatches .accent-swatch {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    width: 46px;
+    height: 46px;
+    justify-self: center;
+    flex: none;
+}
+
+.onboard-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.onboard-nav .onboard-btn {
+    flex: 1;
+}
+
+.onboard-back {
+    background: rgba(255,255,255,.07);
+    color: var(--text-soft);
+    border: 1px solid var(--glass-border);
+}
+
+.onboard-back:hover {
+    background: rgba(255,255,255,.12);
+    color: var(--text);
 }
 
 @media (max-width: 760px) {
@@ -3700,7 +3718,17 @@ body {
     }
 
     .theme-option {
-        flex-basis: 68px;
+        flex-basis: auto;
+    }
+
+    .onboard-swatches {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 13px;
+    }
+
+    .onboard-swatches .accent-swatch {
+        width: 42px;
+        height: 42px;
     }
 
     .onboard-title {
@@ -3777,6 +3805,10 @@ body {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .onboard-swatches {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     .theme-option {
         flex-basis: auto;
         font-size: 9px;
@@ -3804,12 +3836,21 @@ body {
             <button class="onboard-btn" id="onboardContinue" type="button">Continue</button>
         </div>
 
+        <div class="onboard-step" id="onboardStepTheme">
+            <div class="onboard-kicker">Personalize</div>
+            <h2 class="onboard-title" style="font-size: clamp(24px, 4.5vw, 30px);">Choose your theme</h2>
+            <p class="onboard-text">Pick the look you want for AkkoFlac.</p>
+            <div class="theme-row onboard-theme-row" id="onboardThemeRow" data-theme-picker></div>
+            <div class="onboard-nav">
+                <button class="onboard-btn onboard-back" id="onboardThemeBack" type="button">Back</button>
+                <button class="onboard-btn" id="onboardThemeContinue" type="button">Continue</button>
+            </div>
+        </div>
+
         <div class="onboard-step" id="onboardStepAccent">
             <div class="onboard-kicker">Personalize</div>
-            <h2 class="onboard-title" style="font-size: clamp(24px, 4.5vw, 30px);">Make it yours</h2>
-            <div class="onboard-theme-label">Choose a theme</div>
-            <div class="theme-row onboard-theme-row" id="onboardThemeRow" data-theme-picker></div>
-            <div class="onboard-accent-label" id="onboardAccentLabel">Choose your accent color</div>
+            <h2 class="onboard-title" style="font-size: clamp(24px, 4.5vw, 30px);">Choose your accent</h2>
+            <p class="onboard-text">Choose any of the available accent colors.</p>
             <div class="onboard-swatches" id="onboardSwatches">
                 <button class="accent-swatch" data-accent="#7b8cff" style="background:#7b8cff" title="Blue" type="button"></button>
                 <button class="accent-swatch" data-accent="#86E3CE" style="background:#86E3CE" title="Mint" type="button"></button>
@@ -3818,13 +3859,11 @@ body {
                 <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral" type="button"></button>
                 <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac" type="button"></button>
                 <button class="accent-swatch" data-accent="#ffffff" style="background:#ffffff; border: 1px solid rgba(255,255,255,.35);" title="White" type="button"></button>
-
                 <button class="accent-swatch" data-accent="#FF7AA2" style="background:#FF7AA2" title="Rose" type="button"></button>
                 <button class="accent-swatch" data-accent="#A78BFA" style="background:#A78BFA" title="Violet" type="button"></button>
                 <button class="accent-swatch" data-accent="#6DD6FF" style="background:#6DD6FF" title="Sky" type="button"></button>
                 <button class="accent-swatch" data-accent="#4FD1B5" style="background:#4FD1B5" title="Teal" type="button"></button>
                 <button class="accent-swatch" data-accent="#FFAA70" style="background:#FFAA70" title="Peach" type="button"></button>
-
                 <button class="accent-swatch" data-accent="#FF4F7B" style="background:#FF4F7B" title="Watermelon" type="button"></button>
                 <button class="accent-swatch" data-accent="#FF8F8F" style="background:#FF8F8F" title="Blush" type="button"></button>
                 <button class="accent-swatch" data-accent="#FF6F4F" style="background:#FF6F4F" title="Tangerine" type="button"></button>
@@ -3838,7 +3877,10 @@ body {
                 <button class="accent-swatch" data-accent="#D77BFF" style="background:#D77BFF" title="Orchid" type="button"></button>
                 <button class="accent-swatch" data-accent="#F2A6C8" style="background:#F2A6C8" title="Petal" type="button"></button>
             </div>
-            <button class="onboard-btn" id="onboardFinish" type="button">Get started</button>
+            <div class="onboard-nav">
+                <button class="onboard-btn onboard-back" id="onboardAccentBack" type="button">Back</button>
+                <button class="onboard-btn" id="onboardFinish" type="button">Get started</button>
+            </div>
         </div>
 
     </div>
@@ -6725,8 +6767,10 @@ function showOnboarding() {
     document.body.style.overflow = "hidden";
 
     const welcome = document.getElementById("onboardStepWelcome");
+    const theme = document.getElementById("onboardStepTheme");
     const accent = document.getElementById("onboardStepAccent");
     welcome?.classList.add("active");
+    theme?.classList.remove("active");
     accent?.classList.remove("active");
 
     // Sync both personalization pickers to saved choices.
@@ -6739,7 +6783,22 @@ function showOnboarding() {
 function setupOnboarding() {
     document.getElementById("onboardContinue")?.addEventListener("click", () => {
         document.getElementById("onboardStepWelcome")?.classList.remove("active");
+        document.getElementById("onboardStepTheme")?.classList.add("active");
+    });
+
+    document.getElementById("onboardThemeBack")?.addEventListener("click", () => {
+        document.getElementById("onboardStepTheme")?.classList.remove("active");
+        document.getElementById("onboardStepWelcome")?.classList.add("active");
+    });
+
+    document.getElementById("onboardThemeContinue")?.addEventListener("click", () => {
+        document.getElementById("onboardStepTheme")?.classList.remove("active");
         document.getElementById("onboardStepAccent")?.classList.add("active");
+    });
+
+    document.getElementById("onboardAccentBack")?.addEventListener("click", () => {
+        document.getElementById("onboardStepAccent")?.classList.remove("active");
+        document.getElementById("onboardStepTheme")?.classList.add("active");
     });
 
     document.getElementById("onboardSwatches")?.addEventListener("click", (e) => {
