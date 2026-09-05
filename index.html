@@ -2800,6 +2800,7 @@ html[data-theme="light"] .search-box input {
 </div>
 
 <audio id="audio" preload="metadata"></audio>
+<audio id="introAudio" preload="auto" src="music/madebyakko.mp3"></audio>
 
 <script>
 /* =========================================================
@@ -3131,6 +3132,12 @@ let queueIndex = 0;
    ========================================================= */
 
 const audio = document.getElementById("audio");
+const introAudio = document.getElementById("introAudio");
+
+/* Short drop before each song — put your file at music/madebyakko.mp3 */
+const INTRO_SRC = "music/madebyakko.mp3";
+let introPlaying = false;
+let pendingSongAfterIntro = null;
 
 const pageTitle = document.getElementById("pageTitle");
 const searchInput = document.getElementById("searchInput");
@@ -3942,7 +3949,9 @@ function updateFullLikeButton() {
 }
 
 function updatePlayButtons() {
-    const playing = !audio.paused;
+    const playing = introPlaying
+        ? !!(introAudio && !introAudio.paused)
+        : !audio.paused;
 
     ["playButton", "fullPlay"].forEach(id => {
         const btn = document.getElementById(id);
@@ -3993,12 +4002,15 @@ function startPlayback(list, startId, autoShuffle = false) {
     playCurrentFromQueue();
 }
 
-function playCurrentFromQueue() {
-    if (!playQueue.length) {
-        return;
-    }
+function stopIntro() {
+    if (!introAudio) return;
+    introAudio.pause();
+    introAudio.currentTime = 0;
+    introPlaying = false;
+    pendingSongAfterIntro = null;
+}
 
-    const song = playQueue[queueIndex];
+function playSongNow(song) {
     if (!song) return;
 
     currentIndex = songs.findIndex(s => s.id === song.id);
@@ -4016,7 +4028,6 @@ function playCurrentFromQueue() {
     lyricsContainer.innerHTML = "";
     loadLyrics(song.lyrics);
 
-    /* Refresh home Recently Played without full re-render cost on every tick */
     if (recentlyPlayedGrid && currentPage === "home") {
         const recentSongs = getRecentlyPlayedSongs().slice(0, 6);
         renderGrid(recentlyPlayedGrid, recentSongs, recentlyPlayedEmpty, true);
@@ -4029,6 +4040,56 @@ function playCurrentFromQueue() {
     audio.play()
         .then(() => updatePlayButtons())
         .catch(() => updatePlayButtons());
+}
+
+function playCurrentFromQueue() {
+    if (!playQueue.length) {
+        return;
+    }
+
+    const song = playQueue[queueIndex];
+    if (!song) return;
+
+    // Stop any current song + intro
+    audio.pause();
+    stopIntro();
+
+    updateSongUI();
+
+    // Try the "made by akko" drop first, then the real track
+    if (introAudio && INTRO_SRC) {
+        introPlaying = true;
+        pendingSongAfterIntro = song;
+        introAudio.src = INTRO_SRC;
+        introAudio.load();
+        introAudio.play()
+            .then(() => updatePlayButtons())
+            .catch(() => {
+                // Intro missing / blocked — just play the song
+                introPlaying = false;
+                pendingSongAfterIntro = null;
+                playSongNow(song);
+            });
+        return;
+    }
+
+    playSongNow(song);
+}
+
+if (introAudio) {
+    introAudio.addEventListener("ended", () => {
+        const song = pendingSongAfterIntro;
+        introPlaying = false;
+        pendingSongAfterIntro = null;
+        if (song) playSongNow(song);
+    });
+
+    introAudio.addEventListener("error", () => {
+        const song = pendingSongAfterIntro;
+        introPlaying = false;
+        pendingSongAfterIntro = null;
+        if (song) playSongNow(song);
+    });
 }
 
 /* Legacy helper still used by some call sites */
@@ -4054,6 +4115,17 @@ function shuffleLikedSongs() {
    ========================================================= */
 
 function togglePlay() {
+    // Pause / resume the intro drop if it's playing
+    if (introPlaying && introAudio) {
+        if (introAudio.paused) {
+            introAudio.play().catch(() => {});
+        } else {
+            introAudio.pause();
+        }
+        updatePlayButtons();
+        return;
+    }
+
     if (!audio.src) {
         if (playQueue.length) {
             playCurrentFromQueue();
