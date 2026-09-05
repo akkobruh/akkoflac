@@ -894,7 +894,7 @@ img {
     object-fit: cover;
     border-radius: 11px;
     box-shadow: 0 6px 16px rgba(0,0,0,.35);
-    transition: transform .25s var(--ease);
+    transition: transform .25s var(--ease), opacity .35s var(--ease);
     cursor: pointer;
 }
 
@@ -1416,7 +1416,12 @@ img {
     transform: scale(1.15);
     pointer-events: none;
     user-select: none;
-    transition: opacity .5s ease;
+    transition: opacity .55s var(--ease);
+    opacity: 1;
+}
+
+.full-bg.bg-hidden {
+    opacity: 0;
 }
 
 @keyframes focusOverlayPulse {
@@ -1571,7 +1576,7 @@ img {
     border-radius: 21px;
     box-shadow: 0 20px 50px rgba(0,0,0,.5);
     animation: coverFloat 5s ease-in-out infinite;
-    transition: all .5s var(--ease);
+    transition: box-shadow .5s var(--ease), opacity .4s var(--ease), transform .5s var(--ease);
 }
 
 .full-cover:hover {
@@ -2686,6 +2691,7 @@ html[data-theme="light"] .search-box input {
 <div class="full-player" id="fullPlayer">
 
     <img class="full-bg" id="fullBg" src="covers/here.jfif" alt="">
+    <img class="full-bg bg-hidden" id="fullBgB" src="covers/here.jfif" alt="">
     <div class="focus-palette" id="focusPalette">
         <div class="focus-blob b1"></div>
         <div class="focus-blob b2"></div>
@@ -3158,6 +3164,17 @@ const INTRO_SRC = "music/madebyakko.mp3";
 let introPlaying = false;
 let pendingSongAfterIntro = null;
 let introPlayedThisVisit = false; // resets on page refresh
+
+/* Intro treated like a real track: own cover, title, lyrics, focus palette */
+const introSong = {
+    id: "madebyakko",
+    title: "Made by Akko",
+    artist: "Akko",
+    album: "AkkoFlac",
+    audio: "music/madebyakko.mp3",
+    cover: "covers/madebyakko.jpg",
+    lyrics: "lyrics/madebyakko.lrc"
+};
 
 const pageTitle = document.getElementById("pageTitle");
 const searchInput = document.getElementById("searchInput");
@@ -3679,6 +3696,9 @@ searchInput.addEventListener("input", event => {
    ========================================================= */
 
 function getCurrentSong() {
+    if (introPlaying) {
+        return introSong;
+    }
     if (playQueue.length) {
         return playQueue[queueIndex] || null;
     }
@@ -3927,12 +3947,85 @@ function startBlobMotion() {
     blobMotionRaf = requestAnimationFrame(tickBlobMotion);
 }
 
+/* Smooth cover crossfade — fade out, swap src once loaded, fade in */
+function crossfadeImage(img, newSrc, duration = 380) {
+    if (!img || !newSrc) return;
+    // Already showing this art
+    if (img.dataset.currentSrc === newSrc) return;
+
+    // Cancel any in-flight swap on this element
+    if (img._crossfadeTimer) {
+        clearTimeout(img._crossfadeTimer);
+        img._crossfadeTimer = null;
+    }
+
+    let swapped = false;
+    const finishSwap = () => {
+        if (swapped) return;
+        swapped = true;
+        if (img._crossfadeTimer) {
+            clearTimeout(img._crossfadeTimer);
+            img._crossfadeTimer = null;
+        }
+
+        const preload = new Image();
+        const apply = () => {
+            img.src = newSrc;
+            img.dataset.currentSrc = newSrc;
+            requestAnimationFrame(() => {
+                img.style.opacity = "1";
+            });
+        };
+        preload.onload = apply;
+        preload.onerror = apply;
+        preload.src = newSrc;
+    };
+
+    img.style.opacity = "0";
+    img.addEventListener("transitionend", finishSwap, { once: true });
+    img._crossfadeTimer = setTimeout(finishSwap, duration + 50);
+}
+
+/* Dual-layer blurred background crossfade */
+let activeBgLayer = "a"; // "a" = fullBg visible, "b" = fullBgB visible
+
+function crossfadeBackground(newSrc) {
+    const bgA = document.getElementById("fullBg");
+    const bgB = document.getElementById("fullBgB");
+    if (!bgA || !bgB || !newSrc) return;
+
+    const current = activeBgLayer === "a" ? bgA : bgB;
+    const next = activeBgLayer === "a" ? bgB : bgA;
+
+    // Same art already showing
+    if (current.dataset.currentSrc === newSrc) return;
+
+    const preload = new Image();
+    preload.onload = () => {
+        next.src = newSrc;
+        next.dataset.currentSrc = newSrc;
+        // Bring next layer up, hide current
+        next.classList.remove("bg-hidden");
+        current.classList.add("bg-hidden");
+        activeBgLayer = activeBgLayer === "a" ? "b" : "a";
+    };
+    preload.onerror = () => {
+        next.src = newSrc;
+        next.dataset.currentSrc = newSrc;
+        next.classList.remove("bg-hidden");
+        current.classList.add("bg-hidden");
+        activeBgLayer = activeBgLayer === "a" ? "b" : "a";
+    };
+    preload.src = newSrc;
+}
+
 function updateSongUI() {
     const song = getCurrentSong();
     if (!song) return;
 
-    document.getElementById("miniCover").src =
-        song.cover;
+    crossfadeImage(document.getElementById("miniCover"), song.cover);
+    crossfadeImage(document.getElementById("fullCover"), song.cover);
+    crossfadeBackground(song.cover);
 
     document.getElementById("miniTitle").textContent =
         song.title;
@@ -3940,18 +4033,11 @@ function updateSongUI() {
     document.getElementById("miniArtist").textContent =
         song.artist;
 
-    document.getElementById("fullCover").src =
-        song.cover;
-
     document.getElementById("fullTitle").textContent =
         song.title;
 
     document.getElementById("fullArtist").textContent =
         song.artist;
-
-    /* Blurred focus-mode background follows current cover */
-    const bg = document.getElementById("fullBg");
-    if (bg) bg.src = song.cover;
 
     updateFocusPalette(song);
 
@@ -4074,12 +4160,19 @@ function playCurrentFromQueue() {
     audio.pause();
     stopIntro();
 
-    updateSongUI();
-
     // Intro only on the first song of this visit (refresh resets it)
     if (introAudio && INTRO_SRC && !introPlayedThisVisit) {
         introPlaying = true;
         pendingSongAfterIntro = song;
+
+        // Show intro as the active track (cover, title, lyrics, focus palette)
+        updateSongUI();
+        currentLyrics = [];
+        lyricsContainer.classList.add("lyrics-idle");
+        lastActiveIndex = null;
+        lyricsContainer.innerHTML = "";
+        loadLyrics(introSong.lyrics);
+
         introAudio.src = INTRO_SRC;
         introAudio.load();
         introAudio.play()
@@ -4115,6 +4208,22 @@ if (introAudio) {
         pendingSongAfterIntro = null;
         introPlayedThisVisit = true;
         if (song) playSongNow(song);
+    });
+
+    introAudio.addEventListener("timeupdate", () => {
+        if (introPlaying) updateProgress();
+    });
+
+    introAudio.addEventListener("loadedmetadata", () => {
+        if (introPlaying) updateProgress();
+    });
+
+    introAudio.addEventListener("play", () => {
+        if (introPlaying) updatePlayButtons();
+    });
+
+    introAudio.addEventListener("pause", () => {
+        if (introPlaying) updatePlayButtons();
     });
 }
 
@@ -4173,6 +4282,17 @@ function togglePlay() {
    ========================================================= */
 
 function nextSong() {
+    // Skip intro and go to the pending / current queue song
+    if (introPlaying) {
+        const song = pendingSongAfterIntro;
+        stopIntro();
+        introPlayedThisVisit = true;
+        if (song) {
+            playSongNow(song);
+            return;
+        }
+    }
+
     if (!playQueue.length) {
         if (!songs.length) return;
         startPlayback(songs, songs[0].id, true);
@@ -4184,6 +4304,12 @@ function nextSong() {
 }
 
 function previousSong() {
+    // During intro, previous just restarts the intro
+    if (introPlaying && introAudio) {
+        introAudio.currentTime = 0;
+        return;
+    }
+
     if (!playQueue.length) {
         if (!songs.length) return;
         startPlayback(songs, songs[0].id, true);
@@ -4199,16 +4325,17 @@ function previousSong() {
    ========================================================= */
 
 function seek(amount) {
-    if (!Number.isFinite(audio.duration)) {
+    const media = getActiveAudio();
+    if (!Number.isFinite(media.duration)) {
         return;
     }
 
-    audio.currentTime =
+    media.currentTime =
         Math.max(
             0,
             Math.min(
-                audio.duration,
-                audio.currentTime + amount
+                media.duration,
+                media.currentTime + amount
             )
         );
 }
@@ -4295,10 +4422,15 @@ function toggleShuffle(showMessage = true) {
    PROGRESS
    ========================================================= */
 
+function getActiveAudio() {
+    return (introPlaying && introAudio) ? introAudio : audio;
+}
+
 function updateProgress() {
+    const media = getActiveAudio();
     const percent =
-        audio.duration
-            ? (audio.currentTime / audio.duration) * 100
+        media.duration
+            ? (media.currentTime / media.duration) * 100
             : 0;
 
     document.getElementById("progressBar").value =
@@ -4308,27 +4440,28 @@ function updateProgress() {
         percent;
 
     document.getElementById("currentTime").textContent =
-        formatTime(audio.currentTime);
+        formatTime(media.currentTime);
 
     document.getElementById("duration").textContent =
-        formatTime(audio.duration);
+        formatTime(media.duration);
 
     document.getElementById("fullCurrentTime").textContent =
-        formatTime(audio.currentTime);
+        formatTime(media.currentTime);
 
     document.getElementById("fullDuration").textContent =
-        formatTime(audio.duration);
+        formatTime(media.duration);
 
-    updateLyrics(audio.currentTime);
+    updateLyrics(media.currentTime);
 }
 
 function setProgress(value) {
-    if (!Number.isFinite(audio.duration)) {
+    const media = getActiveAudio();
+    if (!Number.isFinite(media.duration)) {
         return;
     }
 
-    audio.currentTime =
-        (Number(value) / 100) * audio.duration;
+    media.currentTime =
+        (Number(value) / 100) * media.duration;
 }
 
 /* =========================================================
@@ -5093,14 +5226,37 @@ function initialize() {
     // Show first song in the mini player as a preview (doesn't start playback)
     if (songs.length) {
         const preview = songs[0];
-        document.getElementById("miniCover").src = preview.cover;
+        const mini = document.getElementById("miniCover");
+        const full = document.getElementById("fullCover");
+        const bg = document.getElementById("fullBg");
+        const bgB = document.getElementById("fullBgB");
+
+        if (mini) {
+            mini.src = preview.cover;
+            mini.dataset.currentSrc = preview.cover;
+            mini.style.opacity = "1";
+        }
+        if (full) {
+            full.src = preview.cover;
+            full.dataset.currentSrc = preview.cover;
+            full.style.opacity = "1";
+        }
+        if (bg) {
+            bg.src = preview.cover;
+            bg.dataset.currentSrc = preview.cover;
+            bg.classList.remove("bg-hidden");
+        }
+        if (bgB) {
+            bgB.src = preview.cover;
+            bgB.dataset.currentSrc = preview.cover;
+            bgB.classList.add("bg-hidden");
+        }
+        activeBgLayer = "a";
+
         document.getElementById("miniTitle").textContent = preview.title;
         document.getElementById("miniArtist").textContent = preview.artist;
-        document.getElementById("fullCover").src = preview.cover;
         document.getElementById("fullTitle").textContent = preview.title;
         document.getElementById("fullArtist").textContent = preview.artist;
-        const bg = document.getElementById("fullBg");
-        if (bg) bg.src = preview.cover;
     }
 
     updatePlayButtons();
