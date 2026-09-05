@@ -2582,7 +2582,7 @@ body::after {
 
 .queue-panel {
     right: calc(var(--shell-inset) + 6px);
-    bottom: calc(var(--player-height) + (var(--shell-inset) * 2) + 10px);
+    bottom: calc(var(--player-height) + var(--shell-inset) + var(--shell-inset) + 10px);
     background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 17%, rgba(255,255,255,.1)), rgba(255,255,255,.035)), color-mix(in srgb, var(--accent) 9%, rgba(10,11,24,.84));
     box-shadow: var(--floating-shadow);
 }
