@@ -3489,6 +3489,154 @@ body {
     }
 }
 
+
+
+/* THEME AND ACCENT SYSTEM */
+:root {
+    --theme-top: #32333e;
+    --theme-mid: #242530;
+    --theme-bottom: #1b1c24;
+    --theme-bloom: rgba(112,133,196,.14);
+    --theme-side-top: rgba(67,68,78,.84);
+    --theme-side-bottom: rgba(43,44,53,.82);
+    --theme-panel: rgba(55,56,66,.92);
+    --theme-queue: rgba(59,60,70,.94);
+    --theme-focus: #22232c;
+}
+
+body {
+    background:
+        radial-gradient(circle at 76% -6%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 37rem),
+        radial-gradient(circle at 8% 84%, var(--theme-bloom), transparent 32rem),
+        linear-gradient(180deg, var(--theme-top) 0%, var(--theme-mid) 48%, var(--theme-bottom) 100%);
+}
+
+.sidebar {
+    background: linear-gradient(180deg, var(--theme-side-top), var(--theme-side-bottom));
+}
+
+.bottom-player {
+    background: color-mix(in srgb, var(--accent) 8%, var(--theme-panel));
+}
+
+.queue-panel {
+    background: var(--theme-queue);
+}
+
+.full-player {
+    background: var(--theme-focus);
+}
+
+.theme-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.theme-option {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+    padding: 7px 4px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 650;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.theme-option:hover {
+    color: var(--text);
+    background: rgba(255,255,255,.06);
+}
+
+.theme-option.active {
+    border-color: color-mix(in srgb, var(--accent) 62%, rgba(255,255,255,.22));
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+    color: #fff;
+}
+
+.theme-preview {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.35;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.theme-preview.charcoal { background: linear-gradient(135deg, #454651, #1b1c24); }
+.theme-preview.midnight { background: linear-gradient(135deg, #354b7d, #141a31); }
+.theme-preview.ocean { background: linear-gradient(135deg, #227f92, #102a39); }
+.theme-preview.plum { background: linear-gradient(135deg, #765078, #251a2d); }
+.theme-preview.dawn { background: linear-gradient(135deg, #9c624e, #352333); }
+
+.control:not(.main-play),
+.full-control:not(.big) {
+    color: var(--accent);
+}
+
+.control:not(.main-play):hover,
+.full-control:not(.big):hover {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent-bright);
+}
+
+.control.main-play,
+.full-control.big,
+.play-overlay {
+    background: var(--accent);
+    color: #13141a;
+}
+
+.control.main-play:hover,
+.full-control.big:hover {
+    background: var(--accent-bright);
+    color: #13141a;
+    box-shadow: 0 8px 22px var(--accent-glow);
+}
+
+.play-overlay:hover {
+    background: var(--accent-bright);
+    color: #13141a;
+}
+
+.shuffle-btn,
+.full-like,
+.like-btn,
+.queue-add-btn,
+.track-row-like {
+    color: var(--accent);
+}
+
+.shuffle-btn:hover,
+.queue-item-add:hover,
+.queue-add-btn:hover {
+    background: var(--accent);
+    color: #13141a;
+}
+
+.lyric-line.active {
+    color: var(--accent);
+    text-shadow: 0 0 26px var(--accent-glow);
+}
+
+@media (max-width: 760px) {
+    .theme-row {
+        grid-template-columns: repeat(5, minmax(54px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+    }
+
+    .theme-row::-webkit-scrollbar { display: none; }
+
+    .theme-option { font-size: 9px; }
+}
+
 </style>
 </head>
 
@@ -3522,6 +3670,12 @@ body {
                 <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral" type="button"></button>
                 <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac" type="button"></button>
                 <button class="accent-swatch" data-accent="#ffffff" style="background:#ffffff; border: 1px solid rgba(255,255,255,.35);" title="White" type="button"></button>
+
+                <button class="accent-swatch" data-accent="#FF7AA2" style="background:#FF7AA2" title="Rose" type="button"></button>
+                <button class="accent-swatch" data-accent="#A78BFA" style="background:#A78BFA" title="Violet" type="button"></button>
+                <button class="accent-swatch" data-accent="#6DD6FF" style="background:#6DD6FF" title="Sky" type="button"></button>
+                <button class="accent-swatch" data-accent="#4FD1B5" style="background:#4FD1B5" title="Teal" type="button"></button>
+                <button class="accent-swatch" data-accent="#FFAA70" style="background:#FFAA70" title="Peach" type="button"></button>
             </div>
             <button class="onboard-btn" id="onboardFinish" type="button">Get started</button>
         </div>
@@ -3689,6 +3843,33 @@ body {
 
             <h2>Settings</h2>
 
+
+            <div class="settings-group">
+                <div class="settings-label">Theme</div>
+                <div class="theme-row" id="themeRow">
+                    <button class="theme-option active" data-theme="charcoal" type="button">
+                        <span class="theme-preview charcoal"></span>
+                        <span>Charcoal</span>
+                    </button>
+                    <button class="theme-option" data-theme="midnight" type="button">
+                        <span class="theme-preview midnight"></span>
+                        <span>Midnight</span>
+                    </button>
+                    <button class="theme-option" data-theme="ocean" type="button">
+                        <span class="theme-preview ocean"></span>
+                        <span>Ocean</span>
+                    </button>
+                    <button class="theme-option" data-theme="plum" type="button">
+                        <span class="theme-preview plum"></span>
+                        <span>Plum</span>
+                    </button>
+                    <button class="theme-option" data-theme="dawn" type="button">
+                        <span class="theme-preview dawn"></span>
+                        <span>Dawn</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="settings-group">
                 <div class="settings-label">Accent Color</div>
                 <div class="accent-row" id="accentRow">
@@ -3699,6 +3880,12 @@ body {
                     <button class="accent-swatch" data-accent="#FA897B" style="background:#FA897B" title="Coral"></button>
                     <button class="accent-swatch" data-accent="#CCABD8" style="background:#CCABD8" title="Lilac"></button>
                     <button class="accent-swatch" data-accent="#ffffff" style="background:#ffffff; border: 1px solid rgba(255,255,255,.35);" title="White"></button>
+
+                    <button class="accent-swatch" data-accent="#FF7AA2" style="background:#FF7AA2" title="Rose"></button>
+                    <button class="accent-swatch" data-accent="#A78BFA" style="background:#A78BFA" title="Violet"></button>
+                    <button class="accent-swatch" data-accent="#6DD6FF" style="background:#6DD6FF" title="Sky"></button>
+                    <button class="accent-swatch" data-accent="#4FD1B5" style="background:#4FD1B5" title="Teal"></button>
+                    <button class="accent-swatch" data-accent="#FFAA70" style="background:#FFAA70" title="Peach"></button>
                 </div>
             </div>
 
@@ -6280,8 +6467,73 @@ function applyAccent(hex) {
     localStorage.setItem("akkoflac-accent", hex);
 }
 
+
+
+/* THEME AND ACCENT SYSTEM */
+const appThemes = {
+    charcoal: {
+        top: "#32333e", mid: "#242530", bottom: "#1b1c24",
+        bloom: "rgba(112,133,196,.14)",
+        sideTop: "rgba(67,68,78,.84)", sideBottom: "rgba(43,44,53,.82)",
+        panel: "rgba(55,56,66,.92)", queue: "rgba(59,60,70,.94)", focus: "#22232c"
+    },
+    midnight: {
+        top: "#354b7d", mid: "#202b4b", bottom: "#141a31",
+        bloom: "rgba(104,142,255,.20)",
+        sideTop: "rgba(48,64,111,.86)", sideBottom: "rgba(25,34,65,.84)",
+        panel: "rgba(37,48,82,.94)", queue: "rgba(43,56,96,.95)", focus: "#17213f"
+    },
+    ocean: {
+        top: "#227f92", mid: "#185362", bottom: "#102a39",
+        bloom: "rgba(72,208,205,.18)",
+        sideTop: "rgba(34,109,126,.86)", sideBottom: "rgba(18,61,75,.84)",
+        panel: "rgba(25,81,96,.94)", queue: "rgba(31,93,109,.95)", focus: "#123a49"
+    },
+    plum: {
+        top: "#765078", mid: "#462d52", bottom: "#251a2d",
+        bloom: "rgba(218,139,238,.18)",
+        sideTop: "rgba(103,69,111,.86)", sideBottom: "rgba(55,36,65,.85)",
+        panel: "rgba(71,46,81,.94)", queue: "rgba(83,55,94,.95)", focus: "#33213e"
+    },
+    dawn: {
+        top: "#9c624e", mid: "#5b3740", bottom: "#352333",
+        bloom: "rgba(255,171,109,.18)",
+        sideTop: "rgba(139,85,67,.86)", sideBottom: "rgba(78,47,57,.85)",
+        panel: "rgba(91,55,63,.94)", queue: "rgba(106,65,71,.95)", focus: "#482d3b"
+    }
+};
+
+function applyTheme(name) {
+    const selectedName = appThemes[name] ? name : "charcoal";
+    const theme = appThemes[selectedName];
+    const root = document.documentElement;
+
+    root.style.setProperty("--theme-top", theme.top);
+    root.style.setProperty("--theme-mid", theme.mid);
+    root.style.setProperty("--theme-bottom", theme.bottom);
+    root.style.setProperty("--theme-bloom", theme.bloom);
+    root.style.setProperty("--theme-side-top", theme.sideTop);
+    root.style.setProperty("--theme-side-bottom", theme.sideBottom);
+    root.style.setProperty("--theme-panel", theme.panel);
+    root.style.setProperty("--theme-queue", theme.queue);
+    root.style.setProperty("--theme-focus", theme.focus);
+    root.style.setProperty("--bg", theme.bottom);
+    root.style.setProperty("--bg-deep", theme.bottom);
+    root.dataset.theme = selectedName;
+
+    document.querySelectorAll(".theme-option").forEach(button => {
+        const active = button.dataset.theme === selectedName;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+
+    localStorage.setItem("akkoflac-theme", selectedName);
+}
+
 function loadSettings() {
     const savedAccent = localStorage.getItem("akkoflac-accent") || "#7b8cff";
+    const savedTheme = localStorage.getItem("akkoflac-theme") || "charcoal";
+    applyTheme(savedTheme);
     applyAccent(savedAccent);
 }
 
@@ -6289,6 +6541,12 @@ document.getElementById("accentRow")?.addEventListener("click", (e) => {
     const btn = e.target.closest(".accent-swatch");
     if (!btn) return;
     applyAccent(btn.dataset.accent);
+});
+
+document.getElementById("themeRow")?.addEventListener("click", (event) => {
+    const button = event.target.closest(".theme-option");
+    if (!button) return;
+    applyTheme(button.dataset.theme);
 });
 
 /* =========================================================
