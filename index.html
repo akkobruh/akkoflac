@@ -3136,6 +3136,248 @@ body::after { opacity: .38; }
     }
 }
 
+
+
+/* RESPONSIVE LYRIC VIEWPORT REFINEMENT */
+.lyrics-panel {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+}
+
+.lyrics-panel::before {
+    display: none;
+}
+
+.lyrics-heading {
+    margin-bottom: 12px;
+    padding: 0 2px;
+    color: rgba(255,255,255,.52);
+}
+
+#lyricsContainer {
+    padding: 0 14px 0 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%);
+}
+
+.lyrics-track {
+    padding: 4px 0 26px;
+}
+
+.lyric-line {
+    margin: 0 0 clamp(13px, 1.6vh, 22px);
+    padding: 0;
+    color: rgba(255,255,255,.28);
+    opacity: 1;
+    visibility: visible;
+}
+
+.lyric-line.active {
+    color: #fff;
+    opacity: 1;
+    transform: scale(1.02);
+}
+
+.lyric-line.next {
+    color: rgba(255,255,255,.74);
+    opacity: 1;
+}
+
+.lyric-line.next-next {
+    color: rgba(255,255,255,.52);
+    opacity: 1;
+}
+
+.lyric-line.upcoming {
+    color: rgba(255,255,255,.33);
+    opacity: 1;
+    transform: scale(.99);
+}
+
+.lyric-line.past {
+    color: rgba(255,255,255,.18);
+    opacity: 1;
+}
+
+@media (max-width: 760px) {
+    :root {
+        --mobile-nav-height: 62px;
+        --player-height: 72px;
+    }
+
+    .sidebar {
+        position: fixed;
+        z-index: 85;
+        inset: auto 0 var(--player-height) 0;
+        width: auto;
+        height: var(--mobile-nav-height);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        padding: 5px 7px;
+        border: 0;
+        border-top: 1px solid rgba(255,255,255,.10);
+        border-radius: 16px 16px 0 0;
+        background: rgba(30,30,32,.91);
+        backdrop-filter: blur(28px) saturate(1.2);
+        -webkit-backdrop-filter: blur(28px) saturate(1.2);
+        box-shadow: 0 -9px 28px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .sidebar::after,
+    .logo,
+    .nav-title,
+    .sidebar-credit {
+        display: none;
+    }
+
+    .nav-button {
+        flex: 1 1 0;
+        height: 48px;
+        justify-content: center;
+        margin: 0;
+        padding: 7px 2px 9px;
+        border-radius: 10px;
+        color: rgba(255,255,255,.58);
+        font-size: 10px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .nav-button.active {
+        background: rgba(255,255,255,.10);
+        color: #fff;
+    }
+
+    .nav-button.active::before {
+        display: block;
+        left: 50%;
+        top: auto;
+        bottom: 4px;
+        width: 16px;
+        height: 3px;
+        transform: translateX(-50%);
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 18px 15px calc(var(--player-height) + var(--mobile-nav-height) + 24px);
+    }
+
+    .topbar {
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .search-box input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .featured {
+        min-height: 160px;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .featured img {
+        width: 108px;
+        height: 108px;
+    }
+
+    .featured-label {
+        margin-bottom: 6px;
+        font-size: 9px;
+    }
+
+    .featured-title {
+        font-size: clamp(22px, 7vw, 29px);
+        letter-spacing: -1.1px;
+    }
+
+    .featured-artist { font-size: 12px; }
+
+    .bottom-player {
+        z-index: 90;
+        height: var(--player-height);
+        padding: 8px 11px;
+        gap: 8px;
+    }
+
+    .mini-song {
+        width: auto;
+        flex: 0 0 auto;
+    }
+
+    .mini-info { display: none; }
+
+    .mini-cover-wrap {
+        width: 46px;
+        height: 46px;
+    }
+
+    .player-controls {
+        justify-content: flex-end;
+        gap: 0;
+    }
+
+    .control {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .control.main-play {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        min-height: 46px;
+    }
+
+    .control.repeat,
+    .control.shuffle {
+        display: none;
+    }
+
+    .full-content {
+        gap: 28px;
+        padding: 78px 18px 28px;
+    }
+
+    .lyrics-panel {
+        height: min(50svh, 420px);
+        min-height: 270px;
+    }
+
+    .lyrics-heading {
+        margin-bottom: 8px;
+        font-size: 10px;
+    }
+
+    #lyricsContainer {
+        padding: 0 4px 0 0;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 80%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 80%, transparent 100%);
+    }
+
+    .lyrics-track { padding-bottom: 20px; }
+
+    .lyric-line {
+        margin-bottom: clamp(12px, 1.8vh, 18px);
+        font-size: clamp(27px, 8.5vw, 39px);
+        line-height: 1.15;
+        letter-spacing: -1.05px;
+    }
+}
+
 </style>
 </head>
 
@@ -6056,6 +6298,96 @@ function initialize() {
 }
 
 initialize();
+
+
+/* RESPONSIVE LYRIC VIEWPORT REFINEMENT */
+let lyricLayoutFrame = 0;
+
+function refreshLyricViewport() {
+    if (lyricLayoutFrame) {
+        cancelAnimationFrame(lyricLayoutFrame);
+    }
+
+    lyricLayoutFrame = requestAnimationFrame(() => {
+        lyricLayoutFrame = 0;
+        if (!currentLyrics.length) return;
+        lastActiveIndex = null;
+        updateLyrics(audio.currentTime || 0);
+    });
+}
+
+function updateLyrics(time) {
+    if (!currentLyrics.length) return;
+
+    lyricsContainer.classList.remove("lyrics-idle");
+
+    let activeIndex = -1;
+    for (let index = 0; index < currentLyrics.length; index++) {
+        if (time >= currentLyrics[index].time) activeIndex = index;
+        else break;
+    }
+
+    if (lastActiveIndex !== null && activeIndex === lastActiveIndex) return;
+    lastActiveIndex = activeIndex;
+
+    const elements = Array.from(
+        lyricsContainer.querySelectorAll(".lyric-line")
+    );
+    const track = lyricsContainer.querySelector(".lyrics-track");
+    if (!track || !elements.length) return;
+
+    elements.forEach((element, index) => {
+        element.classList.remove(
+            "active", "next", "next-next", "next-third", "next-fourth",
+            "upcoming", "past", "fade-past", "offscreen"
+        );
+
+        if (element._fadeTimer) {
+            clearTimeout(element._fadeTimer);
+            element._fadeTimer = null;
+        }
+
+        if (activeIndex < 0) {
+            if (index === 0) element.classList.add("next");
+            else if (index === 1) element.classList.add("next-next");
+            else element.classList.add("upcoming");
+            return;
+        }
+
+        if (index < activeIndex) {
+            element.classList.add("past");
+        } else if (index === activeIndex) {
+            element.classList.add("active");
+        } else if (index === activeIndex + 1) {
+            element.classList.add("next");
+        } else if (index === activeIndex + 2) {
+            element.classList.add("next-next");
+        } else {
+            element.classList.add("upcoming");
+        }
+    });
+
+    const focusIndex = activeIndex < 0 ? 0 : activeIndex;
+    const focusLine = elements[focusIndex];
+    if (!focusLine) return;
+
+    requestAnimationFrame(() => {
+        const viewportHeight = Math.max(1, lyricsContainer.clientHeight);
+        const anchor = activeIndex < 0 ? 0 : viewportHeight * 0.22;
+        const desiredOffset = Math.max(0, focusLine.offsetTop - anchor);
+        const maxOffset = Math.max(0, track.offsetHeight - viewportHeight);
+        const offset = Math.min(desiredOffset, maxOffset);
+
+        track.style.transform = "translate3d(0, " + (-offset) + "px, 0)";
+    });
+}
+
+window.addEventListener("resize", refreshLyricViewport, { passive: true });
+
+if ("ResizeObserver" in window) {
+    new ResizeObserver(refreshLyricViewport).observe(lyricsContainer);
+}
+
 </script>
 
 </body>
