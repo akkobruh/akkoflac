@@ -3134,10 +3134,11 @@ let queueIndex = 0;
 const audio = document.getElementById("audio");
 const introAudio = document.getElementById("introAudio");
 
-/* Short drop before each song — put your file at music/madebyakko.mp3 */
+/* Short drop before first song of each visit — put file at music/madebyakko.mp3 */
 const INTRO_SRC = "music/madebyakko.mp3";
 let introPlaying = false;
 let pendingSongAfterIntro = null;
+let introPlayedThisVisit = false; // resets on page refresh
 
 const pageTitle = document.getElementById("pageTitle");
 const searchInput = document.getElementById("searchInput");
@@ -4056,18 +4057,22 @@ function playCurrentFromQueue() {
 
     updateSongUI();
 
-    // Try the "made by akko" drop first, then the real track
-    if (introAudio && INTRO_SRC) {
+    // Intro only on the first song of this visit (refresh resets it)
+    if (introAudio && INTRO_SRC && !introPlayedThisVisit) {
         introPlaying = true;
         pendingSongAfterIntro = song;
         introAudio.src = INTRO_SRC;
         introAudio.load();
         introAudio.play()
-            .then(() => updatePlayButtons())
+            .then(() => {
+                introPlayedThisVisit = true;
+                updatePlayButtons();
+            })
             .catch(() => {
                 // Intro missing / blocked — just play the song
                 introPlaying = false;
                 pendingSongAfterIntro = null;
+                introPlayedThisVisit = true;
                 playSongNow(song);
             });
         return;
@@ -4081,6 +4086,7 @@ if (introAudio) {
         const song = pendingSongAfterIntro;
         introPlaying = false;
         pendingSongAfterIntro = null;
+        introPlayedThisVisit = true;
         if (song) playSongNow(song);
     });
 
@@ -4088,6 +4094,7 @@ if (introAudio) {
         const song = pendingSongAfterIntro;
         introPlaying = false;
         pendingSongAfterIntro = null;
+        introPlayedThisVisit = true;
         if (song) playSongNow(song);
     });
 }
