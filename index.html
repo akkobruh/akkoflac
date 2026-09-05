@@ -3637,6 +3637,77 @@ body {
     .theme-option { font-size: 9px; }
 }
 
+
+
+/* EXPANDED PERSONALIZATION AND INTRO REMOVAL */
+.theme-row {
+    display: flex;
+    gap: 9px;
+    overflow-x: auto;
+    padding: 2px 1px 7px;
+    scrollbar-width: none;
+}
+
+.theme-row::-webkit-scrollbar { display: none; }
+
+.theme-option {
+    flex: 0 0 74px;
+}
+
+.accent-row {
+    gap: 10px;
+}
+
+.onboard-card {
+    max-height: calc(100svh - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.onboard-theme-label {
+    margin: 0 0 10px;
+    color: rgba(255,255,255,.74);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.onboard-theme-row {
+    margin: 0 -2px 20px;
+}
+
+.onboard-swatches {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    margin: 0 -2px 24px;
+    padding: 2px 2px 7px;
+    scrollbar-width: none;
+}
+
+.onboard-swatches::-webkit-scrollbar { display: none; }
+
+.onboard-swatches .accent-swatch {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+}
+
+@media (max-width: 760px) {
+    .onboard-card {
+        width: min(440px, calc(100% - 20px));
+        padding: 28px 20px 22px;
+    }
+
+    .theme-option {
+        flex-basis: 68px;
+    }
+
+    .onboard-title {
+        font-size: 26px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -3661,6 +3732,8 @@ body {
         <div class="onboard-step" id="onboardStepAccent">
             <div class="onboard-kicker">Personalize</div>
             <h2 class="onboard-title" style="font-size: clamp(24px, 4.5vw, 30px);">Make it yours</h2>
+            <div class="onboard-theme-label">Choose a theme</div>
+            <div class="theme-row onboard-theme-row" id="onboardThemeRow" data-theme-picker></div>
             <div class="onboard-accent-label" id="onboardAccentLabel">Choose your accent color</div>
             <div class="onboard-swatches" id="onboardSwatches">
                 <button class="accent-swatch" data-accent="#7b8cff" style="background:#7b8cff" title="Blue" type="button"></button>
@@ -3676,6 +3749,19 @@ body {
                 <button class="accent-swatch" data-accent="#6DD6FF" style="background:#6DD6FF" title="Sky" type="button"></button>
                 <button class="accent-swatch" data-accent="#4FD1B5" style="background:#4FD1B5" title="Teal" type="button"></button>
                 <button class="accent-swatch" data-accent="#FFAA70" style="background:#FFAA70" title="Peach" type="button"></button>
+
+                <button class="accent-swatch" data-accent="#FF4F7B" style="background:#FF4F7B" title="Watermelon" type="button"></button>
+                <button class="accent-swatch" data-accent="#FF8F8F" style="background:#FF8F8F" title="Blush" type="button"></button>
+                <button class="accent-swatch" data-accent="#FF6F4F" style="background:#FF6F4F" title="Tangerine" type="button"></button>
+                <button class="accent-swatch" data-accent="#FFD166" style="background:#FFD166" title="Gold" type="button"></button>
+                <button class="accent-swatch" data-accent="#CDEA74" style="background:#CDEA74" title="Citron" type="button"></button>
+                <button class="accent-swatch" data-accent="#91E6A2" style="background:#91E6A2" title="Sage" type="button"></button>
+                <button class="accent-swatch" data-accent="#48D7C1" style="background:#48D7C1" title="Seafoam" type="button"></button>
+                <button class="accent-swatch" data-accent="#35B7FF" style="background:#35B7FF" title="Azure" type="button"></button>
+                <button class="accent-swatch" data-accent="#5F86FF" style="background:#5F86FF" title="Cobalt" type="button"></button>
+                <button class="accent-swatch" data-accent="#7B5CFF" style="background:#7B5CFF" title="Indigo" type="button"></button>
+                <button class="accent-swatch" data-accent="#D77BFF" style="background:#D77BFF" title="Orchid" type="button"></button>
+                <button class="accent-swatch" data-accent="#F2A6C8" style="background:#F2A6C8" title="Petal" type="button"></button>
             </div>
             <button class="onboard-btn" id="onboardFinish" type="button">Get started</button>
         </div>
@@ -3846,7 +3932,7 @@ body {
 
             <div class="settings-group">
                 <div class="settings-label">Theme</div>
-                <div class="theme-row" id="themeRow">
+                <div class="theme-row" id="themeRow" data-theme-picker>
                     <button class="theme-option active" data-theme="charcoal" type="button">
                         <span class="theme-preview charcoal"></span>
                         <span>Charcoal</span>
@@ -3886,6 +3972,19 @@ body {
                     <button class="accent-swatch" data-accent="#6DD6FF" style="background:#6DD6FF" title="Sky"></button>
                     <button class="accent-swatch" data-accent="#4FD1B5" style="background:#4FD1B5" title="Teal"></button>
                     <button class="accent-swatch" data-accent="#FFAA70" style="background:#FFAA70" title="Peach"></button>
+
+                    <button class="accent-swatch" data-accent="#FF4F7B" style="background:#FF4F7B" title="Watermelon"></button>
+                    <button class="accent-swatch" data-accent="#FF8F8F" style="background:#FF8F8F" title="Blush"></button>
+                    <button class="accent-swatch" data-accent="#FF6F4F" style="background:#FF6F4F" title="Tangerine"></button>
+                    <button class="accent-swatch" data-accent="#FFD166" style="background:#FFD166" title="Gold"></button>
+                    <button class="accent-swatch" data-accent="#CDEA74" style="background:#CDEA74" title="Citron"></button>
+                    <button class="accent-swatch" data-accent="#91E6A2" style="background:#91E6A2" title="Sage"></button>
+                    <button class="accent-swatch" data-accent="#48D7C1" style="background:#48D7C1" title="Seafoam"></button>
+                    <button class="accent-swatch" data-accent="#35B7FF" style="background:#35B7FF" title="Azure"></button>
+                    <button class="accent-swatch" data-accent="#5F86FF" style="background:#5F86FF" title="Cobalt"></button>
+                    <button class="accent-swatch" data-accent="#7B5CFF" style="background:#7B5CFF" title="Indigo"></button>
+                    <button class="accent-swatch" data-accent="#D77BFF" style="background:#D77BFF" title="Orchid"></button>
+                    <button class="accent-swatch" data-accent="#F2A6C8" style="background:#F2A6C8" title="Petal"></button>
                 </div>
             </div>
 
@@ -4146,7 +4245,6 @@ body {
 </div>
 
 <audio id="audio" preload="metadata"></audio>
-<audio id="introAudio" preload="auto" src="music/madebyakko.mp3"></audio>
 
 <script>
 /* =========================================================
@@ -4498,24 +4596,6 @@ let queueIndex = 0;
    ========================================================= */
 
 const audio = document.getElementById("audio");
-const introAudio = document.getElementById("introAudio");
-
-/* Short drop before first song of each visit — put file at music/madebyakko.mp3 */
-const INTRO_SRC = "music/madebyakko.mp3";
-let introPlaying = false;
-let pendingSongAfterIntro = null;
-let introPlayedThisVisit = false; // resets on page refresh
-
-/* Intro treated like a real track: own cover, title, lyrics, focus palette */
-const introSong = {
-    id: "madebyakko",
-    title: "Made by Akko",
-    artist: "Akko",
-    album: "AkkoFlac",
-    audio: "music/madebyakko.mp3",
-    cover: "covers/madebyakko.jpg",
-    lyrics: "lyrics/madebyakko.lrc"
-};
 
 const pageTitle = document.getElementById("pageTitle");
 const searchInput = document.getElementById("searchInput");
@@ -5037,9 +5117,6 @@ searchInput.addEventListener("input", event => {
    ========================================================= */
 
 function getCurrentSong() {
-    if (introPlaying) {
-        return introSong;
-    }
     if (playQueue.length) {
         return playQueue[queueIndex] || null;
     }
@@ -5379,9 +5456,7 @@ function updateFullLikeButton() {
 }
 
 function updatePlayButtons() {
-    const playing = introPlaying
-        ? !!(introAudio && !introAudio.paused)
-        : !audio.paused;
+    const playing = !audio.paused;
 
     ["playButton", "fullPlay"].forEach(id => {
         const btn = document.getElementById(id);
@@ -5432,13 +5507,7 @@ function startPlayback(list, startId, autoShuffle = false) {
     playCurrentFromQueue();
 }
 
-function stopIntro() {
-    if (!introAudio) return;
-    introAudio.pause();
-    introAudio.currentTime = 0;
-    introPlaying = false;
-    pendingSongAfterIntro = null;
-}
+
 
 function playSongNow(song) {
     if (!song) return;
@@ -5473,83 +5542,16 @@ function playSongNow(song) {
 }
 
 function playCurrentFromQueue() {
-    if (!playQueue.length) {
-        return;
-    }
+    if (!playQueue.length) return;
 
     const song = playQueue[queueIndex];
     if (!song) return;
 
-    // Stop any current song + intro
     audio.pause();
-    stopIntro();
-
-    // Intro only on the first song of this visit (refresh resets it)
-    if (introAudio && INTRO_SRC && !introPlayedThisVisit) {
-        introPlaying = true;
-        pendingSongAfterIntro = song;
-
-        // Show intro as the active track (cover, title, lyrics, focus palette)
-        updateSongUI();
-        currentLyrics = [];
-        lyricsContainer.classList.add("lyrics-idle");
-        lastActiveIndex = null;
-        lyricsContainer.innerHTML = "";
-        loadLyrics(introSong.lyrics);
-
-        introAudio.src = INTRO_SRC;
-        introAudio.load();
-        introAudio.play()
-            .then(() => {
-                introPlayedThisVisit = true;
-                updatePlayButtons();
-            })
-            .catch(() => {
-                // Intro missing / blocked — just play the song
-                introPlaying = false;
-                pendingSongAfterIntro = null;
-                introPlayedThisVisit = true;
-                playSongNow(song);
-            });
-        return;
-    }
-
     playSongNow(song);
 }
 
-if (introAudio) {
-    introAudio.addEventListener("ended", () => {
-        const song = pendingSongAfterIntro;
-        introPlaying = false;
-        pendingSongAfterIntro = null;
-        introPlayedThisVisit = true;
-        if (song) playSongNow(song);
-    });
 
-    introAudio.addEventListener("error", () => {
-        const song = pendingSongAfterIntro;
-        introPlaying = false;
-        pendingSongAfterIntro = null;
-        introPlayedThisVisit = true;
-        if (song) playSongNow(song);
-    });
-
-    introAudio.addEventListener("timeupdate", () => {
-        if (introPlaying) updateProgress();
-    });
-
-    introAudio.addEventListener("loadedmetadata", () => {
-        if (introPlaying) updateProgress();
-    });
-
-    introAudio.addEventListener("play", () => {
-        if (introPlaying) updatePlayButtons();
-    });
-
-    introAudio.addEventListener("pause", () => {
-        if (introPlaying) updatePlayButtons();
-    });
-}
 
 /* Legacy helper still used by some call sites */
 function playSong(index) {
@@ -5574,17 +5576,6 @@ function shuffleLikedSongs() {
    ========================================================= */
 
 function togglePlay() {
-    // Pause / resume the intro drop if it's playing
-    if (introPlaying && introAudio) {
-        if (introAudio.paused) {
-            introAudio.play().catch(() => {});
-        } else {
-            introAudio.pause();
-        }
-        updatePlayButtons();
-        return;
-    }
-
     if (!audio.src) {
         if (playQueue.length) {
             playCurrentFromQueue();
@@ -5606,17 +5597,6 @@ function togglePlay() {
    ========================================================= */
 
 function nextSong() {
-    // Skip intro and go to the pending / current queue song
-    if (introPlaying) {
-        const song = pendingSongAfterIntro;
-        stopIntro();
-        introPlayedThisVisit = true;
-        if (song) {
-            playSongNow(song);
-            return;
-        }
-    }
-
     if (!playQueue.length) {
         if (!songs.length) return;
         startPlayback(songs, songs[0].id, true);
@@ -5628,12 +5608,6 @@ function nextSong() {
 }
 
 function previousSong() {
-    // During intro, previous just restarts the intro
-    if (introPlaying && introAudio) {
-        introAudio.currentTime = 0;
-        return;
-    }
-
     if (!playQueue.length) {
         if (!songs.length) return;
         startPlayback(songs, songs[0].id, true);
@@ -5747,7 +5721,7 @@ function toggleShuffle(showMessage = true) {
    ========================================================= */
 
 function getActiveAudio() {
-    return (introPlaying && introAudio) ? introAudio : audio;
+    return audio;
 }
 
 function updateProgress() {
@@ -6530,7 +6504,86 @@ function applyTheme(name) {
     localStorage.setItem("akkoflac-theme", selectedName);
 }
 
+
+
+/* EXPANDED PERSONALIZATION AND INTRO REMOVAL */
+Object.assign(appThemes, {
+    forest: {
+        top: "#426b58", mid: "#294739", bottom: "#172c25",
+        bloom: "rgba(120,220,166,.16)",
+        sideTop: "rgba(61,103,83,.87)", sideBottom: "rgba(35,65,53,.86)",
+        panel: "rgba(47,78,64,.94)", queue: "rgba(54,90,73,.95)", focus: "#203a2f"
+    },
+    lavender: {
+        top: "#776b9f", mid: "#4d486d", bottom: "#2c2a45",
+        bloom: "rgba(197,174,255,.18)",
+        sideTop: "rgba(105,96,146,.88)", sideBottom: "rgba(62,58,94,.86)",
+        panel: "rgba(74,70,107,.94)", queue: "rgba(88,82,125,.95)", focus: "#383453"
+    },
+    rosewood: {
+        top: "#8b5261", mid: "#593440", bottom: "#321f2a",
+        bloom: "rgba(255,152,178,.17)",
+        sideTop: "rgba(126,73,88,.88)", sideBottom: "rgba(71,42,52,.86)",
+        panel: "rgba(83,48,59,.94)", queue: "rgba(98,57,69,.95)", focus: "#452935"
+    },
+    ember: {
+        top: "#a75f37", mid: "#653a2a", bottom: "#321e1a",
+        bloom: "rgba(255,174,93,.18)",
+        sideTop: "rgba(151,83,48,.88)", sideBottom: "rgba(86,48,34,.86)",
+        panel: "rgba(99,55,39,.94)", queue: "rgba(117,65,46,.95)", focus: "#45281f"
+    },
+    glacier: {
+        top: "#5c8499", mid: "#385564", bottom: "#20343d",
+        bloom: "rgba(143,215,241,.18)",
+        sideTop: "rgba(82,119,139,.88)", sideBottom: "rgba(48,76,90,.86)",
+        panel: "rgba(57,87,102,.94)", queue: "rgba(67,103,120,.95)", focus: "#29434f"
+    },
+    cocoa: {
+        top: "#765848", mid: "#4b3830", bottom: "#2d231f",
+        bloom: "rgba(236,177,127,.15)",
+        sideTop: "rgba(108,80,66,.88)", sideBottom: "rgba(65,48,41,.86)",
+        panel: "rgba(75,56,48,.94)", queue: "rgba(89,67,57,.95)", focus: "#3b2d27"
+    },
+    aurora: {
+        top: "#397a72", mid: "#20564f", bottom: "#133b37",
+        bloom: "rgba(97,242,201,.18)",
+        sideTop: "rgba(48,114,105,.88)", sideBottom: "rgba(26,72,67,.86)",
+        panel: "rgba(34,86,80,.94)", queue: "rgba(41,102,95,.95)", focus: "#194943"
+    }
+});
+
+const appThemeLabels = {
+    charcoal: "Charcoal",
+    midnight: "Midnight",
+    ocean: "Ocean",
+    plum: "Plum",
+    dawn: "Dawn",
+    forest: "Forest",
+    lavender: "Lavender",
+    rosewood: "Rosewood",
+    ember: "Ember",
+    glacier: "Glacier",
+    cocoa: "Cocoa",
+    aurora: "Aurora"
+};
+
+function renderThemePickers() {
+    const options = Object.entries(appThemes).map(([name, theme]) => {
+        const label = appThemeLabels[name] || name;
+        const preview = "linear-gradient(135deg, " + theme.top + ", " + theme.bottom + ")";
+        return '<button class="theme-option" data-theme="' + name + '" type="button">' +
+            '<span class="theme-preview" style="background:' + preview + '"></span>' +
+            '<span>' + label + '</span>' +
+            '</button>';
+    }).join("");
+
+    document.querySelectorAll("[data-theme-picker]").forEach(picker => {
+        picker.innerHTML = options;
+    });
+}
+
 function loadSettings() {
+    renderThemePickers();
     const savedAccent = localStorage.getItem("akkoflac-accent") || "#7b8cff";
     const savedTheme = localStorage.getItem("akkoflac-theme") || "charcoal";
     applyTheme(savedTheme);
@@ -6544,6 +6597,12 @@ document.getElementById("accentRow")?.addEventListener("click", (e) => {
 });
 
 document.getElementById("themeRow")?.addEventListener("click", (event) => {
+    const button = event.target.closest(".theme-option");
+    if (!button) return;
+    applyTheme(button.dataset.theme);
+});
+
+document.getElementById("onboardThemeRow")?.addEventListener("click", (event) => {
     const button = event.target.closest(".theme-option");
     if (!button) return;
     applyTheme(button.dataset.theme);
@@ -6580,9 +6639,11 @@ function showOnboarding() {
     welcome?.classList.add("active");
     accent?.classList.remove("active");
 
-    // Sync swatch active state to current accent
-    const current = localStorage.getItem("akkoflac-accent") || "#7b8cff";
-    applyAccent(current);
+    // Sync both personalization pickers to saved choices.
+    const currentTheme = localStorage.getItem("akkoflac-theme") || "charcoal";
+    const currentAccent = localStorage.getItem("akkoflac-accent") || "#7b8cff";
+    applyTheme(currentTheme);
+    applyAccent(currentAccent);
 }
 
 function setupOnboarding() {
