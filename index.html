@@ -887,20 +887,38 @@ img {
     min-width: 0;
 }
 
-.mini-song img {
+.mini-cover-wrap {
+    position: relative;
     width: 54px;
     height: 54px;
     flex-shrink: 0;
-    object-fit: cover;
     border-radius: 11px;
+    overflow: hidden;
     box-shadow: 0 6px 16px rgba(0,0,0,.35);
-    transition: transform .25s var(--ease), opacity .35s var(--ease);
     cursor: pointer;
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
 }
 
-.mini-song img:hover {
+.mini-cover-wrap:hover {
     transform: scale(1.05);
     box-shadow: 0 0 16px var(--accent-soft);
+}
+
+.mini-cover-wrap .cover-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 11px;
+    opacity: 0;
+    transition: opacity .55s var(--ease);
+    pointer-events: none;
+}
+
+.mini-cover-wrap .cover-layer.is-active {
+    opacity: 1;
+    z-index: 1;
 }
 
 .mini-info {
@@ -1416,7 +1434,7 @@ img {
     transform: scale(1.15);
     pointer-events: none;
     user-select: none;
-    transition: opacity .55s var(--ease);
+    transition: opacity .7s var(--ease);
     opacity: 1;
 }
 
@@ -1569,18 +1587,38 @@ img {
     align-items: center;
 }
 
-.full-cover {
+.full-cover-wrap {
+    position: relative;
     width: min(430px, 75vh, 42vw);
     aspect-ratio: 1;
-    object-fit: cover;
     border-radius: 21px;
+    overflow: hidden;
     box-shadow: 0 20px 50px rgba(0,0,0,.5);
     animation: coverFloat 5s ease-in-out infinite;
-    transition: box-shadow .5s var(--ease), opacity .4s var(--ease), transform .5s var(--ease);
+    transition: box-shadow .5s var(--ease);
 }
 
-.full-cover:hover {
+.full-cover-wrap:hover {
     box-shadow: 0 24px 60px rgba(0,0,0,.55), 0 0 40px rgba(123,140,255,.1);
+}
+
+.full-cover-wrap .cover-layer,
+.full-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 21px;
+    opacity: 0;
+    transition: opacity .65s var(--ease);
+    pointer-events: none;
+}
+
+.full-cover-wrap .cover-layer.is-active,
+.full-cover.is-active {
+    opacity: 1;
+    z-index: 1;
 }
 
 .full-info {
@@ -1848,7 +1886,7 @@ img {
         padding-left: 55px;
         padding-right: 35px;
     }
-    .full-cover, .full-info, .full-progress {
+    .full-cover-wrap, .full-info, .full-progress {
         width: min(340px, 36vw, 60vh);
     }
 }
@@ -1933,7 +1971,7 @@ img {
         gap: 8px;
     }
 
-    .mini-song img {
+    .mini-cover-wrap {
         width: 48px;
         height: 48px;
     }
@@ -1993,13 +2031,13 @@ img {
         overflow: visible;
     }
 
-    .full-cover,
+    .full-cover-wrap,
     .full-info,
     .full-progress {
         width: min(75vw, 330px);
     }
 
-    .full-cover { animation: none; }
+    .full-cover-wrap { animation: none; }
 
     .full-controls {
         gap: 10px;
@@ -2586,12 +2624,10 @@ html[data-theme="light"] .search-box input {
 
     <div class="mini-song" id="miniSong">
 
-        <img
-            id="miniCover"
-            src="covers/here.jfif"
-            alt=""
-            title="Open Up Next"
-        >
+        <div class="mini-cover-wrap" title="Open Up Next">
+            <img id="miniCover" class="cover-layer is-active" src="covers/here.jfif" alt="">
+            <img id="miniCoverB" class="cover-layer" src="covers/here.jfif" alt="">
+        </div>
 
         <div class="mini-info" id="miniInfo">
 
@@ -2708,12 +2744,10 @@ html[data-theme="light"] .search-box input {
 
         <div class="full-left">
 
-            <img
-                class="full-cover"
-                id="fullCover"
-                src="covers/here.jfif"
-                alt=""
-            >
+            <div class="full-cover-wrap">
+                <img class="full-cover cover-layer is-active" id="fullCover" src="covers/here.jfif" alt="">
+                <img class="full-cover cover-layer" id="fullCoverB" src="covers/here.jfif" alt="">
+            </div>
 
             <div class="full-info">
 
@@ -3948,84 +3982,67 @@ function startBlobMotion() {
 }
 
 /* Smooth cover crossfade — fade out, swap src once loaded, fade in */
-function crossfadeImage(img, newSrc, duration = 380) {
-    if (!img || !newSrc) return;
-    // Already showing this art
-    if (img.dataset.currentSrc === newSrc) return;
+/*
+ * Dual-layer crossfade — new cover fades IN over the old one.
+ * No blank frame. Works for mini cover, full cover, and focus bg.
+ */
+const coverLayers = {
+    mini: { active: "a", a: null, b: null },
+    full: { active: "a", a: null, b: null },
+    bg:   { active: "a", a: null, b: null }
+};
 
-    // Cancel any in-flight swap on this element
-    if (img._crossfadeTimer) {
-        clearTimeout(img._crossfadeTimer);
-        img._crossfadeTimer = null;
-    }
-
-    let swapped = false;
-    const finishSwap = () => {
-        if (swapped) return;
-        swapped = true;
-        if (img._crossfadeTimer) {
-            clearTimeout(img._crossfadeTimer);
-            img._crossfadeTimer = null;
-        }
-
-        const preload = new Image();
-        const apply = () => {
-            img.src = newSrc;
-            img.dataset.currentSrc = newSrc;
-            requestAnimationFrame(() => {
-                img.style.opacity = "1";
-            });
-        };
-        preload.onload = apply;
-        preload.onerror = apply;
-        preload.src = newSrc;
-    };
-
-    img.style.opacity = "0";
-    img.addEventListener("transitionend", finishSwap, { once: true });
-    img._crossfadeTimer = setTimeout(finishSwap, duration + 50);
+function initCoverLayers() {
+    coverLayers.mini.a = document.getElementById("miniCover");
+    coverLayers.mini.b = document.getElementById("miniCoverB");
+    coverLayers.full.a = document.getElementById("fullCover");
+    coverLayers.full.b = document.getElementById("fullCoverB");
+    coverLayers.bg.a   = document.getElementById("fullBg");
+    coverLayers.bg.b   = document.getElementById("fullBgB");
 }
 
-/* Dual-layer blurred background crossfade */
-let activeBgLayer = "a"; // "a" = fullBg visible, "b" = fullBgB visible
+function crossfadePair(pair, newSrc, useBgHiddenClass = false) {
+    if (!pair || !pair.a || !pair.b || !newSrc) return;
 
-function crossfadeBackground(newSrc) {
-    const bgA = document.getElementById("fullBg");
-    const bgB = document.getElementById("fullBgB");
-    if (!bgA || !bgB || !newSrc) return;
+    const current = pair.active === "a" ? pair.a : pair.b;
+    const next = pair.active === "a" ? pair.b : pair.a;
 
-    const current = activeBgLayer === "a" ? bgA : bgB;
-    const next = activeBgLayer === "a" ? bgB : bgA;
-
-    // Same art already showing
+    // Already showing this art
     if (current.dataset.currentSrc === newSrc) return;
 
+    const apply = () => {
+        next.src = newSrc;
+        next.dataset.currentSrc = newSrc;
+
+        if (useBgHiddenClass) {
+            next.classList.remove("bg-hidden");
+            current.classList.add("bg-hidden");
+        } else {
+            next.classList.add("is-active");
+            current.classList.remove("is-active");
+        }
+
+        pair.active = pair.active === "a" ? "b" : "a";
+    };
+
+    // Preload so the fade starts with the image ready
     const preload = new Image();
-    preload.onload = () => {
-        next.src = newSrc;
-        next.dataset.currentSrc = newSrc;
-        // Bring next layer up, hide current
-        next.classList.remove("bg-hidden");
-        current.classList.add("bg-hidden");
-        activeBgLayer = activeBgLayer === "a" ? "b" : "a";
-    };
-    preload.onerror = () => {
-        next.src = newSrc;
-        next.dataset.currentSrc = newSrc;
-        next.classList.remove("bg-hidden");
-        current.classList.add("bg-hidden");
-        activeBgLayer = activeBgLayer === "a" ? "b" : "a";
-    };
+    preload.onload = apply;
+    preload.onerror = apply;
     preload.src = newSrc;
+}
+
+function crossfadeAllCovers(newSrc) {
+    crossfadePair(coverLayers.mini, newSrc, false);
+    crossfadePair(coverLayers.full, newSrc, false);
+    crossfadePair(coverLayers.bg, newSrc, true);
 }
 
 function updateSongUI() {
     const song = getCurrentSong();
     if (!song) return;
 
-    crossfadeImage(document.getElementById("miniCover"), song.cover);
-    crossfadeImage(document.getElementById("fullCover"), song.cover);
-    crossfadeBackground(song.cover);
+    crossfadeAllCovers(song.cover);
 
     document.getElementById("miniTitle").textContent =
         song.title;
@@ -5214,6 +5231,7 @@ function setupOnboarding() {
 function initialize() {
     loadSettings();
     setupOnboarding();
+    initCoverLayers();
 
     /* Start with empty queue — songs get added when you play or tap + */
     playQueue = [];
@@ -5226,32 +5244,30 @@ function initialize() {
     // Show first song in the mini player as a preview (doesn't start playback)
     if (songs.length) {
         const preview = songs[0];
-        const mini = document.getElementById("miniCover");
-        const full = document.getElementById("fullCover");
-        const bg = document.getElementById("fullBg");
-        const bgB = document.getElementById("fullBgB");
+        const src = preview.cover;
 
-        if (mini) {
-            mini.src = preview.cover;
-            mini.dataset.currentSrc = preview.cover;
-            mini.style.opacity = "1";
+        // Seed both layers so first real crossfade is seamless
+        ["mini", "full"].forEach(key => {
+            const pair = coverLayers[key];
+            if (!pair.a || !pair.b) return;
+            pair.a.src = src;
+            pair.a.dataset.currentSrc = src;
+            pair.a.classList.add("is-active");
+            pair.b.src = src;
+            pair.b.dataset.currentSrc = src;
+            pair.b.classList.remove("is-active");
+            pair.active = "a";
+        });
+
+        if (coverLayers.bg.a && coverLayers.bg.b) {
+            coverLayers.bg.a.src = src;
+            coverLayers.bg.a.dataset.currentSrc = src;
+            coverLayers.bg.a.classList.remove("bg-hidden");
+            coverLayers.bg.b.src = src;
+            coverLayers.bg.b.dataset.currentSrc = src;
+            coverLayers.bg.b.classList.add("bg-hidden");
+            coverLayers.bg.active = "a";
         }
-        if (full) {
-            full.src = preview.cover;
-            full.dataset.currentSrc = preview.cover;
-            full.style.opacity = "1";
-        }
-        if (bg) {
-            bg.src = preview.cover;
-            bg.dataset.currentSrc = preview.cover;
-            bg.classList.remove("bg-hidden");
-        }
-        if (bgB) {
-            bgB.src = preview.cover;
-            bgB.dataset.currentSrc = preview.cover;
-            bgB.classList.add("bg-hidden");
-        }
-        activeBgLayer = "a";
 
         document.getElementById("miniTitle").textContent = preview.title;
         document.getElementById("miniArtist").textContent = preview.artist;
